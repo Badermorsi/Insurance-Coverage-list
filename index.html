@@ -1,939 +1,439 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
->
-
-<title>Thiqa & Basic Coverage</title>
+<title>Insurance Coverage List</title>
 
 <style>
-
-:root{
-    --border:#d9dee7;
-    --bg:#f5f7fb;
-    --card:#ffffff;
-    --text:#172033;
-    --muted:#667085;
-    --header:#17365d;
-    --header2:#eef2f7;
-    --yes:#087443;
-    --no:#b42318;
-}
-
-*{
-    box-sizing:border-box;
-}
-
-body{
-    margin:0;
-    background:var(--bg);
-    font-family:Arial,Helvetica,sans-serif;
-    color:var(--text);
-}
-
-/* ================= HEADER ================= */
-
-.header{
-    background:linear-gradient(135deg,#17365d,#245b91);
-    color:white;
-    padding:22px 24px;
-}
-
-.header h1{
-    margin:0;
-    font-size:25px;
-}
-
-/* ================= CONTAINER ================= */
-
-.container{
-    padding:18px;
-    max-width:1800px;
-    margin:auto;
-}
-
-/* ================= LIST TABS ================= */
-
-.list-tabs{
-    display:flex;
-    gap:6px;
-    margin-bottom:15px;
-    background:white;
-    border:1px solid var(--border);
-    border-radius:10px;
-    padding:6px;
-    box-shadow:0 2px 8px rgba(16,24,40,.05);
-}
-
-.list-tab{
-    border:0;
-    background:transparent;
-    color:#475467;
-    font-weight:700;
-    font-size:14px;
-    padding:11px 20px;
-    border-radius:7px;
-    cursor:pointer;
-}
-
-.list-tab:hover{
-    background:#eef2f7;
-}
-
-.list-tab.active{
-    background:#17365d;
-    color:white;
-}
-
-/* ================= TOP SEARCH ================= */
-
-.search-panel{
-    background:var(--card);
-    border:1px solid var(--border);
-    border-radius:12px;
-    padding:16px;
-    margin-bottom:15px;
-    box-shadow:0 2px 8px rgba(16,24,40,.05);
-}
-
-.search-grid{
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-    gap:14px;
-}
-
-.search-box label{
-    display:block;
-    font-weight:700;
-    font-size:13px;
-    margin-bottom:7px;
-}
-
-.search-box input{
-    width:100%;
-    height:42px;
-    border:1px solid #bfc7d4;
-    border-radius:8px;
-    padding:0 12px;
-    font-size:15px;
-    outline:none;
-}
-
-.search-box input:focus{
-    border-color:#3276b1;
-    box-shadow:0 0 0 3px rgba(50,118,177,.12);
-}
-
-/* ================= TOOLBAR ================= */
-
-.toolbar{
-    display:flex;
-    align-items:center;
-    gap:10px;
-    flex-wrap:wrap;
-    margin-top:14px;
-}
-
-button{
-    border:1px solid var(--border);
-    background:white;
-    border-radius:7px;
-    padding:8px 12px;
-    cursor:pointer;
-}
-
-button:hover{
-    background:#f1f5f9;
-}
-
-.stats{
-    font-size:13px;
-    color:var(--muted);
-    margin-left:auto;
-}
-
-.small{
-    font-size:12px;
-    color:var(--muted);
-}
-
-/* ================= TABLE ================= */
-
-.table-card{
-    background:var(--card);
-    border:1px solid var(--border);
-    border-radius:12px;
-    overflow:hidden;
-    box-shadow:0 2px 8px rgba(16,24,40,.05);
-}
-
-.table-wrap{
-    overflow:auto;
-    max-height:calc(100vh - 300px);
-}
-
-table{
-    border-collapse:separate;
-    border-spacing:0;
-    width:100%;
-    min-width:1500px;
-    font-size:13px;
-}
-
-th,
-td{
-    border-right:1px solid var(--border);
-    border-bottom:1px solid var(--border);
-    padding:9px 10px;
-    text-align:left;
-    vertical-align:top;
-}
-
-/* ================= TABLE HEADER ================= */
-
-thead tr:first-child th{
-    background:var(--header);
-    color:white;
-    position:sticky;
-    top:0;
-    z-index:10;
-    font-weight:700;
-    white-space:nowrap;
-    padding:0;
-}
-
-.header-cell{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    min-height:42px;
-    padding-left:10px;
-}
-
-.header-title{
-    overflow:hidden;
-    text-overflow:ellipsis;
-}
-
-/* ================= FILTER BUTTON ================= */
-
-.filter-button{
-    width:34px;
-    height:42px;
-    border:0;
-    border-left:1px solid rgba(255,255,255,.25);
-    border-radius:0;
-    background:transparent;
-    color:white;
-    font-size:15px;
-    padding:0;
-    flex-shrink:0;
-}
-
-.filter-button:hover{
-    background:rgba(255,255,255,.15);
-}
-
-.filter-button.active{
-    background:#3d78ad;
-}
-
-/* ================= ROWS ================= */
-
-tbody tr:nth-child(even){
-    background:#fafbfc;
-}
-
-tbody tr:hover{
-    background:#f0f7ff;
-}
-
-/* ================= COVERAGE ================= */
-
-.coverage{
-    font-weight:800;
-    text-align:center;
-    border-radius:6px;
-    display:inline-block;
-    min-width:42px;
-    padding:4px 8px;
-}
-
-.yes{
-    color:var(--yes);
-    background:#e7f6ee;
-}
-
-.no{
-    color:var(--no);
-    background:#fdecec;
-}
-
-/* ================= FILTER POPUP ================= */
-
-.filter-popup{
-    position:fixed;
-    width:280px;
-    max-height:430px;
-    background:white;
-    border:1px solid #cbd5e1;
-    border-radius:9px;
-    box-shadow:0 8px 25px rgba(0,0,0,.18);
-    z-index:9999;
-    display:none;
-    overflow:hidden;
-}
-
-.filter-popup.show{
-    display:block;
-}
-
-/* ================= FILTER SEARCH ================= */
-
-.filter-search{
-    padding:10px;
-    border-bottom:1px solid var(--border);
-    background:#fff;
-}
-
-.filter-search input{
-    width:100%;
-    height:34px;
-    border:1px solid #c7cfda;
-    border-radius:6px;
-    padding:0 9px;
-    font-size:13px;
-    outline:none;
-}
-
-.filter-search input:focus{
-    border-color:#3276b1;
-}
-
-/* ================= SELECT ALL ================= */
-
-.select-all{
-    padding:9px 11px;
-    border-bottom:1px solid var(--border);
-    background:#fafafa;
-}
-
-.select-all label,
-.filter-value label{
-    display:flex;
-    align-items:center;
-    gap:8px;
-    cursor:pointer;
-}
-
-.select-all input,
-.filter-value input{
-    width:16px;
-    height:16px;
-    cursor:pointer;
-}
-
-/* ================= FILTER VALUES ================= */
-
-.filter-values{
-    max-height:270px;
-    overflow-y:auto;
-    padding:5px 0;
-}
-
-.filter-value{
-    padding:7px 11px;
-    font-size:13px;
-}
-
-.filter-value:hover{
-    background:#f1f5f9;
-}
-
-.filter-value.hidden{
-    display:none;
-}
-
-.value-text{
-    overflow:hidden;
-    text-overflow:ellipsis;
-    white-space:nowrap;
-}
-
-/* ================= FILTER BUTTONS ================= */
-
-.filter-actions{
-    display:flex;
-    gap:8px;
-    padding:10px;
-    border-top:1px solid var(--border);
-    background:#fafafa;
-}
-
-.filter-actions button{
-    flex:1;
-    font-weight:600;
-}
-
-.apply-button{
-    background:#17365d;
-    color:white;
-    border-color:#17365d;
-}
-
-.apply-button:hover{
-    background:#245b91;
-}
-
-.clear-filter-button:hover{
-    background:#feecec;
-    color:#b42318;
-}
-
-/* ================= LOADING ================= */
-
-.loading{
-    text-align:center;
-    padding:35px;
-    color:var(--muted);
-}
-
-.empty{
-    text-align:center;
-    padding:45px;
-    color:var(--muted);
-    font-size:15px;
-}
-
-/* ================= DATABASE LOADING MESSAGE ================= */
-
-.database-status{
-    display:none;
-    margin-top:10px;
-    padding:9px 12px;
-    border-radius:7px;
-    background:#eef4fb;
-    color:#345;
-    font-size:12px;
-}
-
-/* ================= MOBILE ================= */
-
-@media(max-width:900px){
-
-    .search-grid{
-        grid-template-columns:repeat(2,1fr);
+    * {
+        box-sizing: border-box;
     }
 
-    .stats{
-        margin-left:0;
-        width:100%;
+    body {
+        margin: 0;
+        font-family: Arial, Helvetica, sans-serif;
+        background: #f4f7fb;
+        color: #1f2937;
     }
 
-}
+    /* =========================
+       HEADER
+    ========================= */
 
-@media(max-width:550px){
-
-    .container{
-        padding:10px;
+    .header {
+        background: white;
+        padding: 15px 25px;
+        border-bottom: 1px solid #dce3ec;
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        position: sticky;
+        top: 0;
+        z-index: 100;
     }
 
-    .search-grid{
-        grid-template-columns:1fr;
+    .logo {
+        height: 58px;
+        width: auto;
+        object-fit: contain;
     }
 
-    .header{
-        padding:17px;
+    .header-title {
+        font-size: 25px;
+        font-weight: 700;
+        color: #123c69;
     }
 
-    .header h1{
-        font-size:21px;
+    /* =========================
+       TABS
+    ========================= */
+
+    .tabs {
+        display: flex;
+        justify-content: center;
+        gap: 8px;
+        padding: 18px 20px 0;
     }
 
-    .filter-popup{
-        width:calc(100vw - 20px);
-        left:10px !important;
-        right:10px;
+    .tab-button {
+        border: none;
+        background: #dfe7f1;
+        color: #24415d;
+        padding: 13px 30px;
+        font-size: 16px;
+        font-weight: 700;
+        border-radius: 10px 10px 0 0;
+        cursor: pointer;
+        transition: 0.2s;
     }
 
-    .list-tab{
-        flex:1;
-        padding:10px 8px;
-        font-size:13px;
+    .tab-button:hover {
+        background: #cbd8e7;
     }
 
-}
+    .tab-button.active {
+        background: #123c69;
+        color: white;
+    }
 
+    /* =========================
+       CONTENT
+    ========================= */
+
+    .container {
+        width: 96%;
+        max-width: 1900px;
+        margin: 0 auto 40px;
+        background: white;
+        border-radius: 0 12px 12px 12px;
+        box-shadow: 0 3px 15px rgba(0,0,0,0.08);
+        padding: 20px;
+    }
+
+    .tab-content {
+        display: none;
+    }
+
+    .tab-content.active {
+        display: block;
+    }
+
+    /* =========================
+       SEARCH
+    ========================= */
+
+    .search-area {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 18px;
+        flex-wrap: wrap;
+    }
+
+    .search-box {
+        flex: 1;
+        min-width: 280px;
+        position: relative;
+    }
+
+    .search-box input {
+        width: 100%;
+        padding: 14px 45px 14px 16px;
+        border: 1px solid #c8d2df;
+        border-radius: 9px;
+        font-size: 16px;
+        outline: none;
+    }
+
+    .search-box input:focus {
+        border-color: #123c69;
+        box-shadow: 0 0 0 3px rgba(18,60,105,0.1);
+    }
+
+    .search-icon {
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 20px;
+        color: #718096;
+    }
+
+    .clear-btn {
+        border: none;
+        background: #e8edf3;
+        padding: 0 20px;
+        border-radius: 9px;
+        cursor: pointer;
+        font-weight: 600;
+        color: #334155;
+    }
+
+    .clear-btn:hover {
+        background: #d9e1ea;
+    }
+
+    /* =========================
+       INFO
+    ========================= */
+
+    .info-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 12px;
+        flex-wrap: wrap;
+    }
+
+    .record-count {
+        font-size: 14px;
+        color: #64748b;
+    }
+
+    .loading {
+        padding: 30px;
+        text-align: center;
+        color: #64748b;
+    }
+
+    .error {
+        background: #fff1f2;
+        color: #be123c;
+        border: 1px solid #fecdd3;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 15px;
+    }
+
+    /* =========================
+       TABLE
+    ========================= */
+
+    .table-wrapper {
+        width: 100%;
+        overflow-x: auto;
+        border: 1px solid #dbe3ec;
+        border-radius: 8px;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 900px;
+    }
+
+    th {
+        background: #123c69;
+        color: white;
+        padding: 11px 10px;
+        text-align: left;
+        font-size: 13px;
+        white-space: nowrap;
+        position: sticky;
+        top: 0;
+        z-index: 2;
+    }
+
+    td {
+        padding: 10px;
+        border-bottom: 1px solid #e5eaf0;
+        font-size: 13px;
+        vertical-align: top;
+        white-space: nowrap;
+    }
+
+    tbody tr:nth-child(even) {
+        background: #f8fafc;
+    }
+
+    tbody tr:hover {
+        background: #edf5ff;
+    }
+
+    /* =========================
+       HIGHLIGHT
+    ========================= */
+
+    .highlight {
+        background: #fff2a8;
+        font-weight: 700;
+    }
+
+    /* =========================
+       RESPONSIVE
+    ========================= */
+
+    @media (max-width: 700px) {
+
+        .header {
+            padding: 12px;
+        }
+
+        .logo {
+            height: 45px;
+        }
+
+        .header-title {
+            font-size: 19px;
+        }
+
+        .tabs {
+            padding: 10px 10px 0;
+        }
+
+        .tab-button {
+            padding: 11px 15px;
+            font-size: 14px;
+        }
+
+        .container {
+            width: 100%;
+            border-radius: 0;
+            padding: 12px;
+        }
+
+        .search-box {
+            min-width: 100%;
+        }
+
+        .clear-btn {
+            height: 45px;
+            width: 100%;
+        }
+    }
 </style>
-
 </head>
-
 
 <body>
 
-
-<!-- ================= HEADER ================= -->
+<!-- =========================
+     HEADER
+========================= -->
 
 <div class="header">
 
-    <h1>
-        Thiqa & Basic Coverage Finder
-    </h1>
+    <!-- If your logo filename is different, change logo.png -->
+    <img src="logo.png" class="logo" alt="Al Ain Pharmacy">
+
+    <div class="header-title">
+        Insurance Coverage List
+    </div>
 
 </div>
 
 
-<div class="container">
+<!-- =========================
+     TABS
+========================= -->
 
-
-<!-- ================= LIST TABS ================= -->
-
-<div class="list-tabs">
+<div class="tabs">
 
     <button
-        id="thiqaTab"
-        class="list-tab active"
-        type="button"
-    >
+        class="tab-button active"
+        onclick="switchTab('thiqa')">
         Thiqa Coverage List
     </button>
 
     <button
-        id="haadTab"
-        class="list-tab"
-        type="button"
-    >
+        class="tab-button"
+        onclick="switchTab('haad')">
         HAAD List
     </button>
 
 </div>
 
 
-<!-- ================= TOP SEARCH PANEL ================= -->
+<!-- =========================
+     MAIN
+========================= -->
 
-<section class="search-panel">
-
-    <div class="search-grid">
-
-
-        <!-- BRAND -->
-
-        <div class="search-box">
-
-            <label for="brandSearch">
-                Search by Brand Name
-            </label>
-
-            <input
-                id="brandSearch"
-                type="search"
-                placeholder="Type any part of the brand name..."
-                autocomplete="off"
-            >
-
-        </div>
+<div class="container">
 
 
-        <!-- ACTIVE INGREDIENT -->
+    <!-- =====================================================
+         THIQA TAB
+    ====================================================== -->
 
-        <div class="search-box">
+    <div id="thiqa" class="tab-content active">
 
-            <label for="ingredientSearch">
-                Search by Active Ingredient
-            </label>
+        <div class="search-area">
 
-            <input
-                id="ingredientSearch"
-                type="search"
-                placeholder="Type any part of the ingredient..."
-                autocomplete="off"
-            >
+            <div class="search-box">
+
+                <input
+                    type="text"
+                    id="thiqaSearch"
+                    placeholder="Search Thiqa Coverage List..."
+                    oninput="searchThiqa()">
+
+                <span class="search-icon">🔎</span>
+
+            </div>
+
+            <button
+                class="clear-btn"
+                onclick="clearThiqaSearch()">
+                Clear
+            </button>
 
         </div>
 
+        <div class="info-bar">
 
-        <!-- STRENGTH -->
-
-        <div class="search-box">
-
-            <label for="strengthSearch">
-                Search by Strength
-            </label>
-
-            <input
-                id="strengthSearch"
-                type="search"
-                placeholder="Example: 500%10"
-                autocomplete="off"
-            >
+            <div id="thiqaCount" class="record-count">
+                Loading...
+            </div>
 
         </div>
 
+        <div id="thiqaError"></div>
 
-        <!-- DOSAGE FORM -->
+        <div class="table-wrapper">
 
-        <div class="search-box">
+            <table id="thiqaTable">
 
-            <label for="dosageSearch">
-                Search by Dosage Form
-            </label>
+                <thead id="thiqaHead"></thead>
 
-            <input
-                id="dosageSearch"
-                type="search"
-                placeholder="Type any part of the dosage form..."
-                autocomplete="off"
-            >
+                <tbody id="thiqaBody"></tbody>
+
+            </table>
 
         </div>
 
     </div>
 
 
-    <div class="toolbar">
+    <!-- =====================================================
+         HAAD TAB
+    ====================================================== -->
 
-        <button id="clearBtn">
-            Clear all filters
-        </button>
+    <div id="haad" class="tab-content">
 
-        <span class="small">
-            Use % for AND search. Example: 500%10
-        </span>
+        <div class="search-area">
 
-        <span
-            class="stats"
-            id="stats"
-        >
-            Loading...
-        </span>
+            <div class="search-box">
 
-    </div>
+                <input
+                    type="text"
+                    id="haadSearch"
+                    placeholder="Search HAAD List..."
+                    oninput="searchHaad()">
 
+                <span class="search-icon">🔎</span>
 
-    <div
-        id="databaseStatus"
-        class="database-status"
-    ></div>
+            </div>
 
-</section>
-
-
-<!-- ================= TABLE ================= -->
-
-<section class="table-card">
-
-<div class="table-wrap">
-
-<table>
-
-<thead>
-
-<tr>
-
-
-    <th>
-        <div class="header-cell">
-            <span class="header-title">
-                Proactive ID
-            </span>
             <button
-                class="filter-button"
-                data-col="0"
-            >
-                ▼
+                class="clear-btn"
+                onclick="clearHaadSearch()">
+                Clear
             </button>
+
         </div>
-    </th>
 
+        <div class="info-bar">
 
-    <th>
-        <div class="header-cell">
-            <span class="header-title">
-                HAAD CODE
-            </span>
-            <button
-                class="filter-button"
-                data-col="1"
-            >
-                ▼
-            </button>
+            <div id="haadCount" class="record-count">
+                Loading...
+            </div>
+
         </div>
-    </th>
 
+        <div id="haadError"></div>
 
-    <th>
-        <div class="header-cell">
-            <span class="header-title">
-                Brand Name
-            </span>
-            <button
-                class="filter-button"
-                data-col="2"
-            >
-                ▼
-            </button>
+        <div class="table-wrapper">
+
+            <table id="haadTable">
+
+                <thead id="haadHead"></thead>
+
+                <tbody id="haadBody"></tbody>
+
+            </table>
+
         </div>
-    </th>
-
-
-    <th>
-        <div class="header-cell">
-            <span class="header-title">
-                Generic Code
-            </span>
-            <button
-                class="filter-button"
-                data-col="3"
-            >
-                ▼
-            </button>
-        </div>
-    </th>
-
-
-    <th>
-        <div class="header-cell">
-            <span class="header-title">
-                HAAD Price
-            </span>
-            <button
-                class="filter-button"
-                data-col="4"
-            >
-                ▼
-            </button>
-        </div>
-    </th>
-
-
-    <th>
-        <div class="header-cell">
-            <span class="header-title">
-                Active Ingredient
-            </span>
-            <button
-                class="filter-button"
-                data-col="5"
-            >
-                ▼
-            </button>
-        </div>
-    </th>
-
-
-    <th>
-        <div class="header-cell">
-            <span class="header-title">
-                Strength
-            </span>
-            <button
-                class="filter-button"
-                data-col="6"
-            >
-                ▼
-            </button>
-        </div>
-    </th>
-
-
-    <th>
-        <div class="header-cell">
-            <span class="header-title">
-                Dosage Form
-            </span>
-            <button
-                class="filter-button"
-                data-col="7"
-            >
-                ▼
-            </button>
-        </div>
-    </th>
-
-
-    <th>
-        <div class="header-cell">
-            <span class="header-title">
-                Package Size
-            </span>
-            <button
-                class="filter-button"
-                data-col="8"
-            >
-                ▼
-            </button>
-        </div>
-    </th>
-
-
-    <th>
-        <div class="header-cell">
-            <span class="header-title">
-                UPP Scope
-            </span>
-            <button
-                class="filter-button"
-                data-col="9"
-            >
-                ▼
-            </button>
-        </div>
-    </th>
-
-
-    <th>
-        <div class="header-cell">
-            <span class="header-title">
-                THIQA
-            </span>
-            <button
-                class="filter-button"
-                data-col="10"
-            >
-                ▼
-            </button>
-        </div>
-    </th>
-
-
-    <th>
-        <div class="header-cell">
-            <span class="header-title">
-                BASIC
-            </span>
-            <button
-                class="filter-button"
-                data-col="11"
-            >
-                ▼
-            </button>
-        </div>
-    </th>
-
-
-    <th>
-        <div class="header-cell">
-            <span class="header-title">
-                Markup
-            </span>
-            <button
-                class="filter-button"
-                data-col="12"
-            >
-                ▼
-            </button>
-        </div>
-    </th>
-
-
-    <th>
-        <div class="header-cell">
-            <span class="header-title">
-                Daman Coverage
-            </span>
-            <button
-                class="filter-button"
-                data-col="13"
-            >
-                ▼
-            </button>
-        </div>
-    </th>
-
-
-</tr>
-
-</thead>
-
-
-<tbody id="tbody">
-
-<tr>
-
-<td
-    colspan="14"
-    class="loading"
->
-    Loading Thiqa Coverage List...
-</td>
-
-</tr>
-
-</tbody>
-
-</table>
-
-</div>
-
-</section>
-
-</div>
-
-
-<!-- ================= FILTER POPUP ================= -->
-
-<div
-    id="filterPopup"
-    class="filter-popup"
->
-
-    <div class="filter-search">
-
-        <input
-            id="filterSearch"
-            type="search"
-            placeholder="Search values..."
-            autocomplete="off"
-        >
-
-    </div>
-
-
-    <div class="select-all">
-
-        <label>
-
-            <input
-                type="checkbox"
-                id="selectAll"
-            >
-
-            <span>
-                Select All
-            </span>
-
-        </label>
-
-    </div>
-
-
-    <div
-        id="filterValues"
-        class="filter-values"
-    ></div>
-
-
-    <div class="filter-actions">
-
-        <button
-            id="clearColumn"
-            class="clear-filter-button"
-        >
-            Clear
-        </button>
-
-        <button
-            id="applyFilter"
-            class="apply-button"
-        >
-            Apply
-        </button>
 
     </div>
 
@@ -942,1971 +442,751 @@ tbody tr:hover{
 
 <script>
 
-/* =========================================================
-   DATABASE STATE
-========================================================= */
+/* ============================================================
+   FILE NAMES
+   ============================================================
 
-const state = {
+   CHANGE ONLY THESE TWO NAMES IF YOUR JSON FILES
+   HAVE DIFFERENT FILENAMES.
 
-    activeList: "thiqa",
+   Example:
+   "HAAD LIST.json"
+   "Thiqa Coverage.json"
 
-    datasets: {
+============================================================ */
 
-        thiqa: {
-            loaded: false,
-            loading: false,
-            data: [],
-            normalized: [],
-            search: ["","","",""],
-            filters:
-                Array(14)
-                .fill(null)
-                .map(() => new Set())
-        },
+const HAAD_FILE = "HAAD LIST.json";
 
-        haad: {
-            loaded: false,
-            loading: false,
-            data: [],
-            normalized: [],
-            search: ["","","",""],
-            filters:
-                Array(14)
-                .fill(null)
-                .map(() => new Set())
-        }
-
-    },
-
-    filterColumn: null,
-
-    filterTemp: new Set(),
-
-    filterButton: null,
-
-    renderQueued: false
-
-};
+/*
+   IMPORTANT:
+   Replace this with the EXACT filename of your Thiqa JSON.
+*/
+const THIQA_FILE = "Thiqa Coverage.json";
 
 
-/* =========================================================
-   TABLE COLUMNS
-========================================================= */
+/* ============================================================
+   DATA
+============================================================ */
 
-const keys = [
+let thiqaData = [];
+let haadData = [];
 
-    "Proactive ID",
-    "HAAD CODE",
-    "proactive name",
+
+/* ============================================================
+   HAAD COLUMNS
+   ============================================================
+
+   These are kept completely independent from Thiqa.
+============================================================ */
+
+const HAAD_COLUMNS = [
+    "Drug Code",
+    "Insurance Plan",
+    "Package Name",
     "Generic Code",
-    "Haad Price",
     "Generic Name",
     "Strength",
     "Dosage Form",
     "Package Size",
-    "Is UPP Scope",
-    "THIQA",
-    "BASIC",
-    "Markup",
-    "Daman Coverage"
-
+    "Dispense Mode",
+    "Package Price to Public",
+    "Package Price to Pharmacy",
+    "Unit Price to Public",
+    "Unit Price to Pharmacy",
+    "Status",
+    "Delete Effective Date",
+    "Last Change Date",
+    "Agent Name",
+    "Manufacturer Name",
+    "Insurance Coverage For Government Funded Program",
+    "UPP Scope",
+    "Included in Thiqa/ABM - other than 1&7 - Drug Formulary",
+    "Included In Basic Drug Formulary",
+    "Included In ABM 1 Drug Formulary",
+    "Included In ABM 7 Drug Formulary",
+    "Unit Markup",
+    "Package Markup",
+    "Thiqa Max. Reimbursement Price (Package)",
+    "Thiqa co-pay amount (package)",
+    "Basic co-pay amount (package)",
+    "UPP Effective Date",
+    "UPP Updated Date",
+    "UPP Expiry Date"
 ];
 
 
-/* =========================================================
-   HAAD JSON KEYS
-========================================================= */
+/* ============================================================
+   LOAD JSON
+============================================================ */
 
-const haadKeys = {
+async function loadJsonFile(fileName) {
 
-    code:
-        "Drug Code",
-
-    brand:
-        "Package Name",
-
-    genericCode:
-        "Generic Code",
-
-    ingredient:
-        "Generic Name",
-
-    strength:
-        "Strength",
-
-    dosage:
-        "Dosage Form",
-
-    packageSize:
-        "Package Size",
-
-    price:
-        "Package Price to Public",
-
-    upp:
-        "UPP Scope",
-
-    thiqa:
-        "Included in Thiqa/ ABM - other than 1&7- Drug Formulary",
-
-    basic:
-        "Included In Basic Drug Formulary",
-
-    markup:
-        "Package Markup"
-
-};
-
-
-/* =========================================================
-   NORMALIZE
-========================================================= */
-
-function norm(value){
-
-    return String(value ?? "")
-        .toLowerCase()
-        .trim();
-
-}
-
-
-/* =========================================================
-   ESCAPE HTML
-========================================================= */
-
-function escapeHtml(value){
-
-    return String(value ?? "").replace(
-        /[&<>"']/g,
-        function(c){
-
-            return {
-
-                "&":"&amp;",
-                "<":"&lt;",
-                ">":"&gt;",
-                '"':"&quot;",
-                "'":"&#039;"
-
-            }[c];
-
+    const response = await fetch(
+        encodeURI(fileName),
+        {
+            cache: "no-store"
         }
     );
 
-}
-
-
-/* =========================================================
-   CURRENT DATASET
-========================================================= */
-
-function currentDataset(){
-
-    return state.datasets[state.activeList];
-
-}
-
-
-/* =========================================================
-   CELL DISPLAY
-========================================================= */
-
-function cell(value,col){
-
-    const text = value ?? "";
-
-
-    /*
-       THIQA / BASIC
-    */
-
-    if(
-        (col === 10 || col === 11) &&
-        (text === "Yes" || text === "No")
-    ){
-
-        return `
-
-            <span
-                class="coverage ${
-                    text === "Yes"
-                        ? "yes"
-                        : "no"
-                }"
-            >
-                ${text}
-            </span>
-
-        `;
-
-    }
-
-
-    return escapeHtml(text);
-
-}
-
-
-/* =========================================================
-   SPLIT SEARCH TERMS
-========================================================= */
-
-function searchTerms(search){
-
-    return search
-        .split("%")
-        .map(term => term.trim())
-        .filter(term => term !== "");
-
-}
-
-
-/* =========================================================
-   TEXT SEARCH
-   % = AND
-========================================================= */
-
-function allTermsMatch(text,search){
-
-    if(!search){
-
-        return true;
-
-    }
-
-
-    const terms =
-        searchTerms(search);
-
-
-    return terms.every(
-        term =>
-            text.includes(term)
-    );
-
-}
-
-
-/* =========================================================
-   EXACT NUMBER SEARCH
-========================================================= */
-
-function allExactNumbersMatch(text,search){
-
-    if(!search){
-
-        return true;
-
-    }
-
-
-    const terms =
-        searchTerms(search);
-
-
-    return terms.every(term => {
-
-        const escaped =
-            term.replace(
-                /[.*+?^${}()|[\]\\]/g,
-                "\\$&"
-            );
-
-
-        const regex =
-            new RegExp(
-                "(?<![0-9.])" +
-                escaped +
-                "(?![0-9.])"
-            );
-
-
-        return regex.test(text);
-
-    });
-
-}
-
-
-/* =========================================================
-   PREPARE SEARCH
-========================================================= */
-
-function prepareSearch(dataset){
-
-    dataset.searchTerms = {
-
-        brand:
-            searchTerms(
-                dataset.search[0]
-            ),
-
-        ingredient:
-            searchTerms(
-                dataset.search[1]
-            ),
-
-        strength:
-            searchTerms(
-                dataset.search[2]
-            ),
-
-        dosage:
-            searchTerms(
-                dataset.search[3]
-            )
-
-    };
-
-
-    dataset.strengthRegex =
-        dataset.searchTerms.strength.map(
-            term => {
-
-                const escaped =
-                    term.replace(
-                        /[.*+?^${}()|[\]\\]/g,
-                        "\\$&"
-                    );
-
-                return new RegExp(
-                    "(?<![0-9.])" +
-                    escaped +
-                    "(?![0-9.])"
-                );
-
-            }
+    if (!response.ok) {
+        throw new Error(
+            "Could not load " + fileName +
+            " (" + response.status + ")"
         );
+    }
+
+    return await response.json();
+}
+
+
+/* ============================================================
+   NORMALIZE JSON
+   ============================================================
+
+   Handles common JSON structures:
+
+   [
+      {...},
+      {...}
+   ]
+
+   OR
+
+   {
+      "data": [...]
+   }
+
+============================================================ */
+
+function normalizeData(json) {
+
+    if (Array.isArray(json)) {
+        return json;
+    }
+
+    if (json && Array.isArray(json.data)) {
+        return json.data;
+    }
+
+    if (json && Array.isArray(json.rows)) {
+        return json.rows;
+    }
+
+    if (json && Array.isArray(json.records)) {
+        return json.records;
+    }
+
+    if (json && typeof json === "object") {
+
+        const arrays = Object.values(json)
+            .filter(value => Array.isArray(value));
+
+        if (arrays.length > 0) {
+            return arrays[0];
+        }
+    }
+
+    return [];
+}
+
+
+/* ============================================================
+   INITIAL LOAD
+============================================================ */
+
+async function loadData() {
+
+    loadThiqa();
+
+    loadHaad();
 
 }
 
 
-/* =========================================================
-   CHECK WHETHER ROW MATCHES
-========================================================= */
+/* ============================================================
+   LOAD THIQA
+============================================================ */
 
-function matches(index){
+async function loadThiqa() {
 
-    const dataset =
-        currentDataset();
+    const count = document.getElementById("thiqaCount");
 
-    const row =
-        dataset.normalized[index];
+    try {
 
+        count.textContent = "Loading Thiqa data...";
 
-    const terms =
-        dataset.searchTerms || {
+        const json = await loadJsonFile(THIQA_FILE);
 
-            brand:[],
-            ingredient:[],
-            strength:[],
-            dosage:[]
+        thiqaData = normalizeData(json);
 
-        };
-
-
-    /* BRAND */
-
-    if(
-        terms.brand.length &&
-        !terms.brand.every(
-            term =>
-                row[2].includes(term)
-        )
-    ){
-
-        return false;
-
-    }
-
-
-    /* ACTIVE INGREDIENT */
-
-    if(
-        terms.ingredient.length &&
-        !terms.ingredient.every(
-            term =>
-                row[5].includes(term)
-        )
-    ){
-
-        return false;
-
-    }
-
-
-    /* STRENGTH */
-
-    if(
-        terms.strength.length &&
-        !dataset.strengthRegex.every(
-            regex =>
-                regex.test(row[6])
-        )
-    ){
-
-        return false;
-
-    }
-
-
-    /* DOSAGE */
-
-    if(
-        terms.dosage.length &&
-        !terms.dosage.every(
-            term =>
-                row[7].includes(term)
-        )
-    ){
-
-        return false;
-
-    }
-
-
-    /* EXCEL FILTERS */
-
-    for(
-        let col = 0;
-        col < 14;
-        col++
-    ){
-
-        const selected =
-            dataset.filters[col];
-
-
-        if(selected.size > 0){
-
-            if(
-                !selected.has(
-                    row[col]
-                )
-            ){
-
-                return false;
-
-            }
-
-        }
-
-    }
-
-
-    return true;
-
-}
-
-
-/* =========================================================
-   RENDER TABLE
-========================================================= */
-
-function render(){
-
-    const dataset =
-        currentDataset();
-
-
-    const tbody =
-        document.getElementById(
-            "tbody"
-        );
-
-
-    const output = [];
-
-    let count = 0;
-
-
-    /*
-       Make sure search preparation
-       exists.
-    */
-
-    prepareSearch(dataset);
-
-
-    for(
-        let i = 0;
-        i < dataset.data.length;
-        i++
-    ){
-
-        if(matches(i)){
-
-            const row =
-                dataset.data[i];
-
-
-            output.push(
-
-                "<tr>" +
-
-                row.map(
-                    (value,col) =>
-
-                        "<td>" +
-
-                        cell(
-                            value,
-                            col
-                        ) +
-
-                        "</td>"
-
-                ).join("") +
-
-                "</tr>"
-
-            );
-
-
-            count++;
-
-        }
-
-    }
-
-
-    if(output.length){
-
-        tbody.innerHTML =
-            output.join("");
-
-    }
-
-    else{
-
-        tbody.innerHTML = `
-
-            <tr>
-
-                <td
-                    colspan="14"
-                    class="empty"
-                >
-                    No matching records found.
-                </td>
-
-            </tr>
-
-        `;
-
-    }
-
-
-    document
-        .getElementById("stats")
-        .textContent =
-
-        `${count.toLocaleString()} matching record${
-            count === 1
-                ? ""
-                : "s"
-        } / ${
-            dataset.data.length.toLocaleString()
-        } total`;
-
-}
-
-
-/* =========================================================
-   SCHEDULE RENDER
-   No debounce.
-   Search remains immediate.
-========================================================= */
-
-function scheduleRender(){
-
-    if(state.renderQueued){
-
-        return;
-
-    }
-
-
-    state.renderQueued = true;
-
-
-    requestAnimationFrame(() => {
-
-        state.renderQueued = false;
-
-        render();
-
-    });
-
-}
-
-
-/* =========================================================
-   SEARCH INPUTS
-========================================================= */
-
-document
-    .querySelectorAll(
-        ".search-box input"
-    )
-    .forEach(
-        (input,index) => {
-
-            input.addEventListener(
-                "input",
-                function(){
-
-                    const dataset =
-                        currentDataset();
-
-
-                    dataset.search[index] =
-                        norm(
-                            this.value
-                        );
-
-
-                    scheduleRender();
-
-                }
-            );
-
-        }
-    );
-
-
-/* =========================================================
-   UPDATE SEARCH BOXES WHEN TAB CHANGES
-========================================================= */
-
-function updateSearchBoxes(){
-
-    const dataset =
-        currentDataset();
-
-
-    const inputs =
-        document.querySelectorAll(
-            ".search-box input"
-        );
-
-
-    inputs.forEach(
-        (input,index) => {
-
-            input.value =
-                dataset.search[index];
-
-        }
-    );
-
-}
-
-
-/* =========================================================
-   RESET FILTER BUTTONS
-========================================================= */
-
-function updateAllFilterButtons(){
-
-    const dataset =
-        currentDataset();
-
-
-    document
-        .querySelectorAll(
-            ".filter-button"
-        )
-        .forEach(
-            button => {
-
-                const col =
-                    Number(
-                        button.dataset.col
-                    );
-
-
-                if(
-                    dataset.filters[col]
-                        .size > 0
-                ){
-
-                    button.classList.add(
-                        "active"
-                    );
-
-                }
-
-                else{
-
-                    button.classList.remove(
-                        "active"
-                    );
-
-                }
-
-            }
-        );
-
-}
-
-
-/* =========================================================
-   LIST TABS
-========================================================= */
-
-document
-    .getElementById("thiqaTab")
-    .addEventListener(
-        "click",
-        function(){
-
-            switchList("thiqa");
-
-        }
-    );
-
-
-document
-    .getElementById("haadTab")
-    .addEventListener(
-        "click",
-        function(){
-
-            switchList("haad");
-
-        }
-    );
-
-
-/* =========================================================
-   SWITCH LIST
-========================================================= */
-
-async function switchList(list){
-
-    if(
-        state.activeList === list &&
-        state.datasets[list].loaded
-    ){
-
-        return;
-
-    }
-
-
-    state.activeList =
-        list;
-
-
-    document
-        .getElementById("thiqaTab")
-        .classList.toggle(
-            "active",
-            list === "thiqa"
-        );
-
-
-    document
-        .getElementById("haadTab")
-        .classList.toggle(
-            "active",
-            list === "haad"
-        );
-
-
-    updateSearchBoxes();
-
-    updateAllFilterButtons();
-
-
-    const dataset =
-        currentDataset();
-
-
-    if(!dataset.loaded){
-
-        await loadDatabase(list);
-
-    }
-
-    else{
-
-        scheduleRender();
-
-    }
-
-}
-
-
-/* =========================================================
-   LOAD DATABASE
-========================================================= */
-
-async function loadDatabase(list){
-
-    const dataset =
-        state.datasets[list];
-
-
-    if(dataset.loading){
-
-        return;
-
-    }
-
-
-    dataset.loading = true;
-
-
-    const status =
-        document.getElementById(
-            "databaseStatus"
-        );
-
-
-    const tbody =
-        document.getElementById(
-            "tbody"
-        );
-
-
-    if(list === "thiqa"){
-
-        status.style.display =
-            "block";
-
-        status.textContent =
-            "Loading Thiqa Coverage List...";
-
-        tbody.innerHTML = `
-
-            <tr>
-
-                <td
-                    colspan="14"
-                    class="loading"
-                >
-                    Loading Thiqa Coverage List...
-                </td>
-
-            </tr>
-
-        `;
-
-    }
-
-    else{
-
-        status.style.display =
-            "block";
-
-        status.textContent =
-            "Loading HAAD List...";
-
-        tbody.innerHTML = `
-
-            <tr>
-
-                <td
-                    colspan="14"
-                    class="loading"
-                >
-                    Loading HAAD List...
-                </td>
-
-            </tr>
-
-        `;
-
-    }
-
-
-    try{
-
-        let filename;
-
-
-        if(list === "thiqa"){
-
-            filename =
-                "data.json";
-
-        }
-
-        else{
-
-            filename =
-                "HAAD LIST.json";
-
-        }
-
-
-        const response =
-            await fetch(
-                filename,
-                {
-                    cache:"no-store"
-                }
-            );
-
-
-        if(!response.ok){
-
+        if (!thiqaData.length) {
             throw new Error(
-                "Could not load " +
-                filename
+                "No records found in the Thiqa JSON."
             );
-
         }
 
-
-        const rawData =
-            await response.json();
-
-
-        /*
-           Convert database
-        */
-
-        if(list === "thiqa"){
-
-            dataset.data =
-                rawData.map(
-                    row =>
-
-                        keys.map(
-                            key =>
-                                row[key]
-                        )
-
-                );
-
-        }
-
-        else{
-
-            /*
-               HAAD database mapping
-
-               HAAD does not have:
-               - Proactive ID
-               - Daman Coverage
-
-               These remain blank.
-
-               Markup uses:
-               Package Markup.
-            */
-
-            dataset.data =
-                rawData.map(
-                    row => [
-
-                        "",
-
-                        row[
-                            haadKeys.code
-                        ],
-
-                        row[
-                            haadKeys.brand
-                        ],
-
-                        row[
-                            haadKeys.genericCode
-                        ],
-
-                        row[
-                            haadKeys.price
-                        ],
-
-                        row[
-                            haadKeys.ingredient
-                        ],
-
-                        row[
-                            haadKeys.strength
-                        ],
-
-                        row[
-                            haadKeys.dosage
-                        ],
-
-                        row[
-                            haadKeys.packageSize
-                        ],
-
-                        row[
-                            haadKeys.upp
-                        ],
-
-                        convertCoverage(
-                            row[
-                                haadKeys.thiqa
-                            ]
-                        ),
-
-                        convertCoverage(
-                            row[
-                                haadKeys.basic
-                            ]
-                        ),
-
-                        row[
-                            haadKeys.markup
-                        ],
-
-                        ""
-
-                    ]
-
-                );
-
-        }
-
-
-        /*
-           Normalize once.
-        */
-
-        dataset.normalized =
-            dataset.data.map(
-                row =>
-                    row.map(norm)
-            );
-
-
-        dataset.loaded =
-            true;
-
-        dataset.loading =
-            false;
-
-
-        status.style.display =
-            "none";
-
-
-        render();
-
+        renderThiqa(thiqaData);
 
     }
+    catch (error) {
 
-    catch(error){
+        document.getElementById("thiqaError").innerHTML =
+            `<div class="error">
+                Unable to load Thiqa Coverage List.<br>
+                <strong>${escapeHtml(error.message)}</strong>
+            </div>`;
+
+        count.textContent = "0 records";
 
         console.error(error);
 
-
-        dataset.loading =
-            false;
-
-
-        status.style.display =
-            "none";
-
-
-        tbody.innerHTML = `
-
-            <tr>
-
-                <td
-                    colspan="14"
-                    class="empty"
-                >
-
-                    Could not load the database.
-
-                    <br><br>
-
-                    Make sure
-
-                    <b>
-                        ${
-                            list === "thiqa"
-                                ? "data.json"
-                                : "HAAD LIST.json"
-                        }
-                    </b>
-
-                    is in the same GitHub folder
-                    as <b>index.html</b>.
-
-                </td>
-
-            </tr>
-
-        `;
-
-
-        document
-            .getElementById("stats")
-            .textContent =
-                "Data loading error";
-
     }
 
 }
 
 
-/* =========================================================
-   CONVERT COVERAGE
-========================================================= */
+/* ============================================================
+   LOAD HAAD
+============================================================ */
 
-function convertCoverage(value){
+async function loadHaad() {
 
-    const text =
-        String(
-            value ?? ""
-        ).trim();
+    const count = document.getElementById("haadCount");
 
+    try {
 
-    if(
-        text.toLowerCase() ===
-        "yes"
-    ){
+        count.textContent = "Loading HAAD data...";
 
-        return "Yes";
+        const json = await loadJsonFile(HAAD_FILE);
 
-    }
+        haadData = normalizeData(json);
 
-
-    if(
-        text.toLowerCase() ===
-        "no"
-    ){
-
-        return "No";
-
-    }
-
-
-    return text;
-
-}
-
-
-/* =========================================================
-   FILTER ELEMENTS
-========================================================= */
-
-const filterPopup =
-    document.getElementById(
-        "filterPopup"
-    );
-
-
-const filterSearch =
-    document.getElementById(
-        "filterSearch"
-    );
-
-
-const filterValues =
-    document.getElementById(
-        "filterValues"
-    );
-
-
-const selectAll =
-    document.getElementById(
-        "selectAll"
-    );
-
-
-/* =========================================================
-   FILTER BUTTON EVENTS
-========================================================= */
-
-document
-    .querySelectorAll(
-        ".filter-button"
-    )
-    .forEach(
-        button => {
-
-            button.addEventListener(
-                "click",
-                function(event){
-
-                    event.stopPropagation();
-
-
-                    openFilter(
-                        Number(
-                            this.dataset.col
-                        ),
-                        this
-                    );
-
-                }
+        if (!haadData.length) {
+            throw new Error(
+                "No records found in the HAAD JSON."
             );
-
         }
+
+        renderHaad(haadData);
+
+    }
+    catch (error) {
+
+        document.getElementById("haadError").innerHTML =
+            `<div class="error">
+                Unable to load HAAD List.<br>
+                <strong>${escapeHtml(error.message)}</strong>
+            </div>`;
+
+        count.textContent = "0 records";
+
+        console.error(error);
+
+    }
+
+}
+
+
+/* ============================================================
+   GET VALUE
+============================================================ */
+
+function getValue(row, column) {
+
+    if (!row || typeof row !== "object") {
+        return "";
+    }
+
+    if (
+        Object.prototype.hasOwnProperty.call(row, column)
+    ) {
+        return row[column];
+    }
+
+    /*
+       Try case-insensitive matching.
+    */
+
+    const target = column
+        .trim()
+        .toLowerCase();
+
+    const key = Object.keys(row).find(
+        k => k.trim().toLowerCase() === target
     );
 
+    if (key !== undefined) {
+        return row[key];
+    }
 
-/* =========================================================
-   OPEN FILTER
-========================================================= */
-
-function openFilter(
-    col,
-    button
-){
-
-    const dataset =
-        currentDataset();
+    return "";
+}
 
 
-    state.filterColumn =
-        col;
+/* ============================================================
+   GET THIQA COLUMNS
+============================================================ */
+
+function getThiqaColumns(data) {
+
+    if (!data.length) {
+        return [];
+    }
+
+    /*
+       Use the columns exactly as they exist
+       in the Thiqa JSON.
+    */
+
+    const columns = [];
+
+    data.forEach(row => {
+
+        Object.keys(row).forEach(key => {
+
+            if (!columns.includes(key)) {
+                columns.push(key);
+            }
+
+        });
+
+    });
+
+    return columns;
+}
 
 
-    state.filterButton =
-        button;
+/* ============================================================
+   RENDER THIQA
+============================================================ */
+
+function renderThiqa(data) {
+
+    const head = document.getElementById("thiqaHead");
+    const body = document.getElementById("thiqaBody");
+    const count = document.getElementById("thiqaCount");
+
+    head.innerHTML = "";
+    body.innerHTML = "";
+
+    const columns = getThiqaColumns(data);
+
+    /*
+       Header
+    */
+
+    const headerRow = document.createElement("tr");
+
+    columns.forEach(column => {
+
+        const th = document.createElement("th");
+
+        th.textContent = column;
+
+        headerRow.appendChild(th);
+
+    });
+
+    head.appendChild(headerRow);
 
 
-    state.filterTemp =
-        new Set(
-            dataset.filters[col]
+    /*
+       Rows
+    */
+
+    const fragment = document.createDocumentFragment();
+
+    data.forEach(row => {
+
+        const tr = document.createElement("tr");
+
+        columns.forEach(column => {
+
+            const td = document.createElement("td");
+
+            let value = getValue(row, column);
+
+            if (
+                value === null ||
+                value === undefined
+            ) {
+                value = "";
+            }
+
+            if (typeof value === "object") {
+                value = JSON.stringify(value);
+            }
+
+            td.textContent = value;
+
+            tr.appendChild(td);
+
+        });
+
+        fragment.appendChild(tr);
+
+    });
+
+    body.appendChild(fragment);
+
+    count.textContent =
+        data.length.toLocaleString() +
+        " records";
+
+}
+
+
+/* ============================================================
+   RENDER HAAD
+============================================================ */
+
+function renderHaad(data) {
+
+    const head = document.getElementById("haadHead");
+    const body = document.getElementById("haadBody");
+    const count = document.getElementById("haadCount");
+
+    head.innerHTML = "";
+    body.innerHTML = "";
+
+
+    /*
+       HAAD HEADER
+    */
+
+    const headerRow = document.createElement("tr");
+
+    HAAD_COLUMNS.forEach(column => {
+
+        const th = document.createElement("th");
+
+        th.textContent = column;
+
+        headerRow.appendChild(th);
+
+    });
+
+    head.appendChild(headerRow);
+
+
+    /*
+       HAAD DATA
+    */
+
+    const fragment = document.createDocumentFragment();
+
+    data.forEach(row => {
+
+        const tr = document.createElement("tr");
+
+        HAAD_COLUMNS.forEach(column => {
+
+            const td = document.createElement("td");
+
+            let value = getValue(row, column);
+
+            if (
+                value === null ||
+                value === undefined
+            ) {
+                value = "";
+            }
+
+            if (typeof value === "object") {
+                value = JSON.stringify(value);
+            }
+
+            td.textContent = value;
+
+            tr.appendChild(td);
+
+        });
+
+        fragment.appendChild(tr);
+
+    });
+
+    body.appendChild(fragment);
+
+    count.textContent =
+        data.length.toLocaleString() +
+        " records";
+
+}
+
+
+/* ============================================================
+   SEARCH THIQA
+============================================================ */
+
+function searchThiqa() {
+
+    const searchInput =
+        document.getElementById("thiqaSearch");
+
+    const search = searchInput.value
+        .trim()
+        .toLowerCase();
+
+    if (!search) {
+
+        renderThiqa(thiqaData);
+
+        return;
+    }
+
+
+    /*
+       Supports:
+
+       normal text:
+       amoxicillin
+
+       multiple terms:
+       amoxicillin 500
+
+       % syntax:
+       500%10
+
+       Meaning:
+       find rows containing BOTH 500 AND 10
+    */
+
+    const terms = search
+        .split("%")
+        .map(x => x.trim())
+        .filter(Boolean);
+
+
+    const filtered = thiqaData.filter(row => {
+
+        const rowText = Object.values(row)
+            .map(value => {
+
+                if (
+                    value === null ||
+                    value === undefined
+                ) {
+                    return "";
+                }
+
+                if (typeof value === "object") {
+                    return JSON.stringify(value);
+                }
+
+                return String(value);
+
+            })
+            .join(" ")
+            .toLowerCase();
+
+
+        return terms.every(term =>
+            rowText.includes(term)
         );
 
-
-    filterSearch.value =
-        "";
+    });
 
 
-    buildFilterValues();
+    renderThiqa(filtered);
+
+}
 
 
-    const rect =
-        button.getBoundingClientRect();
+/* ============================================================
+   SEARCH HAAD
+============================================================ */
 
+function searchHaad() {
 
-    const popupWidth =
-        280;
+    const searchInput =
+        document.getElementById("haadSearch");
 
+    const search = searchInput.value
+        .trim()
+        .toLowerCase();
 
-    let left =
-        rect.left;
+    if (!search) {
 
+        renderHaad(haadData);
 
-    let top =
-        rect.bottom + 4;
-
-
-    if(
-        left + popupWidth >
-        window.innerWidth - 10
-    ){
-
-        left =
-            window.innerWidth -
-            popupWidth -
-            10;
-
+        return;
     }
 
 
-    if(left < 10){
+    /*
+       % means AND.
 
-        left = 10;
+       Example:
 
-    }
+       500%10
 
+       means:
 
-    if(
-        top + 430 >
-        window.innerHeight
-    ){
+       row must contain 500
+       AND
+       row must contain 10
+    */
 
-        top =
-            rect.top -
-            434;
-
-    }
-
-
-    filterPopup.style.left =
-        left + "px";
+    const terms = search
+        .split("%")
+        .map(x => x.trim())
+        .filter(Boolean);
 
 
-    filterPopup.style.top =
-        top + "px";
+    const filtered = haadData.filter(row => {
+
+        const rowText = HAAD_COLUMNS
+            .map(column => {
+
+                let value = getValue(
+                    row,
+                    column
+                );
+
+                if (
+                    value === null ||
+                    value === undefined
+                ) {
+                    return "";
+                }
+
+                if (typeof value === "object") {
+                    return JSON.stringify(value);
+                }
+
+                return String(value);
+
+            })
+            .join(" ")
+            .toLowerCase();
 
 
-    filterPopup.classList.add(
-        "show"
-    );
+        return terms.every(term =>
+            rowText.includes(term)
+        );
 
+    });
+
+
+    renderHaad(filtered);
+
+}
+
+
+/* ============================================================
+   CLEAR SEARCH
+============================================================ */
+
+function clearThiqaSearch() {
+
+    document.getElementById(
+        "thiqaSearch"
+    ).value = "";
+
+    renderThiqa(thiqaData);
+
+}
+
+
+function clearHaadSearch() {
+
+    document.getElementById(
+        "haadSearch"
+    ).value = "";
+
+    renderHaad(haadData);
+
+}
+
+
+/* ============================================================
+   TAB SWITCH
+============================================================ */
+
+function switchTab(tabName) {
+
+    /*
+       Hide all tabs
+    */
 
     document
-        .querySelectorAll(
-            ".filter-button"
-        )
-        .forEach(
-            b =>
-                b.classList.remove(
-                    "active"
-                )
-        );
+        .querySelectorAll(".tab-content")
+        .forEach(tab => {
 
+            tab.classList.remove("active");
 
-    if(
-        dataset.filters[col]
-            .size > 0
-    ){
+        });
 
-        button.classList.add(
-            "active"
-        );
 
-    }
+    /*
+       Remove active button
+    */
 
+    document
+        .querySelectorAll(".tab-button")
+        .forEach(button => {
 
-    setTimeout(
-        () =>
-            filterSearch.focus(),
-        20
-    );
+            button.classList.remove("active");
 
-}
+        });
 
 
-/* =========================================================
-   BUILD FILTER VALUES
-========================================================= */
+    /*
+       Show selected tab
+    */
 
-function buildFilterValues(){
+    document
+        .getElementById(tabName)
+        .classList.add("active");
 
-    const dataset =
-        currentDataset();
 
+    /*
+       Activate correct button
+    */
 
-    const col =
-        state.filterColumn;
-
-
-    if(col === null){
-
-        return;
-
-    }
-
-
-    const values =
-        new Map();
-
-
-    for(
-        let i = 0;
-        i < dataset.normalized.length;
-        i++
-    ){
-
-        const original =
-            String(
-                dataset.data[i][col] ??
-                ""
-            );
-
-
-        const normalized =
-            dataset.normalized[i][col];
-
-
-        if(
-            !values.has(
-                normalized
-            )
-        ){
-
-            values.set(
-                normalized,
-                original
-            );
-
-        }
-
-    }
-
-
-    const sorted =
-        [...values.entries()]
-        .sort(
-            (a,b) =>
-                a[1].localeCompare(
-                    b[1],
-                    undefined,
-                    {
-                        numeric:true,
-                        sensitivity:"base"
-                    }
-                )
-        );
-
-
-    filterValues.innerHTML =
-        "";
-
-
-    sorted.forEach(
-        ([normalized,display]) => {
-
-            const div =
-                document.createElement(
-                    "div"
-                );
-
-
-            div.className =
-                "filter-value";
-
-
-            const label =
-                document.createElement(
-                    "label"
-                );
-
-
-            const checkbox =
-                document.createElement(
-                    "input"
-                );
-
-
-            checkbox.type =
-                "checkbox";
-
-
-            checkbox.dataset.value =
-                normalized;
-
-
-            checkbox.checked =
-                state.filterTemp.has(
-                    normalized
-                );
-
-
-            const span =
-                document.createElement(
-                    "span"
-                );
-
-
-            span.className =
-                "value-text";
-
-
-            span.textContent =
-                display === ""
-                    ? "(Blank)"
-                    : display;
-
-
-            label.appendChild(
-                checkbox
-            );
-
-
-            label.appendChild(
-                span
-            );
-
-
-            div.appendChild(
-                label
-            );
-
-
-            filterValues.appendChild(
-                div
-            );
-
-        }
-    );
-
-
-    updateSelectAll();
-
-}
-
-
-/* =========================================================
-   SEARCH INSIDE FILTER
-========================================================= */
-
-filterSearch.addEventListener(
-    "input",
-    function(){
-
-        const search =
-            norm(
-                this.value
-            );
-
+    if (tabName === "thiqa") {
 
         document
-            .querySelectorAll(
-                "#filterValues .filter-value"
-            )
-            .forEach(
-                item => {
-
-                    const text =
-                        norm(
-                            item
-                                .querySelector(
-                                    ".value-text"
-                                )
-                                .textContent
-                        );
-
-
-                    item.classList.toggle(
-                        "hidden",
-                        search &&
-                        !text.includes(
-                            search
-                        )
-                    );
-
-                }
-            );
-
-
-        updateSelectAll();
+            .querySelectorAll(".tab-button")[0]
+            .classList.add("active");
 
     }
-);
 
-
-/* =========================================================
-   SELECT ALL
-========================================================= */
-
-selectAll.addEventListener(
-    "change",
-    function(){
-
-        const checked =
-            this.checked;
-
+    if (tabName === "haad") {
 
         document
-            .querySelectorAll(
-                "#filterValues .filter-value:not(.hidden) input"
-            )
-            .forEach(
-                cb => {
-
-                    cb.checked =
-                        checked;
-
-
-                    if(checked){
-
-                        state.filterTemp.add(
-                            cb.dataset.value
-                        );
-
-                    }
-
-                    else{
-
-                        state.filterTemp.delete(
-                            cb.dataset.value
-                        );
-
-                    }
-
-                }
-            );
-
-
-        updateSelectAll();
-
-    }
-);
-
-
-/* =========================================================
-   INDIVIDUAL CHECKBOX
-========================================================= */
-
-filterValues.addEventListener(
-    "change",
-    function(event){
-
-        if(
-            event.target.tagName !==
-            "INPUT"
-        ){
-
-            return;
-
-        }
-
-
-        const value =
-            event.target.dataset.value;
-
-
-        if(
-            event.target.checked
-        ){
-
-            state.filterTemp.add(
-                value
-            );
-
-        }
-
-        else{
-
-            state.filterTemp.delete(
-                value
-            );
-
-        }
-
-
-        updateSelectAll();
-
-    }
-);
-
-
-/* =========================================================
-   UPDATE SELECT ALL
-========================================================= */
-
-function updateSelectAll(){
-
-    const visible =
-        [
-            ...document.querySelectorAll(
-                "#filterValues .filter-value:not(.hidden) input"
-            )
-        ];
-
-
-    if(!visible.length){
-
-        selectAll.checked =
-            false;
-
-        selectAll.indeterminate =
-            false;
-
-        return;
-
-    }
-
-
-    const checked =
-        visible.filter(
-            cb =>
-                cb.checked
-        ).length;
-
-
-    selectAll.checked =
-        checked ===
-        visible.length;
-
-
-    selectAll.indeterminate =
-        checked > 0 &&
-        checked < visible.length;
-
-}
-
-
-/* =========================================================
-   APPLY FILTER
-========================================================= */
-
-document
-    .getElementById(
-        "applyFilter"
-    )
-    .addEventListener(
-        "click",
-        function(){
-
-            const col =
-                state.filterColumn;
-
-
-            if(col === null){
-
-                return;
-
-            }
-
-
-            const dataset =
-                currentDataset();
-
-
-            dataset.filters[col] =
-                new Set(
-                    state.filterTemp
-                );
-
-
-            updateFilterButton(
-                col
-            );
-
-
-            closeFilter();
-
-
-            scheduleRender();
-
-        }
-    );
-
-
-/* =========================================================
-   CLEAR CURRENT COLUMN
-========================================================= */
-
-document
-    .getElementById(
-        "clearColumn"
-    )
-    .addEventListener(
-        "click",
-        function(){
-
-            const col =
-                state.filterColumn;
-
-
-            if(col === null){
-
-                return;
-
-            }
-
-
-            const dataset =
-                currentDataset();
-
-
-            dataset.filters[col]
-                .clear();
-
-
-            state.filterTemp.clear();
-
-
-            updateFilterButton(
-                col
-            );
-
-
-            closeFilter();
-
-
-            scheduleRender();
-
-        }
-    );
-
-
-/* =========================================================
-   UPDATE FILTER BUTTON
-========================================================= */
-
-function updateFilterButton(
-    col
-){
-
-    const dataset =
-        currentDataset();
-
-
-    const button =
-        document.querySelector(
-            `.filter-button[data-col="${col}"]`
-        );
-
-
-    if(
-        dataset.filters[col]
-            .size > 0
-    ){
-
-        button.classList.add(
-            "active"
-        );
-
-    }
-
-    else{
-
-        button.classList.remove(
-            "active"
-        );
+            .querySelectorAll(".tab-button")[1]
+            .classList.add("active");
 
     }
 
 }
 
 
-/* =========================================================
-   CLOSE FILTER
-========================================================= */
+/* ============================================================
+   ESCAPE HTML
+============================================================ */
 
-function closeFilter(){
+function escapeHtml(value) {
 
-    filterPopup.classList.remove(
-        "show"
-    );
-
-
-    state.filterColumn =
-        null;
-
-
-    state.filterButton =
-        null;
+    return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
 
 }
 
 
-/* =========================================================
-   CLICK OUTSIDE
-========================================================= */
+/* ============================================================
+   START
+============================================================ */
 
-document.addEventListener(
-    "click",
-    function(event){
-
-        if(
-
-            !filterPopup.contains(
-                event.target
-            )
-
-            &&
-
-            !event.target.closest(
-                ".filter-button"
-            )
-
-        ){
-
-            closeFilter();
-
-        }
-
-    }
-);
-
-
-/* =========================================================
-   ESCAPE
-========================================================= */
-
-document.addEventListener(
-    "keydown",
-    function(event){
-
-        if(
-            event.key ===
-            "Escape"
-        ){
-
-            closeFilter();
-
-        }
-
-    }
-);
-
-
-/* =========================================================
-   CLEAR EVERYTHING
-========================================================= */
-
-document
-    .getElementById(
-        "clearBtn"
-    )
-    .addEventListener(
-        "click",
-        function(){
-
-            const dataset =
-                currentDataset();
-
-
-            /*
-               Clear top searches
-            */
-
-            dataset.search =
-                ["","","",""];
-
-
-            document
-                .querySelectorAll(
-                    ".search-box input"
-                )
-                .forEach(
-                    input =>
-                        input.value = ""
-                );
-
-
-            /*
-               Clear filters
-            */
-
-            dataset.filters =
-                Array(14)
-                    .fill(null)
-                    .map(
-                        () =>
-                            new Set()
-                    );
-
-
-            /*
-               Reset buttons
-            */
-
-            updateAllFilterButtons();
-
-
-            closeFilter();
-
-
-            scheduleRender();
-
-        }
-    );
-
-
-/* =========================================================
-   INITIAL LOAD
-   DEFAULT = THIQA
-========================================================= */
-
-loadDatabase("thiqa");
+loadData();
 
 </script>
 
-
 </body>
-
 </html>
-```
