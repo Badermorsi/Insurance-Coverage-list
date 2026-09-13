@@ -1,12 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
 
 <title>Insurance Coverage List</title>
 
 <style>
+
+/* =====================================================
+   BASIC
+===================================================== */
 
 * {
     box-sizing: border-box;
@@ -18,208 +26,138 @@ body {
     padding: 0;
     width: 100%;
     height: 100%;
-
     font-family: Arial, Helvetica, sans-serif;
-
-    background: #f1f5f9;
-    color: #1e293b;
+    background: #f5f6f8;
+    color: #222;
 }
 
-.page {
-    width: 100%;
-    height: 100vh;
-
-    display: flex;
-    flex-direction: column;
-
+body {
     overflow: hidden;
 }
 
 
-/* =========================================================
-   TITLE
-========================================================= */
+/* =====================================================
+   MAIN CONTAINER
+===================================================== */
 
-.title {
-    height: 62px;
-    min-height: 62px;
-
-    background: white;
-
-    border-bottom: 1px solid #dbe3ec;
-
+.container {
+    width: 100%;
+    height: 100vh;
     display: flex;
-    align-items: center;
-
-    padding: 0 20px;
-
-    color: #0757a0;
-
-    font-size: 23px;
-    font-weight: 700;
+    flex-direction: column;
 }
 
 
-/* =========================================================
+/* =====================================================
+   TITLE
+===================================================== */
+
+.title {
+    text-align: center;
+    font-size: 25px;
+    font-weight: bold;
+    padding: 12px 10px 8px;
+    background: white;
+    border-bottom: 1px solid #ddd;
+}
+
+
+/* =====================================================
    TABS
-========================================================= */
+===================================================== */
 
 .tabs {
-    height: 50px;
-    min-height: 50px;
-
-    background: white;
-
-    border-bottom: 1px solid #cbd5e1;
-
     display: flex;
+    gap: 5px;
+    padding: 8px 10px 0;
+    background: white;
 }
 
 .tab {
-    min-width: 190px;
-
-    padding: 0 24px;
-
-    border: none;
-    border-right: 1px solid #dbe3ec;
-
-    background: #f8fafc;
-
-    color: #475569;
-
-    font-size: 14px;
-    font-weight: 700;
-
+    border: 1px solid #ccc;
+    border-bottom: none;
+    background: #e9ecef;
+    padding: 10px 25px;
     cursor: pointer;
-}
-
-.tab:hover {
-    background: #eef5ff;
+    font-size: 15px;
+    font-weight: bold;
+    border-radius: 7px 7px 0 0;
 }
 
 .tab.active {
-    background: #0757a0;
-    color: white;
+    background: #ffffff;
+    color: #007bff;
+    border-top: 3px solid #007bff;
 }
 
 
-/* =========================================================
+/* =====================================================
    SEARCH AREA
-========================================================= */
+===================================================== */
 
-.search-area {
-    min-height: 116px;
-
+.search-panel {
     background: white;
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+}
 
-    border-bottom: 1px solid #dbe3ec;
-
-    padding: 10px 14px 9px;
-
+.search-grid {
     display: grid;
-
     grid-template-columns:
         minmax(180px, 1fr)
         minmax(180px, 1fr)
         minmax(180px, 1fr)
-        minmax(180px, 1fr);
+        minmax(180px, 1fr)
+        auto;
 
-    grid-template-rows: 1fr 34px;
-
-    gap: 8px 10px;
+    gap: 8px;
+    align-items: center;
 }
 
 .search-box {
     position: relative;
 }
 
-.search-box label {
-    display: block;
-
-    margin-bottom: 4px;
-
-    color: #475569;
-
-    font-size: 11px;
-    font-weight: 700;
-}
-
 .search-box input {
     width: 100%;
-    height: 36px;
-
+    height: 40px;
     padding: 0 12px;
-
-    border: 1px solid #cbd5e1;
-
-    border-radius: 5px;
-
+    border: 1px solid #bbb;
+    border-radius: 6px;
+    font-size: 14px;
     outline: none;
-
-    font-size: 13px;
-
-    background: white;
 }
 
 .search-box input:focus {
-    border-color: #1976d2;
-
-    box-shadow:
-        0 0 0 2px rgba(25,118,210,0.10);
+    border-color: #007bff;
+    box-shadow: 0 0 0 2px rgba(0,123,255,.12);
 }
 
-.search-box input::placeholder {
-    color: #94a3b8;
-}
-
-
-/* =========================================================
-   CLEAR BUTTON
-========================================================= */
-
-.clear-search-container {
-    grid-column: 1 / -1;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.clear-search-button {
-    height: 32px;
-
-    padding: 0 25px;
-
-    border: 1px solid #cbd5e1;
-
-    border-radius: 5px;
-
-    background: #f8fafc;
-
-    color: #334155;
-
-    font-size: 12px;
-    font-weight: 700;
-
+.clear-btn {
+    height: 40px;
+    padding: 0 16px;
+    border: none;
+    border-radius: 6px;
+    background: #dc3545;
+    color: white;
+    font-weight: bold;
     cursor: pointer;
+    white-space: nowrap;
 }
 
-.clear-search-button:hover {
-    background: #e2e8f0;
+.clear-btn:hover {
+    background: #c82333;
 }
 
 
-/* =========================================================
-   SHEETS
-========================================================= */
+/* =====================================================
+   SHEET
+===================================================== */
 
 .sheet {
     display: none;
-
     flex: 1;
-
     min-height: 0;
-
     flex-direction: column;
 }
 
@@ -228,73 +166,38 @@ body {
 }
 
 
-/* =========================================================
-   INFO BAR
-========================================================= */
+/* =====================================================
+   COUNT
+===================================================== */
 
-.info-bar {
-    height: 34px;
-    min-height: 34px;
-
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    padding: 0 12px;
-
-    background: #f8fafc;
-
-    border-bottom: 1px solid #dbe3ec;
-
-    font-size: 11px;
-
-    color: #64748b;
-}
-
-.loading {
-    color: #0757a0;
-    font-weight: 700;
-}
-
-.error {
-    color: #dc2626;
-    font-weight: 700;
+.count-bar {
+    background: #f8f9fa;
+    padding: 6px 10px;
+    border-bottom: 1px solid #ddd;
+    font-size: 13px;
+    color: #555;
 }
 
 
-/* =========================================================
-   EXCEL SCROLL AREA
-========================================================= */
+/* =====================================================
+   EXCEL AREA
+===================================================== */
 
 .excel-area {
-    flex: 1;
-
-    min-height: 0;
-
     position: relative;
-
+    flex: 1;
+    min-height: 0;
     overflow: auto;
-
     background: white;
 }
 
-.excel-content {
-    position: relative;
 
-    min-width: max-content;
-}
+/* =====================================================
+   GRID TABLE
+===================================================== */
 
-
-/* =========================================================
-   HEADER
-========================================================= */
-
-.excel-header {
-    position: sticky;
-
-    top: 0;
-
-    z-index: 50;
+.excel-header,
+.data-row {
 
     display: grid;
 
@@ -302,119 +205,145 @@ body {
 
     min-width: 100%;
 
-    height: 48px;
-
-    background: #0757a0;
-
-    color: white;
-
-    border-bottom: 2px solid #063f75;
+    position: relative;
 }
 
+
+/* =====================================================
+   HEADER
+===================================================== */
+
+.excel-header {
+
+    position: sticky;
+    top: 0;
+
+    z-index: 20;
+
+    background: #f1f3f5;
+
+    border-bottom: 2px solid #999;
+}
+
+
+/* =====================================================
+   HEADER CELL
+===================================================== */
+
 .header-cell {
-    min-width: 0;
-
-    height: 48px;
-
-    padding: 5px 6px;
-
-    display: flex;
-    align-items: center;
-
-    border-right: 1px solid rgba(255,255,255,0.25);
 
     position: relative;
+
+    height: 44px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    padding: 4px 6px;
+
+    border-right: 1px solid #ccc;
+
+    border-bottom: 1px solid #ccc;
+
+    background: #f1f3f5;
+
+    font-size: 12px;
+
+    font-weight: bold;
+
+    white-space: normal;
+
+    overflow: hidden;
+
+    text-align: left;
 }
 
 .header-title {
     flex: 1;
-
-    min-width: 0;
-
     overflow: hidden;
-
-    white-space: nowrap;
-
-    text-overflow: ellipsis;
-
-    font-size: 11px;
-
-    font-weight: 700;
 }
 
 
-/* =========================================================
+/* =====================================================
    FILTER BUTTON
-========================================================= */
+===================================================== */
 
-.filter-button {
-    width: 24px;
-    height: 28px;
+.filter-btn {
 
     flex-shrink: 0;
 
-    margin-left: 3px;
+    width: 25px;
 
-    border: none;
+    height: 25px;
 
-    border-radius: 3px;
+    margin-left: 4px;
 
-    background: transparent;
+    border: 1px solid #aaa;
 
-    color: white;
+    border-radius: 4px;
+
+    background: white;
 
     cursor: pointer;
 
     font-size: 12px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
 }
 
-.filter-button:hover {
-    background: rgba(255,255,255,0.18);
+.filter-btn:hover {
+    background: #e2e6ea;
 }
 
-.filter-button.filtered {
-    background: white;
-
-    color: #0757a0;
+.filter-btn.active {
+    background: #007bff;
+    color: white;
+    border-color: #007bff;
 }
 
 
-/* =========================================================
-   VIRTUAL TABLE
-========================================================= */
-
-.virtual-content {
-    position: relative;
-
-    width: max-content;
-
-    min-width: 100%;
-}
+/* =====================================================
+   DATA ROW
+===================================================== */
 
 .data-row {
+
     position: absolute;
 
     left: 0;
 
-    display: grid;
-
-    width: max-content;
-
-    min-width: 100%;
-
     height: 32px;
+
+    min-height: 32px;
+
+    border-bottom: 1px solid #e5e5e5;
 
     background: white;
-
-    border-bottom: 1px solid #e2e8f0;
 }
 
+.data-row:hover {
+    background: #f5f9ff;
+}
+
+
+/* =====================================================
+   DATA CELL
+===================================================== */
+
 .data-cell {
+
     height: 32px;
 
-    min-width: 0;
+    padding: 6px 7px;
 
-    padding: 7px 6px;
+    border-right: 1px solid #eee;
 
     overflow: hidden;
 
@@ -422,153 +351,121 @@ body {
 
     text-overflow: ellipsis;
 
-    border-right: 1px solid #e2e8f0;
+    font-size: 12px;
 
-    font-size: 11px;
+    display: flex;
 
-    background: white;
-}
-
-.data-row:hover .data-cell {
-    background: #f0f7ff;
+    align-items: center;
 }
 
 
-/* =========================================================
+/* =====================================================
    YES / NO
-========================================================= */
+===================================================== */
 
-.yes-cell {
-    background: #dcfce7 !important;
-
-    color: #15803d !important;
-
-    font-weight: 700;
+.yes-value {
+    color: #008000;
+    font-weight: bold;
 }
 
-.no-cell {
-    background: #fee2e2 !important;
-
-    color: #dc2626 !important;
-
-    font-weight: 700;
+.no-value {
+    color: #d00000;
+    font-weight: bold;
 }
 
 
-/* =========================================================
-   NO DATA
-========================================================= */
+/* =====================================================
+   VIRTUAL CONTENT
+===================================================== */
 
-.no-data {
-    width: 100%;
-
-    padding: 50px;
-
-    text-align: center;
-
-    color: #64748b;
-
-    font-size: 13px;
+.virtual-content {
+    position: relative;
+    width: max-content;
+    min-width: 100%;
 }
 
 
-/* =========================================================
+/* =====================================================
    FILTER POPUP
-========================================================= */
+===================================================== */
 
 .filter-popup {
+
     position: fixed;
 
     z-index: 9999;
 
     width: 300px;
 
-    max-width: calc(100vw - 20px);
+    max-height: 450px;
 
     background: white;
 
-    border: 1px solid #cbd5e1;
+    border: 1px solid #aaa;
 
-    border-radius: 6px;
+    border-radius: 7px;
 
     box-shadow:
-        0 8px 25px rgba(15,23,42,0.18);
-
-    padding: 10px;
+        0 5px 20px rgba(0,0,0,.25);
 
     display: none;
+
+    overflow: hidden;
 }
 
-.filter-popup.show {
-    display: block;
+.filter-popup-header {
+    padding: 9px;
+    background: #f1f3f5;
+    border-bottom: 1px solid #ddd;
+    font-weight: bold;
+    font-size: 13px;
 }
 
 .filter-search {
-    width: 100%;
-
-    height: 34px;
-
-    border: 1px solid #cbd5e1;
-
-    border-radius: 4px;
-
-    padding: 0 9px;
-
-    outline: none;
-
-    font-size: 12px;
+    padding: 8px;
+    border-bottom: 1px solid #ddd;
 }
 
-.filter-search:focus {
-    border-color: #1976d2;
+.filter-search input {
+    width: 100%;
+    height: 34px;
+    padding: 5px 8px;
+    border: 1px solid #bbb;
+    border-radius: 5px;
+    outline: none;
 }
 
 .filter-actions {
     display: flex;
-
-    gap: 6px;
-
-    margin: 8px 0;
+    gap: 5px;
+    padding: 7px 8px;
+    border-bottom: 1px solid #ddd;
 }
 
 .filter-actions button {
     flex: 1;
-
     height: 30px;
-
-    border: 1px solid #cbd5e1;
-
+    border: 1px solid #aaa;
+    background: #f8f9fa;
     border-radius: 4px;
-
-    background: #f8fafc;
-
-    color: #334155;
-
     cursor: pointer;
-
-    font-size: 11px;
-
-    font-weight: 600;
+    font-size: 12px;
 }
 
 .filter-actions button:hover {
-    background: #e2e8f0;
+    background: #e9ecef;
 }
 
 .filter-values {
-    max-height: 270px;
+
+    max-height: 280px;
 
     overflow-y: auto;
 
-    border-top: 1px solid #e2e8f0;
-
-    border-bottom: 1px solid #e2e8f0;
-
-    padding: 5px 0;
+    padding: 5px 8px;
 }
 
-.filter-option {
-    min-height: 28px;
+.filter-value {
 
     display: flex;
 
@@ -576,140 +473,122 @@ body {
 
     gap: 7px;
 
-    padding: 3px 5px;
+    padding: 5px 2px;
+
+    font-size: 13px;
 
     cursor: pointer;
-
-    font-size: 11px;
 }
 
-.filter-option:hover {
-    background: #f1f5f9;
+.filter-value:hover {
+    background: #f5f5f5;
 }
 
-.filter-option input {
-    margin: 0;
-}
-
-.filter-value-text {
-    overflow: hidden;
-
-    white-space: nowrap;
-
-    text-overflow: ellipsis;
+.filter-value input {
+    cursor: pointer;
 }
 
 .filter-footer {
+
     display: flex;
 
-    gap: 6px;
+    gap: 7px;
 
-    margin-top: 8px;
+    padding: 8px;
+
+    border-top: 1px solid #ddd;
+
+    background: #f8f9fa;
 }
 
 .filter-footer button {
+
     flex: 1;
 
-    height: 32px;
+    height: 34px;
 
-    border-radius: 4px;
+    border-radius: 5px;
 
     cursor: pointer;
 
-    font-size: 11px;
-
-    font-weight: 700;
+    font-weight: bold;
 }
 
 .apply-filter {
-    border: none;
-
-    background: #0757a0;
-
+    background: #007bff;
     color: white;
+    border: none;
+}
+
+.apply-filter:hover {
+    background: #0069d9;
 }
 
 .cancel-filter {
-    border: 1px solid #cbd5e1;
-
     background: white;
-
-    color: #475569;
+    border: 1px solid #aaa;
 }
 
 
-/* =========================================================
-   MOBILE
-========================================================= */
+/* =====================================================
+   RESPONSIVE
+===================================================== */
 
-@media (max-width: 800px) {
+@media (max-width: 900px) {
 
-    .title {
-        height: 55px;
-        min-height: 55px;
-
-        font-size: 19px;
-    }
-
-    .tabs {
-        height: 45px;
-        min-height: 45px;
-    }
-
-    .tab {
-        min-width: 140px;
-
-        padding: 0 12px;
-
-        font-size: 12px;
-    }
-
-    .search-area {
+    .search-grid {
         grid-template-columns: 1fr 1fr;
     }
 
+    .clear-btn {
+        width: 100%;
+    }
 }
 
-@media (max-width: 500px) {
+@media (max-width: 600px) {
 
-    .search-area {
+    .search-grid {
         grid-template-columns: 1fr;
     }
 
-    .tab {
-        flex: 1;
-
-        min-width: 0;
+    .title {
+        font-size: 20px;
     }
 
+    .tab {
+        padding: 8px 12px;
+        font-size: 13px;
+    }
 }
 
 </style>
+
 </head>
+
 
 <body>
 
-<div class="page">
+<div class="container">
 
 
-    <!-- =====================================================
+    <!-- =================================================
          TITLE
-    ====================================================== -->
+    ================================================== -->
 
     <div class="title">
         Insurance Coverage List
     </div>
 
 
-    <!-- =====================================================
+    <!-- =================================================
          TABS
-    ====================================================== -->
+    ================================================== -->
 
     <div class="tabs">
 
         <button
-            class="tab active"
             id="thiqaTab"
+            class="tab active"
             onclick="switchSheet('thiqa')">
 
             Thiqa Coverage List
@@ -717,8 +596,8 @@ body {
         </button>
 
         <button
-            class="tab"
             id="haadTab"
+            class="tab"
             onclick="switchSheet('haad')">
 
             HAAD List
@@ -728,75 +607,56 @@ body {
     </div>
 
 
-    <!-- =====================================================
-         SEARCH AREA
-    ====================================================== -->
+    <!-- =================================================
+         SEARCH
+    ================================================== -->
 
-    <div class="search-area">
+    <div class="search-panel">
 
+        <div class="search-grid">
 
-        <div class="search-box">
+            <div class="search-box">
 
-            <label>
-                Brand Name
-            </label>
+                <input
+                    id="brandSearch"
+                    type="text"
+                    placeholder="Search by Brand Name">
 
-            <input
-                id="brandSearch"
-                type="text"
-                placeholder="Example: pana%adol">
-
-        </div>
+            </div>
 
 
-        <div class="search-box">
+            <div class="search-box">
 
-            <label>
-                Generic Name
-            </label>
+                <input
+                    id="genericSearch"
+                    type="text"
+                    placeholder="Search by Generic Name">
 
-            <input
-                id="genericSearch"
-                type="text"
-                placeholder="Example: para%acetamol">
-
-        </div>
+            </div>
 
 
-        <div class="search-box">
+            <div class="search-box">
 
-            <label>
-                Strength
-            </label>
+                <input
+                    id="strengthSearch"
+                    type="text"
+                    placeholder="Search by Strength">
 
-            <input
-                id="strengthSearch"
-                type="text"
-                placeholder="Example: 160%5%12.5">
-
-        </div>
+            </div>
 
 
-        <div class="search-box">
+            <div class="search-box">
 
-            <label>
-                Dosage Form
-            </label>
+                <input
+                    id="dosageSearch"
+                    type="text"
+                    placeholder="Search by Dosage Form">
 
-            <input
-                id="dosageSearch"
-                type="text"
-                placeholder="Example: tablet%film">
+            </div>
 
-        </div>
-
-
-        <!-- CLEAR BUTTON -->
-
-        <div class="clear-search-container">
 
             <button
-                class="clear-search-button"
+                class="clear-btn"
                 onclick="clearAllSearchesAndFilters()">
 
                 Clear Search & Filters
@@ -808,50 +668,34 @@ body {
     </div>
 
 
-    <!-- =====================================================
-         THIQA
-    ====================================================== -->
+    <!-- =================================================
+         THIQA SHEET
+    ================================================== -->
 
     <div
-        class="sheet active"
-        id="thiqaSheet">
+        id="thiqaSheet"
+        class="sheet active">
 
+        <div
+            id="thiqaCount"
+            class="count-bar">
 
-        <div class="info-bar">
-
-            <span id="thiqaStatus">
-                Loading Thiqa Coverage List...
-            </span>
-
-            <span id="thiqaCount">
-                0 records
-            </span>
+            Loading...
 
         </div>
 
-
         <div
-            class="excel-area"
-            id="thiqaArea">
-
+            id="thiqaArea"
+            class="excel-area">
 
             <div
-                class="excel-content"
-                id="thiqaContent">
+                id="thiqaHeader"
+                class="excel-header">
+            </div>
 
-
-                <div
-                    class="excel-header"
-                    id="thiqaHeader">
-                </div>
-
-
-                <div
-                    class="virtual-content"
-                    id="thiqaVirtualContent">
-                </div>
-
-
+            <div
+                id="thiqaVirtual"
+                class="virtual-content">
             </div>
 
         </div>
@@ -859,73 +703,70 @@ body {
     </div>
 
 
-    <!-- =====================================================
-         HAAD
-    ====================================================== -->
+    <!-- =================================================
+         HAAD SHEET
+    ================================================== -->
 
     <div
-        class="sheet"
-        id="haadSheet">
+        id="haadSheet"
+        class="sheet">
 
+        <div
+            id="haadCount"
+            class="count-bar">
 
-        <div class="info-bar">
-
-            <span id="haadStatus">
-                Loading HAAD List...
-            </span>
-
-            <span id="haadCount">
-                0 records
-            </span>
+            Loading...
 
         </div>
 
-
         <div
-            class="excel-area"
-            id="haadArea">
-
+            id="haadArea"
+            class="excel-area">
 
             <div
-                class="excel-content"
-                id="haadContent">
+                id="haadHeader"
+                class="excel-header">
+            </div>
 
-
-                <div
-                    class="excel-header"
-                    id="haadHeader">
-                </div>
-
-
-                <div
-                    class="virtual-content"
-                    id="haadVirtualContent">
-                </div>
-
-
+            <div
+                id="haadVirtual"
+                class="virtual-content">
             </div>
 
         </div>
 
     </div>
+
 
 </div>
 
 
-<!-- =========================================================
+<!-- =====================================================
      FILTER POPUP
-========================================================== -->
+====================================================== -->
 
 <div
-    class="filter-popup"
-    id="filterPopup">
+    id="filterPopup"
+    class="filter-popup">
+
+    <div
+        id="filterPopupHeader"
+        class="filter-popup-header">
+
+        Filter
+
+    </div>
 
 
-    <input
-        class="filter-search"
-        id="filterSearch"
-        type="text"
-        placeholder="Search values...">
+    <div class="filter-search">
+
+        <input
+            id="filterValueSearch"
+            type="text"
+            placeholder="Search values..."
+            oninput="renderFilterValues()">
+
+    </div>
 
 
     <div class="filter-actions">
@@ -936,7 +777,6 @@ body {
             Select All
 
         </button>
-
 
         <button
             onclick="clearAllFilterValues()">
@@ -949,8 +789,8 @@ body {
 
 
     <div
-        class="filter-values"
-        id="filterValues">
+        id="filterValues"
+        class="filter-values">
     </div>
 
 
@@ -963,7 +803,6 @@ body {
             Cancel
 
         </button>
-
 
         <button
             class="apply-filter"
@@ -980,374 +819,183 @@ body {
 
 <script>
 
-/* =========================================================
+/* =====================================================
    SETTINGS
-========================================================= */
+===================================================== */
 
 const ROW_HEIGHT = 32;
-
-/*
-   Approximately 50 rows above/below
-   the visible area.
-*/
 
 const BUFFER_ROWS = 50;
 
 
-/* =========================================================
-   DATA VARIABLES
-========================================================= */
+/* =====================================================
+   DATA
+===================================================== */
 
 let thiqaData = [];
+
 let haadData = [];
 
 let thiqaResults = [];
+
 let haadResults = [];
 
+
+/* =====================================================
+   COLUMNS
+===================================================== */
+
 let thiqaColumns = [];
+
 let haadColumns = [];
 
+
+/* =====================================================
+   FILTERS
+===================================================== */
+
 let thiqaFilters = {};
+
 let haadFilters = {};
 
-let currentSheet = "thiqa";
+
+/* =====================================================
+   CURRENT FILTER POPUP
+===================================================== */
 
 let currentFilterType = null;
+
 let currentFilterColumn = null;
 
-let searchTimer = null;
 
+/* =====================================================
+   HAAD FIXED COLUMN ORDER
+===================================================== */
 
-/* =========================================================
-   HAAD COLUMNS
-========================================================= */
-
-haadColumns = [
+const HAAD_COLUMNS = [
 
     "Drug Code",
+
     "Insurance Plan",
+
     "Package Name",
+
     "Generic Code",
+
     "Generic Name",
+
     "Strength",
+
     "Dosage Form",
+
     "Package Size",
+
     "Dispense Mode",
+
     "Package Price to Public",
+
     "Package Price to Pharmacy",
+
     "Unit Price to Public",
+
     "Unit Price to Pharmacy",
+
     "Status",
+
     "Delete Effective Date",
+
     "Last Change Date",
+
     "Agent Name",
+
     "Manufacturer Name",
+
     "Insurance Coverage For Government Funded Program",
+
     "UPP Scope",
+
     "Included in Thiqa/ABM - other than 1&7 - Drug Formulary",
+
     "Included In Basic Drug Formulary",
+
     "Included In ABM 1 Drug Formulary",
+
     "Included In ABM 7 Drug Formulary",
+
     "Unit Markup",
+
     "Package Markup",
+
     "Thiqa Max. Reimbursement Price (Package)",
+
     "Thiqa co-pay amount (package)",
+
     "Basic co-pay amount (package)",
+
     "UPP Effective Date",
+
     "UPP Updated Date",
+
     "UPP Expiry Date"
 
 ];
 
 
-/* =========================================================
-   LOAD JSON
-========================================================= */
-
-async function loadData() {
-
-    setStatus(
-        "thiqa",
-        "Loading Thiqa Coverage List..."
-    );
-
-    setStatus(
-        "haad",
-        "Loading HAAD List..."
-    );
-
-
-    try {
-
-        const [
-            thiqaResponse,
-            haadResponse
-        ] = await Promise.all([
-
-            fetch(
-                "data.json?v=" + Date.now(),
-                {
-                    cache: "no-store"
-                }
-            ),
-
-            fetch(
-                "HAAD_LIST.json?v=" + Date.now(),
-                {
-                    cache: "no-store"
-                }
-            )
-
-        ]);
-
-
-        if (!thiqaResponse.ok) {
-
-            throw new Error(
-                "Could not load data.json"
-            );
-
-        }
-
-
-        if (!haadResponse.ok) {
-
-            throw new Error(
-                "Could not load HAAD_LIST.json"
-            );
-
-        }
-
-
-        const thiqaJson =
-            await thiqaResponse.json();
-
-        const haadJson =
-            await haadResponse.json();
-
-
-        thiqaData =
-            Array.isArray(thiqaJson)
-                ? thiqaJson
-                : [];
-
-
-        haadData =
-            Array.isArray(haadJson)
-                ? haadJson
-                : [];
-
-
-        /*
-           Thiqa columns are taken
-           directly from JSON.
-        */
-
-        if (thiqaData.length > 0) {
-
-            thiqaColumns =
-                Object.keys(
-                    thiqaData[0]
-                );
-
-        }
-
-
-        /*
-           Reset filters.
-        */
-
-        thiqaFilters = {};
-        haadFilters = {};
-
-
-        /*
-           Initial results.
-        */
-
-        thiqaResults =
-            thiqaData.slice();
-
-        haadResults =
-            haadData.slice();
-
-
-        renderHeader("thiqa");
-        renderHeader("haad");
-
-
-        renderVirtualTable("thiqa");
-        renderVirtualTable("haad");
-
-
-        setStatus(
-            "thiqa",
-            "Loaded successfully"
-        );
-
-        setStatus(
-            "haad",
-            "Loaded successfully"
-        );
-
-
-        updateCount("thiqa");
-        updateCount("haad");
-
-
-    } catch (error) {
-
-        console.error(error);
-
-
-        setStatus(
-            "thiqa",
-            "Error: " + error.message,
-            true
-        );
-
-
-        setStatus(
-            "haad",
-            "Error: " + error.message,
-            true
-        );
-
-    }
-
-}
-
-
-/* =========================================================
-   STATUS
-========================================================= */
-
-function setStatus(
-    type,
-    text,
-    isError = false
-) {
-
-    const element =
-        document.getElementById(
-            type + "Status"
-        );
-
-
-    element.textContent =
-        text;
-
-
-    element.className =
-        isError
-            ? "error"
-            : "";
-
-}
-
-
-/* =========================================================
+/* =====================================================
    COLUMN WIDTH
-========================================================= */
+===================================================== */
 
-function getColumnWidth(
-    type,
-    column
-) {
+function getColumnWidth(column) {
 
-    const name =
-        String(column)
-            .toLowerCase();
-
+    const lower =
+        column.toLowerCase();
 
     if (
-        name.includes("brand") ||
-        name.includes("proactive name") ||
-        name.includes("package name")
+        lower.includes("generic name") ||
+        lower.includes("package name") ||
+        lower.includes("manufacturer") ||
+        lower.includes("agent name") ||
+        lower.includes("insurance coverage") ||
+        lower.includes("formulary")
     ) {
-        return "300px";
+        return 260;
     }
-
 
     if (
-        name.includes("generic name")
+        lower.includes("dosage") ||
+        lower.includes("strength")
     ) {
-        return "260px";
+        return 150;
     }
-
 
     if (
-        name.includes("manufacturer")
+        lower.includes("price") ||
+        lower.includes("markup") ||
+        lower.includes("reimbursement") ||
+        lower.includes("copay")
     ) {
-        return "220px";
+        return 145;
     }
-
 
     if (
-        name.includes("insurance coverage")
+        lower.includes("date")
     ) {
-        return "300px";
+        return 135;
     }
 
-
-    if (
-        name.includes("formulary")
-    ) {
-        return "300px";
-    }
-
-
-    if (
-        name.includes("strength")
-    ) {
-        return "130px";
-    }
-
-
-    if (
-        name.includes("dosage")
-    ) {
-        return "150px";
-    }
-
-
-    if (
-        name.includes("date")
-    ) {
-        return "140px";
-    }
-
-
-    if (
-        name.includes("price") ||
-        name.includes("markup") ||
-        name.includes("co-pay")
-    ) {
-        return "150px";
-    }
-
-
-    return "150px";
-
+    return 145;
 }
 
 
-/* =========================================================
+/* =====================================================
    GET VALUE
-========================================================= */
+===================================================== */
 
-function getValue(
-    row,
-    column
-) {
+function getValue(row, column) {
 
-    if (
-        row === null ||
-        row === undefined
-    ) {
+    if (!row) {
         return "";
     }
-
 
     if (
         Object.prototype.hasOwnProperty.call(
@@ -1355,43 +1003,34 @@ function getValue(
             column
         )
     ) {
-
         return row[column];
-
     }
 
-
-    const wanted =
-        String(column)
+    const target =
+        column
             .trim()
             .toLowerCase();
 
+    for (
+        const key of Object.keys(row)
+    ) {
 
-    const key =
-        Object.keys(row).find(
-            k =>
-                String(k)
-                    .trim()
-                    .toLowerCase()
-                === wanted
-        );
-
-
-    if (key !== undefined) {
-
-        return row[key];
-
+        if (
+            key
+                .trim()
+                .toLowerCase() === target
+        ) {
+            return row[key];
+        }
     }
 
-
     return "";
-
 }
 
 
-/* =========================================================
+/* =====================================================
    VALUE TO TEXT
-========================================================= */
+===================================================== */
 
 function valueToText(value) {
 
@@ -1402,109 +1041,61 @@ function valueToText(value) {
         return "";
     }
 
-
     if (
         typeof value === "object"
     ) {
-
         try {
-
             return JSON.stringify(value);
-
-        } catch {
-
-            return String(value);
-
         }
-
+        catch {
+            return String(value);
+        }
     }
-
 
     return String(value);
-
 }
 
 
-/* =========================================================
+/* =====================================================
    FIND COLUMN
-========================================================= */
+===================================================== */
 
-function findColumn(
-    columns,
-    possibleNames
-) {
+function findColumn(columns, names) {
 
     for (
-        const possible
-        of possibleNames
+        const wanted of names
     ) {
 
-        const exact =
+        const found =
             columns.find(
-                column =>
-                    String(column)
+                col =>
+                    col
                         .trim()
-                        .toLowerCase()
-                    ===
-                    possible
+                        .toLowerCase() ===
+                    wanted
                         .trim()
                         .toLowerCase()
             );
 
-
-        if (exact) {
-
-            return exact;
-
+        if (found) {
+            return found;
         }
-
     }
-
-
-    for (
-        const possible
-        of possibleNames
-    ) {
-
-        const partial =
-            columns.find(
-                column =>
-                    String(column)
-                        .toLowerCase()
-                        .includes(
-                            possible
-                                .toLowerCase()
-                        )
-            );
-
-
-        if (partial) {
-
-            return partial;
-
-        }
-
-    }
-
 
     return null;
-
 }
 
 
-/* =========================================================
+/* =====================================================
    SEARCH COLUMNS
-========================================================= */
+===================================================== */
 
-function getSearchColumns(
-    type
-) {
+function getSearchColumns(type) {
 
     const columns =
         type === "thiqa"
             ? thiqaColumns
             : haadColumns;
-
 
     return {
 
@@ -1514,8 +1105,8 @@ function getSearchColumns(
                 [
                     "Brand Name",
                     "Brand",
-                    "proactive name",
                     "Product Name",
+                    "proactive name",
                     "Package Name"
                 ]
             ),
@@ -1540,35 +1131,34 @@ function getSearchColumns(
             findColumn(
                 columns,
                 [
-                    "Dosage Form"
+                    "Dosage Form",
+                    "Dosage form"
                 ]
             )
-
     };
-
 }
 
 
-/* =========================================================
-   % = AND SEARCH
-========================================================= */
+/* =====================================================
+   SEARCH MATCH
+=====================================================
 
-/*
+   % means AND.
+
    Example:
 
    160%5%12.5
 
-   becomes:
+   means the same cell must contain:
 
    160
-   AND 5
-   AND 12.5
+   AND
+   5
+   AND
+   12.5
 
-   The order does NOT matter.
-
-   All terms must exist inside
-   the SAME cell/value.
-*/
+   Order does NOT matter.
+===================================================== */
 
 function matchesAndSearch(
     value,
@@ -1579,16 +1169,12 @@ function matchesAndSearch(
         !search ||
         !search.trim()
     ) {
-
         return true;
-
     }
-
 
     const text =
         valueToText(value)
             .toLowerCase();
-
 
     const terms =
         search
@@ -1603,22 +1189,16 @@ function matchesAndSearch(
                     term.length > 0
             );
 
-
-    /*
-       EVERY term must exist.
-    */
-
     return terms.every(
         term =>
             text.includes(term)
     );
-
 }
 
 
-/* =========================================================
+/* =====================================================
    GET SEARCH VALUES
-========================================================= */
+===================================================== */
 
 function getSearchValues() {
 
@@ -1629,24 +1209,21 @@ function getSearchValues() {
                 .getElementById(
                     "brandSearch"
                 )
-                .value
-                .trim(),
+                .value,
 
         generic:
             document
                 .getElementById(
                     "genericSearch"
                 )
-                .value
-                .trim(),
+                .value,
 
         strength:
             document
                 .getElementById(
                     "strengthSearch"
                 )
-                .value
-                .trim(),
+                .value,
 
         dosage:
             document
@@ -1654,55 +1231,88 @@ function getSearchValues() {
                     "dosageSearch"
                 )
                 .value
-                .trim()
 
     };
-
 }
 
 
-/* =========================================================
-   APPLY SEARCHES
-========================================================= */
+/* =====================================================
+   FILTER ONE ROW
+===================================================== */
 
-function applySearches() {
-
-    const searches =
-        getSearchValues();
-
-
-    filterData(
-        "thiqa",
-        searches
-    );
-
-
-    filterData(
-        "haad",
-        searches
-    );
-
-}
-
-
-/* =========================================================
-   FILTER DATA
-========================================================= */
-
-function filterData(
-    type,
-    searches
+function rowPassesFilters(
+    row,
+    filters
 ) {
 
-    const source =
-        type === "thiqa"
-            ? thiqaData
-            : haadData;
+    /*
+       Every column filter must pass.
+
+       Therefore:
+
+       Column A filter
+       AND
+       Column B filter
+       AND
+       Column C filter
+    */
+
+    for (
+        const column of Object.keys(filters)
+    ) {
+
+        const selected =
+            filters[column];
+
+        /*
+           Empty selection means:
+           user selected NOTHING.
+
+           Excel equivalent:
+           no rows should match.
+        */
+
+        if (
+            selected.size === 0
+        ) {
+            return false;
+        }
 
 
-    const columns =
-        getSearchColumns(type);
+        const value =
+            valueToText(
+                getValue(
+                    row,
+                    column
+                )
+            );
 
+
+        /*
+           Multiple selected values
+           within SAME column are OR.
+        */
+
+        if (
+            !selected.has(value)
+        ) {
+            return false;
+        }
+
+    }
+
+    return true;
+}
+
+
+/* =====================================================
+   FILTER DATA
+===================================================== */
+
+function filterData(
+    data,
+    type
+) {
 
     const filters =
         type === "thiqa"
@@ -1710,220 +1320,148 @@ function filterData(
             : haadFilters;
 
 
-    const results =
-        source.filter(
-            row => {
+    const searches =
+        getSearchValues();
 
 
-                /*
-                   BRAND
-                */
-
-                if (
-                    searches.brand &&
-                    columns.brand
-                ) {
-
-                    if (
-                        !matchesAndSearch(
-                            getValue(
-                                row,
-                                columns.brand
-                            ),
-                            searches.brand
-                        )
-                    ) {
-
-                        return false;
-
-                    }
-
-                }
+    const searchColumns =
+        getSearchColumns(type);
 
 
-                /*
-                   GENERIC
-                */
+    return data.filter(
+        row => {
 
-                if (
-                    searches.generic &&
-                    columns.generic
-                ) {
+            /* =========================================
+               SEARCH BAR FILTERS
+            ========================================= */
 
-                    if (
-                        !matchesAndSearch(
-                            getValue(
-                                row,
-                                columns.generic
-                            ),
-                            searches.generic
-                        )
-                    ) {
-
-                        return false;
-
-                    }
-
-                }
-
-
-                /*
-                   STRENGTH
-                */
-
-                if (
-                    searches.strength &&
-                    columns.strength
-                ) {
-
-                    if (
-                        !matchesAndSearch(
-                            getValue(
-                                row,
-                                columns.strength
-                            ),
-                            searches.strength
-                        )
-                    ) {
-
-                        return false;
-
-                    }
-
-                }
-
-
-                /*
-                   DOSAGE FORM
-                */
-
-                if (
-                    searches.dosage &&
-                    columns.dosage
-                ) {
-
-                    if (
-                        !matchesAndSearch(
-                            getValue(
-                                row,
-                                columns.dosage
-                            ),
-                            searches.dosage
-                        )
-                    ) {
-
-                        return false;
-
-                    }
-
-                }
-
-
-                /*
-                   COLUMN FILTERS
-                */
-
-                for (
-                    const column
-                    of Object.keys(filters)
-                ) {
-
-                    const selected =
-                        filters[column];
-
-
-                    /*
-                       IMPORTANT:
-
-                       If a filter exists and
-                       selected.size === 0,
-
-                       that means:
-                       user selected NOTHING.
-
-                       Therefore NO rows should
-                       pass this filter.
-                    */
-
-                    if (
-                        selected &&
-                        selected.size === 0
-                    ) {
-
-                        return false;
-
-                    }
-
-
-                    if (
-                        !selected
-                    ) {
-
-                        continue;
-
-                    }
-
-
-                    const value =
-                        valueToText(
-                            getValue(
-                                row,
-                                column
-                            )
-                        );
-
-
-                    if (
-                        !selected.has(
-                            value
-                        )
-                    ) {
-
-                        return false;
-
-                    }
-
-                }
-
-
-                return true;
-
+            if (
+                searchColumns.brand &&
+                !matchesAndSearch(
+                    getValue(
+                        row,
+                        searchColumns.brand
+                    ),
+                    searches.brand
+                )
+            ) {
+                return false;
             }
+
+
+            if (
+                searchColumns.generic &&
+                !matchesAndSearch(
+                    getValue(
+                        row,
+                        searchColumns.generic
+                    ),
+                    searches.generic
+                )
+            ) {
+                return false;
+            }
+
+
+            if (
+                searchColumns.strength &&
+                !matchesAndSearch(
+                    getValue(
+                        row,
+                        searchColumns.strength
+                    ),
+                    searches.strength
+                )
+            ) {
+                return false;
+            }
+
+
+            if (
+                searchColumns.dosage &&
+                !matchesAndSearch(
+                    getValue(
+                        row,
+                        searchColumns.dosage
+                    ),
+                    searches.dosage
+                )
+            ) {
+                return false;
+            }
+
+
+            /* =========================================
+               EXCEL COLUMN FILTERS
+            ========================================= */
+
+            if (
+                !rowPassesFilters(
+                    row,
+                    filters
+                )
+            ) {
+                return false;
+            }
+
+
+            return true;
+
+        }
+    );
+}
+
+
+/* =====================================================
+   APPLY SEARCHES + FILTERS
+===================================================== */
+
+function applySearches() {
+
+    thiqaResults =
+        filterData(
+            thiqaData,
+            "thiqa"
+        );
+
+    haadResults =
+        filterData(
+            haadData,
+            "haad"
         );
 
 
-    if (
-        type === "thiqa"
-    ) {
+    renderVirtualTable(
+        "thiqa"
+    );
 
-        thiqaResults =
-            results;
-
-    } else {
-
-        haadResults =
-            results;
-
-    }
+    renderVirtualTable(
+        "haad"
+    );
 
 
-    renderVirtualTable(type);
+    updateCount(
+        "thiqa"
+    );
 
-    updateCount(type);
+    updateCount(
+        "haad"
+    );
 
 }
 
 
-/* =========================================================
-   DEBOUNCED SEARCH
-========================================================= */
+/* =====================================================
+   DELAYED SEARCH
+===================================================== */
+
+let searchTimer = null;
 
 function delayedSearch() {
 
     clearTimeout(
         searchTimer
     );
-
 
     searchTimer =
         setTimeout(
@@ -1938,17 +1476,18 @@ function delayedSearch() {
 }
 
 
-/* =========================================================
+/* =====================================================
    RENDER HEADER
-========================================================= */
+===================================================== */
 
 function renderHeader(type) {
 
     const header =
         document.getElementById(
-            type + "Header"
+            type === "thiqa"
+                ? "thiqaHeader"
+                : "haadHeader"
         );
-
 
     const columns =
         type === "thiqa"
@@ -1958,41 +1497,22 @@ function renderHeader(type) {
 
     header.innerHTML = "";
 
-
-    if (
-        !columns.length
-    ) {
-
-        return;
-
-    }
-
-
-    const gridColumns =
+    header.style.gridTemplateColumns =
         columns
             .map(
                 column =>
-                    getColumnWidth(
-                        type,
-                        column
-                    )
+                    `${getColumnWidth(column)}px`
             )
             .join(" ");
-
-
-    header.style.gridTemplateColumns =
-        gridColumns;
 
 
     columns.forEach(
         column => {
 
-
             const cell =
                 document.createElement(
                     "div"
                 );
-
 
             cell.className =
                 "header-cell";
@@ -2003,10 +1523,8 @@ function renderHeader(type) {
                     "div"
                 );
 
-
             title.className =
                 "header-title";
-
 
             title.textContent =
                 column;
@@ -2017,17 +1535,8 @@ function renderHeader(type) {
                     "button"
                 );
 
-
             button.className =
-                "filter-button";
-
-
-            button.innerHTML =
-                "▼";
-
-
-            button.title =
-                "Filter " + column;
+                "filter-btn";
 
 
             if (
@@ -2038,17 +1547,30 @@ function renderHeader(type) {
             ) {
 
                 button.classList.add(
-                    "filtered"
+                    "active"
                 );
+
+                button.textContent =
+                    "✓";
+
+            }
+            else {
+
+                button.textContent =
+                    "▼";
 
             }
 
 
-            button.onclick =
+            button.title =
+                "Filter";
+
+
+            button.addEventListener(
+                "click",
                 event => {
 
                     event.stopPropagation();
-
 
                     openFilter(
                         type,
@@ -2056,13 +1578,13 @@ function renderHeader(type) {
                         button
                     );
 
-                };
+                }
+            );
 
 
             cell.appendChild(
                 title
             );
-
 
             cell.appendChild(
                 button
@@ -2079,9 +1601,9 @@ function renderHeader(type) {
 }
 
 
-/* =========================================================
+/* =====================================================
    ACTIVE FILTER
-========================================================= */
+===================================================== */
 
 function hasActiveFilter(
     type,
@@ -2094,36 +1616,32 @@ function hasActiveFilter(
             : haadFilters;
 
 
-    /*
-       Even an empty Set is an
-       active filter.
-
-       This is important because
-       Clear All + Apply means
-       ZERO matching rows.
-    */
-
-    return Object.prototype
-        .hasOwnProperty.call(
-            filters,
-            column
-        );
+    return Object.prototype.hasOwnProperty.call(
+        filters,
+        column
+    );
 
 }
 
 
-/* =========================================================
+/* =====================================================
    RENDER VIRTUAL TABLE
-========================================================= */
+===================================================== */
 
-function renderVirtualTable(
-    type
-) {
+function renderVirtualTable(type) {
 
-    const container =
+    const area =
         document.getElementById(
-            type +
-            "VirtualContent"
+            type === "thiqa"
+                ? "thiqaArea"
+                : "haadArea"
+        );
+
+    const virtual =
+        document.getElementById(
+            type === "thiqa"
+                ? "thiqaVirtual"
+                : "haadVirtual"
         );
 
 
@@ -2139,344 +1657,259 @@ function renderVirtualTable(
             : haadColumns;
 
 
-    container.innerHTML = "";
-
-
-    if (
-        !data.length
-    ) {
-
-        container.style.height =
-            "60px";
-
-
-        const message =
-            document.createElement(
-                "div"
-            );
-
-
-        message.className =
-            "no-data";
-
-
-        message.textContent =
-            "No matching records";
-
-
-        container.appendChild(
-            message
-        );
-
-
-        return;
-
-    }
+    virtual.innerHTML = "";
 
 
     /*
-       Full virtual height.
+       Total virtual height.
     */
 
-    container.style.height =
+    virtual.style.height =
         (
             data.length *
             ROW_HEIGHT
         ) + "px";
 
 
-    const gridColumns =
-        columns
-            .map(
-                column =>
-                    getColumnWidth(
-                        type,
-                        column
-                    )
-            )
-            .join(" ");
+    virtual.style.width =
+        "max-content";
 
 
-    const area =
-        document.getElementById(
-            type + "Area"
-        );
+    virtual.style.minWidth =
+        "100%";
 
 
-    const scrollTop =
-        area.scrollTop;
+    /*
+       Create a function that draws
+       only the visible rows.
+    */
+
+    function drawRows() {
+
+        virtual.innerHTML = "";
 
 
-    const visibleHeight =
-        area.clientHeight;
+        const scrollTop =
+            area.scrollTop;
 
 
-    let start =
-        Math.floor(
-            scrollTop /
-            ROW_HEIGHT
-        ) -
-        BUFFER_ROWS;
+        const viewportHeight =
+            area.clientHeight;
 
 
-    if (
-        start < 0
-    ) {
-
-        start = 0;
-
-    }
-
-
-    let end =
-        Math.ceil(
-            (
-                scrollTop +
-                visibleHeight
-            ) /
-            ROW_HEIGHT
-        ) +
-        BUFFER_ROWS;
+        let start =
+            Math.floor(
+                scrollTop /
+                ROW_HEIGHT
+            ) -
+            BUFFER_ROWS;
 
 
-    if (
-        end >
-        data.length
-    ) {
-
-        end =
-            data.length;
-
-    }
-
-
-    const fragment =
-        document.createDocumentFragment();
+        let end =
+            Math.ceil(
+                (
+                    scrollTop +
+                    viewportHeight
+                ) /
+                ROW_HEIGHT
+            ) +
+            BUFFER_ROWS;
 
 
-    for (
-        let i = start;
-        i < end;
-        i++
-    ) {
-
-        const rowData =
-            data[i];
-
-
-        const rowElement =
-            document.createElement(
-                "div"
+        start =
+            Math.max(
+                0,
+                start
             );
 
 
-        rowElement.className =
-            "data-row";
+        end =
+            Math.min(
+                data.length,
+                end
+            );
 
 
-        rowElement.style.top =
-            (
-                i *
-                ROW_HEIGHT
-            ) + "px";
+        for (
+            let i = start;
+            i < end;
+            i++
+        ) {
+
+            const row =
+                data[i];
 
 
-        rowElement.style.gridTemplateColumns =
-            gridColumns;
-
-
-        columns.forEach(
-            column => {
-
-
-                const cell =
-                    document.createElement(
-                        "div"
-                    );
-
-
-                cell.className =
-                    "data-cell";
-
-
-                const value =
-                    valueToText(
-                        getValue(
-                            rowData,
-                            column
-                        )
-                    );
-
-
-                cell.textContent =
-                    value;
-
-
-                const normalized =
-                    value
-                        .trim()
-                        .toLowerCase();
-
-
-                if (
-                    normalized === "yes" &&
-                    isYesNoColumn(
-                        column
-                    )
-                ) {
-
-                    cell.classList.add(
-                        "yes-cell"
-                    );
-
-                }
-
-
-                if (
-                    normalized === "no" &&
-                    isYesNoColumn(
-                        column
-                    )
-                ) {
-
-                    cell.classList.add(
-                        "no-cell"
-                    );
-
-                }
-
-
-                rowElement.appendChild(
-                    cell
+            const rowElement =
+                document.createElement(
+                    "div"
                 );
 
-            }
-        );
+
+            rowElement.className =
+                "data-row";
 
 
-        fragment.appendChild(
-            rowElement
+            rowElement.style.top =
+                (
+                    i *
+                    ROW_HEIGHT
+                ) + "px";
+
+
+            rowElement.style.gridTemplateColumns =
+                columns
+                    .map(
+                        column =>
+                            `${getColumnWidth(column)}px`
+                    )
+                    .join(" ");
+
+
+            columns.forEach(
+                column => {
+
+                    const cell =
+                        document.createElement(
+                            "div"
+                        );
+
+
+                    cell.className =
+                        "data-cell";
+
+
+                    const value =
+                        valueToText(
+                            getValue(
+                                row,
+                                column
+                            )
+                        );
+
+
+                    cell.textContent =
+                        value;
+
+
+                    /*
+                       YES / NO colours.
+                    */
+
+                    const lower =
+                        value
+                            .trim()
+                            .toLowerCase();
+
+
+                    if (
+                        lower === "yes" ||
+                        lower === "thiqa"
+                    ) {
+
+                        cell.classList.add(
+                            "yes-value"
+                        );
+
+                    }
+
+
+                    if (
+                        lower === "no"
+                    ) {
+
+                        cell.classList.add(
+                            "no-value"
+                        );
+
+                    }
+
+
+                    rowElement.appendChild(
+                        cell
+                    );
+
+                }
+            );
+
+
+            virtual.appendChild(
+                rowElement
+            );
+
+        }
+
+    }
+
+
+    drawRows();
+
+
+    /*
+       Save handler so we can remove
+       the old handler before adding
+       another one.
+    */
+
+    if (
+        area._virtualHandler
+    ) {
+
+        area.removeEventListener(
+            "scroll",
+            area._virtualHandler
         );
 
     }
 
 
-    container.appendChild(
-        fragment
-    );
+    area._virtualHandler =
+        () => {
 
-}
+            requestAnimationFrame(
+                drawRows
+            );
 
-
-/* =========================================================
-   YES / NO
-========================================================= */
-
-function isYesNoColumn(
-    column
-) {
-
-    const name =
-        String(column)
-            .toLowerCase();
-
-
-    return (
-
-        name === "thiqa" ||
-
-        name === "basic" ||
-
-        name.includes(
-            "included"
-        ) ||
-
-        name.includes(
-            "coverage"
-        ) ||
-
-        name.includes(
-            "government funded"
-        ) ||
-
-        name.includes(
-            "formulary"
-        )
-
-    );
-
-}
-
-
-/* =========================================================
-   VIRTUAL SCROLL
-========================================================= */
-
-function setupVirtualScroll(
-    type
-) {
-
-    const area =
-        document.getElementById(
-            type + "Area"
-        );
-
-
-    let ticking = false;
+        };
 
 
     area.addEventListener(
         "scroll",
-        () => {
-
-
-            if (
-                ticking
-            ) {
-
-                return;
-
-            }
-
-
-            ticking = true;
-
-
-            requestAnimationFrame(
-                () => {
-
-
-                    renderVirtualTable(
-                        type
-                    );
-
-
-                    ticking = false;
-
-                }
-            );
-
-        },
+        area._virtualHandler,
         {
             passive: true
         }
     );
 
+
+    /*
+       Always start filtered result
+       from top.
+    */
+
+    area.scrollTop = 0;
+
 }
 
 
-/* =========================================================
+/* =====================================================
    COUNT
-========================================================= */
+===================================================== */
 
-function updateCount(
-    type
-) {
+function updateCount(type) {
 
     const count =
+        document.getElementById(
+            type === "thiqa"
+                ? "thiqaCount"
+                : "haadCount"
+        );
+
+
+    const data =
         type === "thiqa"
-            ? thiqaResults.length
-            : haadResults.length;
+            ? thiqaResults
+            : haadResults;
 
 
     const total =
@@ -2485,89 +1918,90 @@ function updateCount(
             : haadData.length;
 
 
-    const element =
-        document.getElementById(
-            type + "Count"
-        );
-
-
-    element.textContent =
-        count.toLocaleString() +
-        " / " +
-        total.toLocaleString() +
-        " records";
+    count.textContent =
+        `Showing ${data.length.toLocaleString()} of ${total.toLocaleString()} rows`;
 
 }
 
 
-/* =========================================================
+/* =====================================================
    SWITCH SHEET
-========================================================= */
+===================================================== */
 
-function switchSheet(
-    type
-) {
+function switchSheet(type) {
 
-    currentSheet =
-        type;
-
-
-    document
-        .getElementById(
-            "thiqaTab"
-        )
-        .classList.toggle(
-            "active",
-            type === "thiqa"
-        );
-
-
-    document
-        .getElementById(
-            "haadTab"
-        )
-        .classList.toggle(
-            "active",
-            type === "haad"
-        );
-
-
-    document
-        .getElementById(
+    const thiqaSheet =
+        document.getElementById(
             "thiqaSheet"
-        )
-        .classList.toggle(
-            "active",
-            type === "thiqa"
         );
 
-
-    document
-        .getElementById(
+    const haadSheet =
+        document.getElementById(
             "haadSheet"
-        )
-        .classList.toggle(
-            "active",
-            type === "haad"
         );
 
 
-    requestAnimationFrame(
-        () => {
+    const thiqaTab =
+        document.getElementById(
+            "thiqaTab"
+        );
 
-            renderVirtualTable(
-                type
-            );
+    const haadTab =
+        document.getElementById(
+            "haadTab"
+        );
 
-        }
-    );
+
+    if (
+        type === "thiqa"
+    ) {
+
+        thiqaSheet.classList.add(
+            "active"
+        );
+
+        haadSheet.classList.remove(
+            "active"
+        );
+
+        thiqaTab.classList.add(
+            "active"
+        );
+
+        haadTab.classList.remove(
+            "active"
+        );
+
+    }
+    else {
+
+        haadSheet.classList.add(
+            "active"
+        );
+
+        thiqaSheet.classList.remove(
+            "active"
+        );
+
+        haadTab.classList.add(
+            "active"
+        );
+
+        thiqaTab.classList.remove(
+            "active"
+        );
+
+    }
+
+
+    closeFilterPopup();
 
 }
 
 
-/* =========================================================
-   OPEN FILTER
-========================================================= */
+/* =====================================================
+   OPEN COLUMN FILTER
+===================================================== */
 
 function openFilter(
     type,
@@ -2588,10 +2022,19 @@ function openFilter(
         );
 
 
-    const search =
+    const popupHeader =
         document.getElementById(
-            "filterSearch"
+            "filterPopupHeader"
         );
+
+
+    popupHeader.textContent =
+        "Filter: " + column;
+
+
+    document.getElementById(
+        "filterValueSearch"
+    ).value = "";
 
 
     const data =
@@ -2600,81 +2043,91 @@ function openFilter(
             : haadData;
 
 
-    const filters =
-        type === "thiqa"
-            ? thiqaFilters
-            : haadFilters;
+    /*
+       IMPORTANT:
 
+       Values come from the ORIGINAL
+       full dataset, not the already
+       filtered result.
 
-    const uniqueValues =
+       This is how Excel behaves.
+    */
+
+    const valueSet =
         new Set();
 
 
     data.forEach(
         row => {
 
-            uniqueValues.add(
+            const value =
                 valueToText(
                     getValue(
                         row,
                         column
                     )
-                )
+                );
+
+            valueSet.add(
+                value
             );
 
         }
     );
 
 
-    let allValues =
+    const allValues =
         Array.from(
-            uniqueValues
+            valueSet
+        ).sort(
+            (a, b) =>
+                a.localeCompare(
+                    b,
+                    undefined,
+                    {
+                        numeric: true,
+                        sensitivity: "base"
+                    }
+                )
         );
 
 
-    allValues.sort(
-        (a, b) =>
-            a.localeCompare(
-                b,
-                undefined,
-                {
-                    numeric: true,
-                    sensitivity: "base"
-                }
-            )
-    );
-
-
-    popup._allValues =
-        allValues;
-
-
     /*
-       Existing filter.
+       Existing filter:
 
-       If no filter exists:
-       all values selected.
+       restore the user's previous
+       selection.
 
-       If filter exists:
-       use exactly its selections.
+       No filter:
+
+       everything selected.
     */
 
+    const filters =
+        type === "thiqa"
+            ? thiqaFilters
+            : haadFilters;
+
+
+    let selected;
+
+
     if (
-        Object.prototype
-            .hasOwnProperty.call(
-                filters,
-                column
-            )
+        Object.prototype.hasOwnProperty.call(
+            filters,
+            column
+        )
     ) {
 
-        popup._selected =
+        selected =
             new Set(
                 filters[column]
             );
 
-    } else {
+    }
+    else {
 
-        popup._selected =
+        selected =
             new Set(
                 allValues
             );
@@ -2682,20 +2135,34 @@ function openFilter(
     }
 
 
-    search.value =
-        "";
+    popup._allValues =
+        allValues;
+
+    popup._selected =
+        selected;
 
 
     renderFilterValues();
 
 
-    popup.classList.add(
-        "show"
-    );
-
+    /*
+       Position popup below button.
+    */
 
     const rect =
         button.getBoundingClientRect();
+
+
+    popup.style.display =
+        "block";
+
+
+    const popupWidth =
+        popup.offsetWidth;
+
+
+    const popupHeight =
+        popup.offsetHeight;
 
 
     let left =
@@ -2703,57 +2170,55 @@ function openFilter(
 
 
     let top =
-        rect.bottom + 5;
+        rect.bottom + 4;
 
 
-    const width =
-        300;
-
-
-    const height =
-        390;
-
+    /*
+       Keep popup inside screen.
+    */
 
     if (
-        left + width >
+        left +
+        popupWidth >
         window.innerWidth
     ) {
 
         left =
             window.innerWidth -
-            width -
+            popupWidth -
             10;
 
     }
 
 
     if (
-        left < 10
+        left < 5
     ) {
 
-        left = 10;
+        left = 5;
 
     }
 
 
     if (
-        top + height >
+        top +
+        popupHeight >
         window.innerHeight
     ) {
 
         top =
             rect.top -
-            height -
-            5;
+            popupHeight -
+            4;
 
     }
 
 
     if (
-        top < 10
+        top < 5
     ) {
 
-        top = 10;
+        top = 5;
 
     }
 
@@ -2765,22 +2230,12 @@ function openFilter(
     popup.style.top =
         top + "px";
 
-
-    setTimeout(
-        () => {
-
-            search.focus();
-
-        },
-        0
-    );
-
 }
 
 
-/* =========================================================
-   FILTER VALUES
-========================================================= */
+/* =====================================================
+   RENDER FILTER VALUES
+===================================================== */
 
 function renderFilterValues() {
 
@@ -2790,50 +2245,72 @@ function renderFilterValues() {
         );
 
 
-    const search =
-        document.getElementById(
-            "filterSearch"
-        );
-
-
     const container =
         document.getElementById(
             "filterValues"
         );
 
 
-    const query =
-        search.value
-            .trim()
-            .toLowerCase();
+    const search =
+        document.getElementById(
+            "filterValueSearch"
+        )
+        .value
+        .trim()
+        .toLowerCase();
 
 
-    const values =
-        popup._allValues
-            .filter(
-                value =>
-                    value
-                        .toLowerCase()
-                        .includes(
-                            query
-                        )
-            );
+    const allValues =
+        popup._allValues || [];
+
+
+    const selected =
+        popup._selected ||
+        new Set();
 
 
     container.innerHTML =
         "";
 
 
-    const visibleValues =
-        values.slice(
-            0,
-            500
+    const filteredValues =
+        allValues.filter(
+            value =>
+                value
+                    .toLowerCase()
+                    .includes(search)
         );
 
 
-    visibleValues.forEach(
-        value => {
+    if (
+        filteredValues.length === 0
+    ) {
 
+        const empty =
+            document.createElement(
+                "div"
+            );
+
+        empty.style.padding =
+            "15px";
+
+        empty.style.color =
+            "#777";
+
+        empty.textContent =
+            "No values found";
+
+        container.appendChild(
+            empty
+        );
+
+        return;
+
+    }
+
+
+    filteredValues.forEach(
+        value => {
 
             const label =
                 document.createElement(
@@ -2842,7 +2319,7 @@ function renderFilterValues() {
 
 
             label.className =
-                "filter-option";
+                "filter-value";
 
 
             const checkbox =
@@ -2856,7 +2333,7 @@ function renderFilterValues() {
 
 
             checkbox.checked =
-                popup._selected.has(
+                selected.has(
                     value
                 );
 
@@ -2865,18 +2342,18 @@ function renderFilterValues() {
                 "change",
                 () => {
 
-
                     if (
                         checkbox.checked
                     ) {
 
-                        popup._selected.add(
+                        selected.add(
                             value
                         );
 
-                    } else {
+                    }
+                    else {
 
-                        popup._selected.delete(
+                        selected.delete(
                             value
                         );
 
@@ -2892,10 +2369,6 @@ function renderFilterValues() {
                 );
 
 
-            text.className =
-                "filter-value-text";
-
-
             text.textContent =
                 value === ""
                     ? "(Blank)"
@@ -2905,7 +2378,6 @@ function renderFilterValues() {
             label.appendChild(
                 checkbox
             );
-
 
             label.appendChild(
                 text
@@ -2919,78 +2391,12 @@ function renderFilterValues() {
         }
     );
 
-
-    if (
-        values.length > 500
-    ) {
-
-        const more =
-            document.createElement(
-                "div"
-            );
-
-
-        more.style.padding =
-            "8px";
-
-
-        more.style.color =
-            "#64748b";
-
-
-        more.style.fontSize =
-            "10px";
-
-
-        more.textContent =
-            "Showing first 500 values. Search above to find more.";
-
-
-        container.appendChild(
-            more
-        );
-
-    }
-
-
-    if (
-        values.length === 0
-    ) {
-
-        const empty =
-            document.createElement(
-                "div"
-            );
-
-
-        empty.style.padding =
-            "15px";
-
-
-        empty.style.textAlign =
-            "center";
-
-
-        empty.style.color =
-            "#64748b";
-
-
-        empty.textContent =
-            "No values found";
-
-
-        container.appendChild(
-            empty
-        );
-
-    }
-
 }
 
 
-/* =========================================================
+/* =====================================================
    SELECT ALL
-========================================================= */
+===================================================== */
 
 function selectAllFilterValues() {
 
@@ -3000,35 +2406,9 @@ function selectAllFilterValues() {
         );
 
 
-    const search =
-        document.getElementById(
-            "filterSearch"
-        );
-
-
-    const query =
-        search.value
-            .trim()
-            .toLowerCase();
-
-
-    popup._allValues
-        .filter(
-            value =>
-                value
-                    .toLowerCase()
-                    .includes(
-                        query
-                    )
-        )
-        .forEach(
-            value => {
-
-                popup._selected.add(
-                    value
-                );
-
-            }
+    popup._selected =
+        new Set(
+            popup._allValues
         );
 
 
@@ -3037,9 +2417,9 @@ function selectAllFilterValues() {
 }
 
 
-/* =========================================================
-   CLEAR ALL VALUES INSIDE FILTER
-========================================================= */
+/* =====================================================
+   CLEAR ALL FILTER VALUES
+===================================================== */
 
 function clearAllFilterValues() {
 
@@ -3049,36 +2429,8 @@ function clearAllFilterValues() {
         );
 
 
-    const search =
-        document.getElementById(
-            "filterSearch"
-        );
-
-
-    const query =
-        search.value
-            .trim()
-            .toLowerCase();
-
-
-    popup._allValues
-        .filter(
-            value =>
-                value
-                    .toLowerCase()
-                    .includes(
-                        query
-                    )
-        )
-        .forEach(
-            value => {
-
-                popup._selected.delete(
-                    value
-                );
-
-            }
-        );
+    popup._selected =
+        new Set();
 
 
     renderFilterValues();
@@ -3086,9 +2438,9 @@ function clearAllFilterValues() {
 }
 
 
-/* =========================================================
+/* =====================================================
    APPLY COLUMN FILTER
-========================================================= */
+===================================================== */
 
 function applyColumnFilter() {
 
@@ -3096,9 +2448,7 @@ function applyColumnFilter() {
         !currentFilterType ||
         !currentFilterColumn
     ) {
-
         return;
-
     }
 
 
@@ -3117,11 +2467,12 @@ function applyColumnFilter() {
 
 
     const allValues =
-        popup._allValues;
+        popup._allValues || [];
 
 
     const selected =
-        popup._selected;
+        popup._selected ||
+        new Set();
 
 
     const filters =
@@ -3131,19 +2482,11 @@ function applyColumnFilter() {
 
 
     /*
-       IMPORTANT:
+       USER SELECTED EVERYTHING
 
-       If selected contains ALL values,
-       there is no need to store a filter.
+       This is equivalent to no filter.
 
-       If selected contains LESS than ALL,
-       store it.
-
-       If selected contains ZERO values,
-       store an EMPTY SET.
-
-       EMPTY SET means:
-       "show nothing".
+       Remove the filter completely.
     */
 
     if (
@@ -3153,10 +2496,41 @@ function applyColumnFilter() {
 
         delete filters[column];
 
-    } else {
+    }
+
+    /*
+       USER SELECTED NOTHING
+
+       Keep an empty filter.
+
+       Result = zero rows.
+
+       This is important because
+       Excel allows a filter with
+       nothing selected.
+    */
+
+    else if (
+        selected.size === 0
+    ) {
 
         filters[column] =
-            new Set(selected);
+            new Set();
+
+    }
+
+    /*
+       USER SELECTED SOME VALUES
+
+       Save exactly those values.
+    */
+
+    else {
+
+        filters[column] =
+            new Set(
+                selected
+            );
 
     }
 
@@ -3165,14 +2539,18 @@ function applyColumnFilter() {
 
 
     /*
-       Update filter icon.
+       Update header so the
+       filter button becomes blue.
     */
 
-    renderHeader(type);
+    renderHeader(
+        type
+    );
 
 
     /*
-       Re-run searches AND filters.
+       Re-run BOTH search and
+       filter systems.
     */
 
     applySearches();
@@ -3180,9 +2558,9 @@ function applyColumnFilter() {
 }
 
 
-/* =========================================================
-   CANCEL
-========================================================= */
+/* =====================================================
+   CANCEL FILTER
+===================================================== */
 
 function cancelColumnFilter() {
 
@@ -3191,9 +2569,9 @@ function cancelColumnFilter() {
 }
 
 
-/* =========================================================
-   CLOSE FILTER
-========================================================= */
+/* =====================================================
+   CLOSE FILTER POPUP
+===================================================== */
 
 function closeFilterPopup() {
 
@@ -3203,14 +2581,12 @@ function closeFilterPopup() {
         );
 
 
-    popup.classList.remove(
-        "show"
-    );
+    popup.style.display =
+        "none";
 
 
     currentFilterType =
         null;
-
 
     currentFilterColumn =
         null;
@@ -3218,53 +2594,46 @@ function closeFilterPopup() {
 }
 
 
-/* =========================================================
+/* =====================================================
    CLEAR EVERYTHING
-========================================================= */
+===================================================== */
 
 function clearAllSearchesAndFilters() {
 
     /*
-       Close popup if open.
+       Close popup.
     */
 
     closeFilterPopup();
 
 
     /*
-       Clear the 4 search boxes.
+       Clear all four search boxes.
     */
 
-    document
-        .getElementById(
-            "brandSearch"
-        )
-        .value = "";
+    document.getElementById(
+        "brandSearch"
+    ).value = "";
 
 
-    document
-        .getElementById(
-            "genericSearch"
-        )
-        .value = "";
+    document.getElementById(
+        "genericSearch"
+    ).value = "";
 
 
-    document
-        .getElementById(
-            "strengthSearch"
-        )
-        .value = "";
+    document.getElementById(
+        "strengthSearch"
+    ).value = "";
 
 
-    document
-        .getElementById(
-            "dosageSearch"
-        )
-        .value = "";
+    document.getElementById(
+        "dosageSearch"
+    ).value = "";
 
 
     /*
-       Remove ALL column filters.
+       Completely remove ALL
+       column filters.
     */
 
     thiqaFilters = {};
@@ -3285,23 +2654,25 @@ function clearAllSearchesAndFilters() {
 
 
     /*
-       Reset headers so the
-       filter buttons are normal.
+       Rebuild headers.
     */
 
-    renderHeader("thiqa");
+    renderHeader(
+        "thiqa"
+    );
 
-    renderHeader("haad");
+    renderHeader(
+        "haad"
+    );
 
 
     /*
-       Render all data again.
+       Rebuild tables.
     */
 
     renderVirtualTable(
         "thiqa"
     );
-
 
     renderVirtualTable(
         "haad"
@@ -3312,87 +2683,48 @@ function clearAllSearchesAndFilters() {
        Reset scroll position.
     */
 
-    document
-        .getElementById(
-            "thiqaArea"
-        )
-        .scrollTop = 0;
+    document.getElementById(
+        "thiqaArea"
+    ).scrollTop = 0;
 
 
-    document
-        .getElementById(
-            "thiqaArea"
-        )
-        .scrollLeft = 0;
+    document.getElementById(
+        "thiqaArea"
+    ).scrollLeft = 0;
 
 
-    document
-        .getElementById(
-            "haadArea"
-        )
-        .scrollTop = 0;
+    document.getElementById(
+        "haadArea"
+    ).scrollTop = 0;
 
 
-    document
-        .getElementById(
-            "haadArea"
-        )
-        .scrollLeft = 0;
+    document.getElementById(
+        "haadArea"
+    ).scrollLeft = 0;
 
 
-    updateCount("thiqa");
+    /*
+       Update counts.
+    */
 
-    updateCount("haad");
+    updateCount(
+        "thiqa"
+    );
+
+    updateCount(
+        "haad"
+    );
 
 }
 
 
-/* =========================================================
-   FILTER SEARCH
-========================================================= */
-
-document
-    .getElementById(
-        "filterSearch"
-    )
-    .addEventListener(
-        "input",
-        renderFilterValues
-    );
-
-
-/* =========================================================
-   MAIN SEARCH EVENTS
-========================================================= */
-
-[
-    "brandSearch",
-    "genericSearch",
-    "strengthSearch",
-    "dosageSearch"
-
-].forEach(
-    id => {
-
-        document
-            .getElementById(id)
-            .addEventListener(
-                "input",
-                delayedSearch
-            );
-
-    }
-);
-
-
-/* =========================================================
-   CLICK OUTSIDE FILTER
-========================================================= */
+/* =====================================================
+   CLOSE POPUP WHEN CLICKING OUTSIDE
+===================================================== */
 
 document.addEventListener(
     "click",
     event => {
-
 
         const popup =
             document.getElementById(
@@ -3401,78 +2733,363 @@ document.addEventListener(
 
 
         if (
-            !popup.classList.contains(
-                "show"
-            )
-        ) {
-
-            return;
-
-        }
-
-
-        if (
-            popup.contains(
+            popup.style.display ===
+            "block" &&
+            !popup.contains(
                 event.target
+            ) &&
+            !event.target.closest(
+                ".filter-btn"
             )
         ) {
 
-            return;
+            closeFilterPopup();
 
         }
-
-
-        if (
-            event.target.closest(
-                ".filter-button"
-            )
-        ) {
-
-            return;
-
-        }
-
-
-        closeFilterPopup();
 
     }
 );
 
 
-/* =========================================================
-   RESIZE
-========================================================= */
+/* =====================================================
+   SEARCH EVENT LISTENERS
+===================================================== */
 
-window.addEventListener(
-    "resize",
-    () => {
+document.getElementById(
+    "brandSearch"
+).addEventListener(
+    "input",
+    delayedSearch
+);
+
+
+document.getElementById(
+    "genericSearch"
+).addEventListener(
+    "input",
+    delayedSearch
+);
+
+
+document.getElementById(
+    "strengthSearch"
+).addEventListener(
+    "input",
+    delayedSearch
+);
+
+
+document.getElementById(
+    "dosageSearch"
+).addEventListener(
+    "input",
+    delayedSearch
+);
+
+
+/* =====================================================
+   LOAD JSON
+===================================================== */
+
+async function loadData() {
+
+    try {
+
+        /*
+           Load BOTH JSON files
+           at the same time.
+        */
+
+        const [
+            thiqaResponse,
+            haadResponse
+        ] =
+            await Promise.all([
+
+                fetch(
+                    "data.json?v=" +
+                    Date.now(),
+                    {
+                        cache:
+                            "no-store"
+                    }
+                ),
+
+                fetch(
+                    "HAAD_LIST.json?v=" +
+                    Date.now(),
+                    {
+                        cache:
+                            "no-store"
+                    }
+                )
+
+            ]);
+
+
+        if (
+            !thiqaResponse.ok
+        ) {
+
+            throw new Error(
+                "Could not load data.json"
+            );
+
+        }
+
+
+        if (
+            !haadResponse.ok
+        ) {
+
+            throw new Error(
+                "Could not load HAAD_LIST.json"
+            );
+
+        }
+
+
+        thiqaData =
+            await thiqaResponse.json();
+
+
+        haadData =
+            await haadResponse.json();
+
+
+        /*
+           Make sure the JSON files
+           contain arrays.
+        */
+
+        if (
+            !Array.isArray(
+                thiqaData
+            )
+        ) {
+
+            throw new Error(
+                "data.json must contain an array of records."
+            );
+
+        }
+
+
+        if (
+            !Array.isArray(
+                haadData
+            )
+        ) {
+
+            throw new Error(
+                "HAAD_LIST.json must contain an array of records."
+            );
+
+        }
+
+
+        /*
+           Thiqa columns come from
+           the JSON itself.
+        */
+
+        if (
+            thiqaData.length > 0
+        ) {
+
+            thiqaColumns =
+                Object.keys(
+                    thiqaData[0]
+                );
+
+        }
+
+
+        /*
+           HAAD uses the exact fixed
+           column order requested.
+        */
+
+        haadColumns =
+            HAAD_COLUMNS.filter(
+                column => {
+
+                    if (
+                        haadData.length === 0
+                    ) {
+                        return true;
+                    }
+
+                    return haadData.some(
+                        row =>
+                            Object.prototype.hasOwnProperty.call(
+                                row,
+                                column
+                            )
+                    );
+
+                }
+            );
+
+
+        /*
+           If some HAAD column names
+           have slightly different
+           capitalization, include
+           matching actual columns.
+        */
+
+        if (
+            haadData.length > 0
+        ) {
+
+            const actualKeys =
+                Object.keys(
+                    haadData[0]
+                );
+
+
+            haadColumns =
+                HAAD_COLUMNS.map(
+                    wanted => {
+
+                        const exact =
+                            actualKeys.find(
+                                key =>
+                                    key === wanted
+                            );
+
+                        if (
+                            exact
+                        ) {
+                            return exact;
+                        }
+
+
+                        const insensitive =
+                            actualKeys.find(
+                                key =>
+                                    key
+                                        .trim()
+                                        .toLowerCase() ===
+                                    wanted
+                                        .trim()
+                                        .toLowerCase()
+                            );
+
+
+                        return insensitive ||
+                               null;
+
+                    }
+                ).filter(
+                    Boolean
+                );
+
+        }
+
+
+        /*
+           Initial results = complete
+           original data.
+        */
+
+        thiqaResults =
+            thiqaData.slice();
+
+
+        haadResults =
+            haadData.slice();
+
+
+        /*
+           Draw headers.
+        */
+
+        renderHeader(
+            "thiqa"
+        );
+
+        renderHeader(
+            "haad"
+        );
+
+
+        /*
+           Draw tables.
+        */
 
         renderVirtualTable(
             "thiqa"
         );
 
-
         renderVirtualTable(
             "haad"
         );
 
+
+        /*
+           Update counts.
+        */
+
+        updateCount(
+            "thiqa"
+        );
+
+        updateCount(
+            "haad"
+        );
+
     }
-);
+
+    catch (error) {
+
+        console.error(
+            error
+        );
 
 
-/* =========================================================
+        const message =
+            document.createElement(
+                "div"
+            );
+
+
+        message.style.padding =
+            "20px";
+
+        message.style.color =
+            "#b00020";
+
+        message.style.fontWeight =
+            "bold";
+
+        message.innerHTML =
+            `
+            Error loading the insurance lists.<br><br>
+            ${error.message}
+            <br><br>
+            Make sure these files are in the same
+            GitHub Pages folder as index.html:
+            <br>
+            <b>data.json</b>
+            <br>
+            <b>HAAD_LIST.json</b>
+            `;
+
+
+        document.body.appendChild(
+            message
+        );
+
+    }
+
+}
+
+
+/* =====================================================
    START
-========================================================= */
-
-setupVirtualScroll(
-    "thiqa"
-);
-
-
-setupVirtualScroll(
-    "haad"
-);
-
+===================================================== */
 
 loadData();
 
