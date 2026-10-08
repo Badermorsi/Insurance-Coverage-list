@@ -824,164 +824,7 @@ h1{
 
 </div>
 
-<script>
 
-/* =========================================================
-   FILES
-   ========================================================= */
-
-const FILES = {
-
-    thiqa: "data.json",
-
-    haad: "HAAD_LIST.json"
-
-};
-
-
-/* =========================================================
-   DATA
-   ========================================================= */
-
-let thiqaData = [];
-let haadData = [];
-
-let currentSheet = "thiqa";
-
-/* Lazy-loading state: only the active sheet is downloaded initially. */
-const sheetLoadPromises = new Map();
-const sheetLoaded = new Set();
-
-let columns = {
-
-    thiqa: [],
-
-    haad: []
-
-};
-
-let filteredData = {
-
-    thiqa: [],
-
-    haad: []
-
-};
-
-let columnFilters = {
-
-    thiqa: new Map(),
-
-    haad: new Map()
-
-};
-
-
-/* =========================================================
-   VIRTUAL SCROLL SETTINGS
-   ========================================================= */
-
-const MIN_ROW_HEIGHT = 40;
-
-const LINE_HEIGHT = 16;
-
-const ROW_VERTICAL_PADDING = 12;
-
-const BUFFER_ROWS = 30;
-
-let rowOffsets = {
-
-    thiqa: [],
-
-    haad: []
-
-};
-
-let totalHeights = {
-
-    thiqa: 0,
-
-    haad: 0
-
-};
-
-let renderTimer = null;
-
-
-/* =========================================================
-   HAAD COLUMN ORDER
-   ========================================================= */
-
-const HAAD_COLUMNS = [
-
-    "Drug Code",
-
-    "Insurance Plan",
-
-    "Package Name",
-
-    "Generic Code",
-
-    "Generic Name",
-
-    "Strength",
-
-    "Dosage Form",
-
-    "Package Size",
-
-    "Dispense Mode",
-
-    "Package Price to Public",
-
-    "Package Price to Pharmacy",
-
-    "Unit Price to Public",
-
-    "Unit Price to Pharmacy",
-
-    "Status",
-
-    "Delete Effective Date",
-
-    "Last Change Date",
-
-    "Agent Name",
-
-    "Manufacturer Name",
-
-    "Insurance Coverage For Government Funded Program",
-
-    "UPP Scope",
-
-    "Included in Thiqa/ABM - other than 1&7 - Drug Formulary",
-
-    "Included In Basic Drug Formulary",
-
-    "Included In ABM 1 Drug Formulary",
-
-    "Included In ABM 7 Drug Formulary",
-
-    "Unit Markup",
-
-    "Package Markup",
-
-    "Thiqa Max. Reimbursement Price (Package)",
-
-    "Thiqa co-pay amount (package)",
-
-    "Basic co-pay amount (package)",
-
-    "UPP Effective Date",
-
-    "UPP Updated Date",
-
-    "UPP Expiry Date"
-
-];
-
-
-</script>
 
 <!-- QUANTITY CALCULATOR -->
 <div id="quantityCalculator" class="quantity-calculator">
@@ -2956,6 +2799,167 @@ window.addEventListener(
 
     }
 );
+
+</script>
+
+<script>
+
+
+/* =========================================================
+   FILES
+   ========================================================= */
+
+const FILES = {
+
+    thiqa: "data.json",
+
+    haad: "HAAD_LIST.json"
+
+};
+
+
+/* =========================================================
+   DATA
+   ========================================================= */
+
+let thiqaData = [];
+let haadData = [];
+
+let currentSheet = "thiqa";
+
+/* Lazy-loading state: only the active sheet is downloaded initially. */
+const sheetLoadPromises = new Map();
+const sheetLoaded = new Set();
+
+let columns = {
+
+    thiqa: [],
+
+    haad: []
+
+};
+
+let filteredData = {
+
+    thiqa: [],
+
+    haad: []
+
+};
+
+let columnFilters = {
+
+    thiqa: new Map(),
+
+    haad: new Map()
+
+};
+
+
+/* =========================================================
+   VIRTUAL SCROLL SETTINGS
+   ========================================================= */
+
+const MIN_ROW_HEIGHT = 40;
+
+const LINE_HEIGHT = 16;
+
+const ROW_VERTICAL_PADDING = 12;
+
+const BUFFER_ROWS = 30;
+
+let rowOffsets = {
+
+    thiqa: [],
+
+    haad: []
+
+};
+
+let totalHeights = {
+
+    thiqa: 0,
+
+    haad: 0
+
+};
+
+let renderTimer = null;
+
+
+/* =========================================================
+   HAAD COLUMN ORDER
+   ========================================================= */
+
+const HAAD_COLUMNS = [
+
+    "Drug Code",
+
+    "Insurance Plan",
+
+    "Package Name",
+
+    "Generic Code",
+
+    "Generic Name",
+
+    "Strength",
+
+    "Dosage Form",
+
+    "Package Size",
+
+    "Dispense Mode",
+
+    "Package Price to Public",
+
+    "Package Price to Pharmacy",
+
+    "Unit Price to Public",
+
+    "Unit Price to Pharmacy",
+
+    "Status",
+
+    "Delete Effective Date",
+
+    "Last Change Date",
+
+    "Agent Name",
+
+    "Manufacturer Name",
+
+    "Insurance Coverage For Government Funded Program",
+
+    "UPP Scope",
+
+    "Included in Thiqa/ABM - other than 1&7 - Drug Formulary",
+
+    "Included In Basic Drug Formulary",
+
+    "Included In ABM 1 Drug Formulary",
+
+    "Included In ABM 7 Drug Formulary",
+
+    "Unit Markup",
+
+    "Package Markup",
+
+    "Thiqa Max. Reimbursement Price (Package)",
+
+    "Thiqa co-pay amount (package)",
+
+    "Basic co-pay amount (package)",
+
+    "UPP Effective Date",
+
+    "UPP Updated Date",
+
+    "UPP Expiry Date"
+
+];
+
+
 
 </script>
 
