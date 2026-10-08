@@ -151,6 +151,22 @@ h1{
     border-top:1px solid #c8c8c8;
 }
 
+.loading-overlay{
+    display:none;
+    position:absolute;
+    inset:0;
+    z-index:50;
+    background:rgba(255,255,255,.82);
+    align-items:center;
+    justify-content:center;
+    font-weight:bold;
+    color:#1d3557;
+}
+
+.excel-area.loading .loading-overlay{
+    display:flex;
+}
+
 /* HEADER */
 .excel-header{
     position:sticky;
@@ -714,7 +730,7 @@ h1{
     id="status"
     class="status">
 
-    Loading...
+    Loading Thiqa Coverage List...
 
 </div>
 
@@ -729,6 +745,10 @@ h1{
 <div
     id="excelArea"
     class="excel-area">
+
+<div class="loading-overlay" id="tableLoading">
+    Loading data...
+</div>
 
 <div
     id="excelHeader"
@@ -804,8 +824,6 @@ h1{
 
 </div>
 
-<script>
-
 /* =========================================================
    FILES
    ========================================================= */
@@ -824,10 +842,13 @@ const FILES = {
    ========================================================= */
 
 let thiqaData = [];
-
 let haadData = [];
 
 let currentSheet = "thiqa";
+
+/* Lazy-loading state: only the active sheet is downloaded initially. */
+const sheetLoadPromises = new Map();
+const sheetLoaded = new Set();
 
 let columns = {
 
@@ -1021,14 +1042,13 @@ const HAAD_COLUMNS = [
 
 </div>
 
-<div
-    id="status"
+<script>
 
 document.addEventListener(
     "DOMContentLoaded",
     function(){
 
-        loadAllData();
+        loadSheetData("thiqa").catch(showLoadError);
 
         document.addEventListener(
             "click",
@@ -1066,212 +1086,126 @@ document.addEventListener(
    LOAD JSON FILES
    ========================================================= */
 
-async function loadAllData(){
+async function loadSheetData(type){
 
-    const status =
-        document.getElementById("status");
+    if(sheetLoaded.has(type)){
+        return;
+    }
 
-    const errorBox =
-        document.getElementById("errorBox");
+    if(sheetLoadPromises.has(type)){
+        return sheetLoadPromises.get(type);
+    }
 
-    status.textContent =
-        "Loading...";
+    const status = document.getElementById("status");
+    const errorBox = document.getElementById("errorBox");
+    const file = FILES[type];
 
-    errorBox.style.display =
-        "none";
+    const promise = (async function(){
+
+        status.textContent =
+            type === "thiqa"
+                ? "Loading Thiqa Coverage List..."
+                : "Loading HAAD List...";
+
+        errorBox.style.display = "none";
+        document.getElementById("excelArea").classList.add("loading");
+
+        /*
+         * PERFORMANCE:
+         * The old code added Date.now() and cache:"no-store",
+         * forcing the large JSON files to download again.
+         * Normal browser caching is much faster on later visits.
+         */
+        const response = await fetch(file, {
+            cache: "default"
+        });
+
+        if(!response.ok){
+            throw new Error(
+                "Could not load " + file +
+                "\\nHTTP Status: " + response.status
+            );
+        }
+
+        const json = await response.json();
+        const data = normalizeData(json);
+
+        if(!Array.isArray(data) || data.length === 0){
+            throw new Error(
+                file + " loaded but contains no records."
+            );
+        }
+
+        if(type === "thiqa"){
+
+            thiqaData = data;
+            columns.thiqa = Object.keys(data[0]);
+            filteredData.thiqa = data.slice();
+            columnFilters.thiqa.clear();
+
+        }else{
+
+            haadData = data;
+
+            const existingHaadColumns = Object.keys(data[0]);
+            const extraColumns = existingHaadColumns.filter(
+                column => !HAAD_COLUMNS.includes(column)
+            );
+
+            columns.haad = [
+                ...HAAD_COLUMNS.filter(
+                    column => existingHaadColumns.includes(column)
+                ),
+                ...extraColumns
+            ];
+
+            filteredData.haad = data.slice();
+            columnFilters.haad.clear();
+        }
+
+        sheetLoaded.add(type);
+        document.getElementById("excelArea").classList.remove("loading");
+
+        /* Only calculate offsets for the sheet being displayed. */
+        if(currentSheet === type){
+            buildRowOffsets(type);
+            renderVirtualTable(type);
+            updateStatus();
+        }
+
+        status.textContent =
+            type === "thiqa"
+                ? "Thiqa Coverage List: " + data.length.toLocaleString() + " records"
+                : "HAAD List: " + data.length.toLocaleString() + " records";
+
+    })();
+
+    sheetLoadPromises.set(type, promise);
 
     try{
-
-        const results =
-            await Promise.all([
-
-                fetch(
-                    "data.json?v=" +
-                    Date.now(),
-                    {
-                        cache:"no-store"
-                    }
-                ),
-
-                fetch(
-                    "HAAD_LIST.json?v=" +
-                    Date.now(),
-                    {
-                        cache:"no-store"
-                    }
-                )
-
-            ]);
-
-
-        if(!results[0].ok){
-
-            throw new Error(
-                "Could not load data.json\n" +
-                "HTTP Status: " +
-                results[0].status
-            );
-
-        }
-
-
-        if(!results[1].ok){
-
-            throw new Error(
-                "Could not load HAAD_LIST.json\n" +
-                "HTTP Status: " +
-                results[1].status
-            );
-
-        }
-
-
-        const thiqaJson =
-            await results[0].json();
-
-        const haadJson =
-            await results[1].json();
-
-
-        thiqaData =
-            normalizeData(
-                thiqaJson
-            );
-
-        haadData =
-            normalizeData(
-                haadJson
-            );
-
-
-        if(!Array.isArray(thiqaData)){
-
-            throw new Error(
-                "data.json is not a JSON array."
-            );
-
-        }
-
-
-        if(!Array.isArray(haadData)){
-
-            throw new Error(
-                "HAAD_LIST.json is not a JSON array."
-            );
-
-        }
-
-
-        if(thiqaData.length === 0){
-
-            throw new Error(
-                "data.json loaded but contains 0 records."
-            );
-
-        }
-
-
-        if(haadData.length === 0){
-
-            throw new Error(
-                "HAAD_LIST.json loaded but contains 0 records."
-            );
-
-        }
-
-
-        columns.thiqa =
-            Object.keys(
-                thiqaData[0]
-            );
-
-
-        const existingHaadColumns =
-            Object.keys(
-                haadData[0]
-            );
-
-
-        const extraColumns =
-            existingHaadColumns.filter(
-                column =>
-                    !HAAD_COLUMNS.includes(
-                        column
-                    )
-            );
-
-
-        columns.haad = [
-
-            ...HAAD_COLUMNS.filter(
-                column =>
-                    existingHaadColumns.includes(
-                        column
-                    )
-            ),
-
-            ...extraColumns
-
-        ];
-
-
-        filteredData.thiqa =
-            [...thiqaData];
-
-        filteredData.haad =
-            [...haadData];
-
-
-        columnFilters.thiqa.clear();
-
-        columnFilters.haad.clear();
-
-
-        buildRowOffsets("thiqa");
-
-        buildRowOffsets("haad");
-
-
-        renderVirtualTable(
-            "thiqa"
-        );
-
-
-        status.textContent =
-            "Thiqa Coverage List: " +
-            thiqaData.length.toLocaleString() +
-            " records  |  HAAD List: " +
-            haadData.length.toLocaleString() +
-            " records";
-
+        return await promise;
+    }catch(error){
+        sheetLoadPromises.delete(type);
+        document.getElementById("excelArea").classList.remove("loading");
+        throw error;
     }
+}
 
-    catch(error){
+function showLoadError(error){
 
-        console.error(
-            "Insurance Coverage List Error:",
-            error
-        );
+    console.error("Insurance Coverage List Error:", error);
 
+    const status = document.getElementById("status");
+    const errorBox = document.getElementById("errorBox");
 
-        status.textContent =
-            "Unable to load data.";
+    document.getElementById("excelArea").classList.remove("loading");
 
-
-        errorBox.style.display =
-            "block";
-
-
-        errorBox.textContent =
-            "ERROR LOADING DATA\n\n" +
-            error.message +
-            "\n\n" +
-            "Check that these files are in the SAME folder as index.html:\n\n" +
-            "data.json\n" +
-            "HAAD_LIST.json";
-
-    }
-
+    status.textContent = "Unable to load data.";
+    errorBox.style.display = "block";
+    errorBox.textContent =
+        "ERROR LOADING DATA\\n\\n" +
+        error.message +
+        "\\n\\nMake sure the JSON file is in the SAME folder as index.html.";
 }
 
 
@@ -1307,74 +1241,65 @@ function normalizeData(json){
    SWITCH SHEET
    ========================================================= */
 
-function switchSheet(type){
+async function switchSheet(type){
 
-    currentSheet =
-        type;
+    currentSheet = type;
 
-    document
-        .querySelectorAll(".tab")
-        .forEach(tab => tab.classList.remove("active"));
+    document.querySelectorAll(".tab").forEach(
+        tab => tab.classList.remove("active")
+    );
 
-    document
-        .getElementById(
-            type === "thiqa"
-                ? "thiqaTab"
-                : "haadTab"
-        )
-        .classList.add("active");
+    document.getElementById(
+        type === "thiqa" ? "thiqaTab" : "haadTab"
+    ).classList.add("active");
 
-    document
-        .querySelector(".search-container")
-        .style.display = "";
+    document.querySelector(".search-container").style.display = "";
+    document.querySelector(".controls").style.display = "";
+    document.getElementById("status").style.display = "";
+    document.getElementById("excelArea").style.display = "";
 
-    document
-        .querySelector(".controls")
-        .style.display = "";
+    document.getElementById("quantityCalculator").classList.remove("show");
+    document.getElementById("quantityDropdown").classList.remove("show");
 
-    document
-        .getElementById("status")
-        .style.display = "";
+    document.getElementById("brandSearch").value = "";
+    document.getElementById("genericSearch").value = "";
+    document.getElementById("strengthSearch").value = "";
+    document.getElementById("formSearch").value = "";
 
-    document
-        .getElementById("excelArea")
-        .style.display = "";
+    /* Instant switch when the sheet is already cached in memory. */
+    if(sheetLoaded.has(type)){
 
-    document
-        .getElementById("quantityCalculator")
-        .classList.remove("show");
+        filteredData[type] = getFilteredRows(type);
+        buildRowOffsets(type);
 
-    document
-        .getElementById("quantityDropdown")
-        .classList.remove("show");
+        document.getElementById("excelArea").scrollTop = 0;
 
-    document
-        .getElementById("brandSearch")
-        .value = "";
+        renderVirtualTable(type);
+        updateStatus();
+        return;
+    }
 
-    document
-        .getElementById("genericSearch")
-        .value = "";
+    /* First visit: download only this sheet. */
+    document.getElementById("excelHeader").innerHTML = "";
+    document.getElementById("virtualContent").innerHTML = "";
+    document.getElementById("virtualContent").style.height = "0px";
 
-    document
-        .getElementById("strengthSearch")
-        .value = "";
+    try{
 
-    document
-        .getElementById("formSearch")
-        .value = "";
+        await loadSheetData(type);
 
-    filteredData[type] =
-        getFilteredRows(
-            type
-        );
+        if(currentSheet !== type){
+            return;
+        }
 
-    buildRowOffsets(type);
+        document.getElementById("excelArea").scrollTop = 0;
+        renderVirtualTable(type);
+        updateStatus();
 
-    renderVirtualTable(type);
+    }catch(error){
 
-    updateStatus();
-
+        showLoadError(error);
+    }
 }
 
 
@@ -1430,24 +1355,14 @@ function cellMatchesSearch(
 
 function applySearch(){
 
-    filteredData[currentSheet] =
-        getFilteredRows(
-            currentSheet
-        );
+    if(!sheetLoaded.has(currentSheet)){
+        return;
+    }
 
-
-    buildRowOffsets(
-        currentSheet
-    );
-
-
-    renderVirtualTable(
-        currentSheet
-    );
-
-
+    filteredData[currentSheet] = getFilteredRows(currentSheet);
+    buildRowOffsets(currentSheet);
+    renderVirtualTable(currentSheet);
     updateStatus();
-
 }
 
 
@@ -2172,78 +2087,33 @@ function closeFilter(){
 
 function clearSearchAndFilters(){
 
-    document
-        .getElementById(
-            "brandSearch"
-        )
-        .value = "";
-
-
-    document
-        .getElementById(
-            "genericSearch"
-        )
-        .value = "";
-
-
-    document
-        .getElementById(
-            "strengthSearch"
-        )
-        .value = "";
-
-
-    document
-        .getElementById(
-            "formSearch"
-        )
-        .value = "";
-
+    document.getElementById("brandSearch").value = "";
+    document.getElementById("genericSearch").value = "";
+    document.getElementById("strengthSearch").value = "";
+    document.getElementById("formSearch").value = "";
 
     columnFilters.thiqa.clear();
-
     columnFilters.haad.clear();
 
+    if(sheetLoaded.has("thiqa")){
+        filteredData.thiqa = [...thiqaData];
+    }
 
-    filteredData.thiqa =
-        [...thiqaData];
-
-
-    filteredData.haad =
-        [...haadData];
-
-
-    buildRowOffsets(
-        "thiqa"
-    );
-
-
-    buildRowOffsets(
-        "haad"
-    );
-
+    if(sheetLoaded.has("haad")){
+        filteredData.haad = [...haadData];
+    }
 
     closeFilter();
 
-
-    const area =
-        document.getElementById(
-            "excelArea"
-        );
-
-
+    const area = document.getElementById("excelArea");
     area.scrollTop = 0;
-
     area.scrollLeft = 0;
 
-
-    renderVirtualTable(
-        currentSheet
-    );
-
-
-    updateStatus();
-
+    if(sheetLoaded.has(currentSheet)){
+        buildRowOffsets(currentSheet);
+        renderVirtualTable(currentSheet);
+        updateStatus();
+    }
 }
 
 
@@ -3075,14 +2945,12 @@ window.addEventListener(
     "resize",
     function(){
 
-        buildRowOffsets(
-            currentSheet
-        );
+        if(!sheetLoaded.has(currentSheet)){
+            return;
+        }
 
-
-        renderVirtualTable(
-            currentSheet
-        );
+        buildRowOffsets(currentSheet);
+        renderVirtualTable(currentSheet);
 
     }
 );
