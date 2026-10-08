@@ -576,6 +576,28 @@ h1{
     margin-top:10px;
 }
 
+/* RESET ACTION */
+.quantity-reset-row{
+    display:flex;
+    justify-content:flex-end;
+    max-width:1100px;
+    margin:10px auto 0;
+}
+.quantity-reset-button{
+    appearance:none;
+    border:1px solid #cbd5e1;
+    border-radius:9px;
+    background:#fff;
+    color:#475569;
+    padding:9px 14px;
+    font-size:13px;
+    font-weight:700;
+    cursor:pointer;
+    transition:background .15s ease,border-color .15s ease;
+}
+.quantity-reset-button:hover{background:#f1f5f9;border-color:#94a3b8;}
+.quantity-reset-button:focus-visible{outline:3px solid rgba(29,53,87,.2);outline-offset:2px;}
+
 /* DOSE / FREQUENCY / DURATION INPUTS */
 .quantity-calculation-inputs{
     display:grid;
@@ -1034,6 +1056,10 @@ h1{
 
     <div class="quantity-help">
         Type the beginning of the Proactive Name or Proactive ID, then select the item.
+    </div>
+
+    <div class="quantity-reset-row">
+        <button type="button" class="quantity-reset-button" onclick="resetQuantityCalculator()">↺ Reset calculator</button>
     </div>
 
     <div
@@ -1521,6 +1547,16 @@ async function searchQuantityItems(){
     dropdown.classList.add("show");
 }
 
+function resetQuantityEntryFields(){
+    document.getElementById("doseValue").value = "";
+    document.getElementById("frequencyValue").value = "";
+    document.getElementById("durationValue").value = "";
+    document.getElementById("frequencyUnit").value = "D";
+    document.getElementById("durationUnit").value = "D";
+    document.getElementById("doseUnit").value = "ml";
+    document.getElementById("quantityFormula").innerHTML = '<div class="quantity-formula-hint">Enter dose, frequency and duration to calculate total quantity.</div>';
+}
+
 function selectQuantityItem(row){
     const id = getQuantityRowValue(row, ["Proactive ID", "Proactive Id", "proactive id", "ProactiveID", "ID"]);
     const name = getQuantityRowValue(row, ["Proactive Name", "proactive name"]);
@@ -1528,6 +1564,8 @@ function selectQuantityItem(row){
     const strength = getQuantityRowValue(row, ["Strength", "strength"]);
     const packageSize = getQuantityRowValue(row, ["Package Size", "package size"]);
 
+    // Every newly selected medicine starts with clean dose/frequency/duration entries.
+    resetQuantityEntryFields();
     document.getElementById("quantityProactiveId").textContent = String(id ?? "");
     document.getElementById("quantityProactiveName").textContent = String(name ?? "");
     document.getElementById("quantityDosageForm").textContent = String(dosageForm ?? "");
@@ -1535,10 +1573,29 @@ function selectQuantityItem(row){
     document.getElementById("quantityPackageSize").textContent = String(packageSize ?? "");
     document.getElementById("quantityResult").classList.add("show");
 
+    // Suggest a useful dose unit from the selected item's formulation/package.
+    // Liquid dosage forms take priority; the user can always change the suggestion.
+    const liquidForm = /\b(syrup|suspension)\b/i.test(String(dosageForm || ""));
+    const unitPack = /\b(blister|strip|sachet|patch|units?)\b/i.test(String(packageSize || ""));
+    document.getElementById("doseUnit").value = liquidForm ? "ml" : (unitPack ? "unit" : "ml");
+
     const input = document.getElementById("quantitySearch");
     input.value = String(name || id || "");
     document.getElementById("quantityDropdown").classList.remove("show");
     document.getElementById("quantityDropdown").innerHTML = "";
+}
+
+function resetQuantityCalculator(){
+    resetQuantityEntryFields();
+    ["quantityProactiveId", "quantityProactiveName", "quantityDosageForm", "quantityStrength", "quantityPackageSize"].forEach(function(id){
+        document.getElementById(id).textContent = "";
+    });
+    document.getElementById("quantityResult").classList.remove("show");
+    document.getElementById("quantitySearch").value = "";
+    const dropdown = document.getElementById("quantityDropdown");
+    dropdown.innerHTML = "";
+    dropdown.classList.remove("show");
+    document.getElementById("quantitySearch").focus();
 }
 
 function closeQuantityDropdown(event){
@@ -1740,6 +1797,24 @@ function quantityIuPensDescription(totalIU, strengthText, packageSize){
     return '<div class="quantity-pens-card"><div class="quantity-pens-label">No. of pens required</div><div class="quantity-pens-calculation">' + division.replace(/ = $/, '') + '</div><div class="quantity-pens-answer">' + result + '</div></div>';
 }
 
+function quantityDropBoxesDescription(totalDrops, packageSize){
+    if(totalDrops === null || !Number.isFinite(totalDrops) || totalDrops < 0) return "";
+    const packageText = String(packageSize || "");
+    // For drops, keep the displayed dose/total in drops, but convert drops to ml
+    // for dispensing calculations (20 drops = 1 ml), then compare with bottle ml.
+    const mlMatch = packageText.match(/(\d+(?:\.\d+)?)\s*ml\b/i);
+    if(!mlMatch){
+        return '<div class="quantity-boxes-required">No. of boxes required<span class="quantity-boxes-answer">Unable to calculate</span><span class="quantity-boxes-calculation">Package size must specify its volume in ml.</span></div>';
+    }
+    const packageMl = Number(mlMatch[1]);
+    if(!Number.isFinite(packageMl) || packageMl <= 0) return "";
+    const totalMl = totalDrops / 20;
+    const boxes = Math.ceil(totalMl / packageMl - 1e-10);
+    const result = quantityRed(String(boxes)) + (boxes === 1 ? " box" : " boxes");
+    const calculation = quantityFormatNumber(totalDrops) + " drops / 20 = " + quantityFormatNumber(totalMl) + " ml; " + quantityFormatNumber(totalMl) + " / " + quantityFormatNumber(packageMl) + " ml";
+    return '<div class="quantity-boxes-required">No. of boxes required<span class="quantity-boxes-answer">' + result + '</span><span class="quantity-boxes-calculation">Calculation: ' + calculation + '</span></div>';
+}
+
 function quantityBoxesDescription(totalQuantity, packageSize){
     const pack = quantityParsePackageSize(packageSize);
     if(totalQuantity === null || !pack || !Number.isFinite(totalQuantity) || totalQuantity < 0) return "";
@@ -1808,6 +1883,8 @@ function updateQuantityFormula(){
         if(doseUnit === "IU"){
             const strength = (document.getElementById("quantityStrength").textContent || "").trim();
             boxesHtml = quantityIuPensDescription(total, strength, packageSize);
+        }else if(doseUnit === "drop"){
+            boxesHtml = quantityDropBoxesDescription(total, packageSize);
         }else{
             boxesHtml = quantityBoxesDescription(total, packageSize);
         }
