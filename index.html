@@ -656,6 +656,12 @@ h1{
     font-weight:800;
 }
 
+.quantity-boxes-required{
+    margin-top:8px;
+    font-size:17px;
+    font-weight:700;
+}
+
 .quantity-number-highlight{
     color:#d00000;
     font-weight:800;
@@ -1614,6 +1620,56 @@ function quantityFormatNumber(value){
     return String(rounded);
 }
 
+function quantityParsePackageSize(packageSize){
+    const text = String(packageSize || "").trim();
+    if(!text) return null;
+
+    // Prefer the first stated package amount, e.g. 30's or 100ml.
+    const primaryMatch = text.match(/(\d+(?:\.\d+)?)\s*(?:['’]s\b|s\b|ml\b|mL\b|g\b|mg\b|l\b|L\b|iu\b|units?\b)/i);
+    if(!primaryMatch) return null;
+
+    const primarySize = Number(primaryMatch[1]);
+    if(!Number.isFinite(primarySize) || primarySize <= 0) return null;
+
+    // For packs such as "30's (10's Blister x 3)", capture the inner blister size.
+    const blisterMatch = text.match(/(\d+(?:\.\d+)?)\s*['’]s?\s*blister\b/i);
+    const blisterSize = blisterMatch ? Number(blisterMatch[1]) : null;
+
+    // A package measured in ml/bottle is a container, not a blister pack.
+    const isVolumePack = /\bml\b|\blitre\b|\bliter\b|\bL\b/i.test(text);
+    return {
+        size: primarySize,
+        blisterSize: Number.isFinite(blisterSize) && blisterSize > 0 && !isVolumePack ? blisterSize : null
+    };
+}
+
+function quantityBoxesDescription(totalQuantity, packageSize){
+    const pack = quantityParsePackageSize(packageSize);
+    if(totalQuantity === null || !pack || !Number.isFinite(totalQuantity) || totalQuantity < 0) return "";
+
+    const boxesNeeded = Math.ceil(totalQuantity / pack.size - 1e-10);
+    const wholeBoxes = Math.floor(totalQuantity / pack.size + 1e-10);
+    const remainder = Math.max(0, totalQuantity - wholeBoxes * pack.size);
+    const division = quantityFormatNumber(totalQuantity) + " / " + quantityFormatNumber(pack.size) + " = ";
+    let result;
+
+    if(remainder < 1e-9){
+        result = division + quantityRed(String(wholeBoxes)) + (wholeBoxes === 1 ? " box" : " boxes");
+    }else if(pack.blisterSize){
+        const blisters = Math.floor(remainder / pack.blisterSize + 1e-10);
+        const leftover = Math.max(0, remainder - blisters * pack.blisterSize);
+        const parts = [];
+        if(wholeBoxes > 0) parts.push(quantityRed(String(wholeBoxes)) + (wholeBoxes === 1 ? " box" : " boxes"));
+        if(blisters > 0) parts.push(quantityRed(String(blisters)) + (blisters === 1 ? " blister" : " blisters"));
+        if(leftover > 1e-9) parts.push(quantityRed(quantityFormatNumber(leftover)) + " additional units");
+        result = division + (parts.length ? parts.join(" and ") : quantityRed(String(boxesNeeded)) + (boxesNeeded === 1 ? " box" : " boxes"));
+    }else{
+        result = division + quantityRed(String(boxesNeeded)) + (boxesNeeded === 1 ? " box" : " boxes");
+    }
+
+    return '<div class="quantity-boxes-required">No. of boxes required = ' + result + '</div>';
+}
+
 function updateQuantityFormula(){
     const doseValue = document.getElementById("doseValue").value.trim();
     const doseUnit = document.getElementById("doseUnit").value;
@@ -1647,13 +1703,16 @@ function updateQuantityFormula(){
     const total = quantityCalculateTotal(doseValue, frequencyValue, frequencyUnit, durationValue, durationUnit);
 
     let totalHtml = "";
+    let boxesHtml = "";
     if(total !== null){
         totalHtml = '<div class="quantity-total">Total quantity = ' + quantityRed(quantityFormatNumber(total)) + " " + quantityEscapeHtml(displayUnit) + "</div>";
+        const packageSize = (document.getElementById("quantityPackageSize").textContent || "").trim();
+        boxesHtml = quantityBoxesDescription(total, packageSize);
     }else{
         totalHtml = '<div class="quantity-total">Unable to calculate total quantity for these values.</div>';
     }
 
-    formula.innerHTML = '<div class="quantity-formula-description">' + doseText + " " + frequencyPhrase + " " + durationPhrase + "</div>" + totalHtml;
+    formula.innerHTML = '<div class="quantity-formula-description">' + doseText + " " + frequencyPhrase + " " + durationPhrase + "</div>" + totalHtml + boxesHtml;
 }
 
 
