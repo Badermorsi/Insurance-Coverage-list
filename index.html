@@ -1086,6 +1086,78 @@ function normalizeData(json){
    SWITCH SHEET
    ========================================================= */
 
+/* =========================================================
+   QUANTITY CALCULATOR TAB
+   ========================================================= */
+
+function switchQuantityCalculator(){
+
+    document
+        .querySelectorAll(".tab")
+        .forEach(tab => tab.classList.remove("active"));
+
+    document
+        .getElementById("quantityTab")
+        .classList.add("active");
+
+    const searchContainer =
+        document.querySelector(".search-container");
+
+    const controls =
+        document.querySelector(".controls");
+
+    const status =
+        document.getElementById("status");
+
+    const excelArea =
+        document.getElementById("excelArea");
+
+    if(searchContainer){
+        searchContainer.style.display = "none";
+    }
+
+    if(controls){
+        controls.style.display = "none";
+    }
+
+    if(status){
+        status.style.display = "none";
+    }
+
+    if(excelArea){
+        excelArea.style.display = "none";
+    }
+
+    const calculator =
+        document.getElementById("quantityCalculator");
+
+    if(calculator){
+        calculator.classList.add("show");
+    }
+
+    const dropdown =
+        document.getElementById("quantityDropdown");
+
+    if(dropdown){
+        dropdown.classList.remove("show");
+    }
+
+    const search =
+        document.getElementById("quantitySearch");
+
+    if(search){
+        setTimeout(function(){
+            search.focus();
+        }, 0);
+    }
+
+}
+
+
+/* =========================================================
+   SWITCH SHEET
+   ========================================================= */
+
 async function switchSheet(type){
 
     currentSheet = type;
