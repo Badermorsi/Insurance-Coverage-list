@@ -628,96 +628,157 @@ h1{
     box-shadow:0 0 0 2px rgba(29,53,87,.1);
 }
 
+/* QUANTITY CALCULATION SUMMARY — clean clinical dashboard */
 .quantity-formula{
     max-width:1100px;
     margin:16px auto 0;
-    padding:16px;
-    border:1px solid #d0d5da;
-    border-radius:8px;
-    background:#eef3f8;
-    color:#1d3557;
-    text-align:center;
-    font-size:18px;
-    font-weight:600;
-    line-height:1.7;
-    overflow-wrap:anywhere;
+    padding:0;
+    border:1px solid #dfe6ee;
+    border-radius:16px;
+    background:#fff;
+    color:#243449;
+    text-align:left;
+    font-size:15px;
+    line-height:1.5;
+    overflow:hidden;
+    box-shadow:0 8px 24px rgba(24,39,56,.07);
 }
-
-.quantity-formula-description{
-    font-size:18px;
-    font-weight:600;
+.quantity-summary-layout{
+    display:grid;
+    grid-template-columns:minmax(0,1fr) minmax(280px,.85fr);
+    gap:0;
 }
-
-.quantity-total{
-    margin-top:6px;
-    padding-top:8px;
-    border-top:1px solid #d0dbe5;
-    font-size:19px;
+.quantity-regimen-panel{
+    padding:22px 24px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    min-width:0;
+    background:linear-gradient(145deg,#ffffff 0%,#f8fafc 100%);
+}
+.quantity-section-kicker{
+    color:#738196;
+    font-size:11px;
     font-weight:800;
+    letter-spacing:.13em;
+    text-transform:uppercase;
+    margin-bottom:9px;
 }
-
-.quantity-boxes-required{
-    margin-top:8px;
+.quantity-formula-description{
     font-size:17px;
     font-weight:700;
+    color:#1e293b;
+    line-height:1.55;
+    overflow-wrap:anywhere;
 }
-
-.quantity-number-highlight{
-    color:#d00000;
-    font-weight:800;
-}
-
-.quantity-formula-hint{
+.quantity-total{
+    margin-top:17px;
+    padding-top:13px;
+    border-top:1px solid #e4eaf0;
     color:#64748b;
     font-size:14px;
-    font-weight:normal;
+    font-weight:600;
 }
-
-@media(max-width:800px){
-    .quantity-calculation-inputs{
-        grid-template-columns:1fr;
-        gap:10px;
-        margin-top:18px;
-    }
-
-    .quantity-input-group{
-        padding:13px;
-    }
-
-    .quantity-formula{
-        font-size:16px;
-        padding:12px;
-    }
-
-    .quantity-formula-description{
-        font-size:16px;
-    }
-
-    .quantity-total{
-        font-size:17px;
-    }
+.quantity-total .quantity-number-highlight{
+    color:#334155;
+    font-size:15px;
+    font-weight:800;
 }
-
+.quantity-boxes-required{
+    margin:0;
+    padding:22px 24px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    background:#f0fdfa;
+    border-left:1px solid #d7eee8;
+    color:#0f766e;
+    font-size:12px;
+    font-weight:800;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+}
+.quantity-boxes-answer{
+    display:block;
+    margin-top:7px;
+    color:#115e59;
+    font-size:25px;
+    font-weight:850;
+    letter-spacing:-.035em;
+    line-height:1.2;
+    text-transform:none;
+}
+.quantity-boxes-calculation{
+    margin-top:7px;
+    color:#527b78;
+    font-size:12px;
+    font-weight:500;
+    letter-spacing:0;
+    text-transform:none;
+}
+.quantity-pens-card{
+    margin:0;
+    padding:22px 24px;
+    border:0;
+    border-left:1px solid #d7e5f1;
+    border-radius:0;
+    background:linear-gradient(145deg,#12304a 0%,#1c4960 100%);
+    color:#fff;
+    text-align:left;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    min-width:0;
+}
+.quantity-pens-label{
+    font-size:11px;
+    font-weight:800;
+    letter-spacing:.13em;
+    text-transform:uppercase;
+    color:#b9d7e7;
+}
+.quantity-pens-calculation{
+    margin-top:8px;
+    color:#d4e5ef;
+    font-size:13px;
+    font-weight:500;
+    line-height:1.4;
+    overflow-wrap:anywhere;
+}
+.quantity-pens-answer{
+    margin-top:6px;
+    color:#fff;
+    font-size:clamp(25px,3vw,34px);
+    font-weight:850;
+    letter-spacing:-.04em;
+    line-height:1.15;
+    overflow-wrap:anywhere;
+}
+.quantity-pens-card .quantity-number-highlight{
+    color:#fff;
+}
+.quantity-number-highlight{
+    color:#c2410c;
+    font-weight:850;
+}
+.quantity-formula-hint{
+    padding:18px 22px;
+    color:#64748b;
+    font-size:14px;
+    font-weight:500;
+}
 @media(max-width:800px){
-    .quantity-calculator{
-        padding:15px 10px;
-    }
-
-    .quantity-result{
-        grid-template-columns:1fr 1fr !important;
-    }
-
-    .quantity-field:nth-child(2n){
-        border-right:none;
-    }
-
-    .quantity-field:nth-child(n+3){
-        border-top:1px solid #d5d8dc;
-    }
-
-    .quantity-field-value{
-        min-height:52px;
-    }
+    .quantity-calculator{padding:15px 10px;}
+    .quantity-result{grid-template-columns:1fr 1fr !important;}
+    .quantity-field:nth-child(2n){border-right:none;}
+    .quantity-field:nth-child(n+3){border-top:1px solid #d5d8dc;}
+    .quantity-field-value{min-height:52px;}
+    .quantity-summary-layout{grid-template-columns:1fr;}
+    .quantity-regimen-panel{padding:18px;}
+    .quantity-formula-description{font-size:16px;}
+    .quantity-total{margin-top:13px;padding-top:11px;font-size:13px;}
+    .quantity-pens-card,.quantity-boxes-required{padding:18px;border-left:0;border-top:1px solid rgba(148,163,184,.28);}
+    .quantity-pens-answer,.quantity-boxes-answer{font-size:26px;}
 }
 
 /* MOBILE */
@@ -1653,7 +1714,7 @@ function quantityIuPensDescription(totalIU, strengthText, packageSize){
     const pensPerBoxMatch = packageText.match(/\bpen\b[^x×\n]*[x×]\s*(\d+)\b/i) ||
                             packageText.match(/[x×]\s*(\d+)\b/i);
 
-    if(!strength || !penVolumeMatch) return '<div class="quantity-boxes-required">No. of pens required = unable to read strength or pen volume.</div>';
+    if(!strength || !penVolumeMatch) return '<div class="quantity-pens-card"><div class="quantity-pens-label">No. of pens required</div><div class="quantity-pens-answer">Unable to calculate</div><div class="quantity-pens-calculation">Check the item strength and package size.</div></div>';
 
     const iuPerMl = Number(strength[1]);
     const penVolume = Number(penVolumeMatch[1]);
@@ -1676,7 +1737,7 @@ function quantityIuPensDescription(totalIU, strengthText, packageSize){
         result = quantityRed(String(pensNeeded)) + (pensNeeded === 1 ? " pen" : " pens");
     }
 
-    return '<div class="quantity-boxes-required">No. of pens required = ' + division + result + '</div>';
+    return '<div class="quantity-pens-card"><div class="quantity-pens-label">No. of pens required</div><div class="quantity-pens-calculation">' + division.replace(/ = $/, '') + '</div><div class="quantity-pens-answer">' + result + '</div></div>';
 }
 
 function quantityBoxesDescription(totalQuantity, packageSize){
@@ -1704,7 +1765,7 @@ function quantityBoxesDescription(totalQuantity, packageSize){
         result = division + quantityRed(String(boxesNeeded)) + (boxesNeeded === 1 ? " box" : " boxes");
     }
 
-    return '<div class="quantity-boxes-required">No. of boxes required = ' + result + '</div>';
+    return '<div class="quantity-boxes-required">No. of boxes required<span class="quantity-boxes-answer">' + result.replace(division, '') + '</span><span class="quantity-boxes-calculation">Calculation: ' + division.replace(/ = $/, '') + '</span></div>';
 }
 
 function updateQuantityFormula(){
@@ -1754,7 +1815,7 @@ function updateQuantityFormula(){
         totalHtml = '<div class="quantity-total">Unable to calculate total quantity for these values.</div>';
     }
 
-    formula.innerHTML = '<div class="quantity-formula-description">' + doseText + " " + frequencyPhrase + " " + durationPhrase + "</div>" + totalHtml + boxesHtml;
+    formula.innerHTML = '<div class="quantity-summary-layout"><div class="quantity-regimen-panel"><div class="quantity-section-kicker">Dosage regimen</div><div class="quantity-formula-description">' + doseText + " " + frequencyPhrase + " " + durationPhrase + "</div>" + totalHtml + '</div>' + boxesHtml + '</div>';
 }
 
 
