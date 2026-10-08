@@ -1,1628 +1,395 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Insurance Coverage List</title>
-
-<style>
-*{
-    box-sizing:border-box;
-}
-
-body{
-    margin:0;
-    font-family:Arial,Helvetica,sans-serif;
-    background:#f3f5f7;
-    color:#222;
-}
-
-.top{
-    background:#fff;
-    padding:18px 20px 12px;
-    border-bottom:1px solid #d9d9d9;
-}
-
-h1{
-    margin:0 0 15px;
-    text-align:center;
-    font-size:26px;
-    color:#1d3557;
-}
-
-/* TABS */
-.tabs{
-    display:flex;
-    justify-content:center;
-    gap:8px;
-    margin-bottom:15px;
-}
-
-.tab{
-    border:1px solid #b8b8b8;
-    background:#eee;
-    padding:11px 25px;
-    border-radius:6px 6px 0 0;
-    cursor:pointer;
-    font-weight:bold;
-    font-size:15px;
-}
-
-.tab:hover{
-    background:#e2e2e2;
-}
-
-.tab.active{
-    background:#1d3557;
-    color:#fff;
-    border-color:#1d3557;
-}
-
-/* SEARCH */
-.search-container{
-    display:grid;
-    grid-template-columns:repeat(4,minmax(180px,1fr));
-    gap:10px;
-    max-width:1400px;
-    margin:0 auto;
-}
-
-.search-box{
-    position:relative;
-}
-
-.search-box input{
-    width:100%;
-    padding:11px 38px 11px 12px;
-    border:1px solid #bcbcbc;
-    border-radius:5px;
-    font-size:14px;
-    outline:none;
-}
-
-.search-box input:focus{
-    border-color:#1d3557;
-    box-shadow:0 0 0 2px rgba(29,53,87,.1);
-}
-
-.search-icon{
-    position:absolute;
-    right:11px;
-    top:10px;
-    color:#777;
-}
-
-/* BUTTONS */
-.controls{
-    display:flex;
-    justify-content:center;
-    gap:10px;
-    margin-top:12px;
-    flex-wrap:wrap;
-}
-
-.control-btn{
-    border:none;
-    border-radius:5px;
-    padding:10px 18px;
-    cursor:pointer;
-    font-weight:bold;
-    font-size:14px;
-}
-
-.clear-btn{
-    background:#dc3545;
-    color:#fff;
-}
-
-.clear-btn:hover{
-    background:#b02a37;
-}
-
-/* STATUS */
-.status{
-    text-align:center;
-    padding:10px;
-    font-size:14px;
-    color:#555;
-}
-
-.error{
-    margin:15px auto;
-    max-width:1000px;
-    background:#ffe5e5;
-    color:#a40000;
-    border:1px solid #ff9b9b;
-    border-radius:6px;
-    padding:15px;
-    white-space:pre-wrap;
-    font-family:monospace;
-    text-align:left;
-}
-
-/* TABLE AREA */
-.excel-area{
-    position:relative;
-    width:100%;
-    height:calc(100vh - 225px);
-    min-height:450px;
-    overflow:auto;
-    background:#fff;
-    border-top:1px solid #c8c8c8;
-}
-
-.loading-overlay{
-    display:none;
-    position:absolute;
-    inset:0;
-    z-index:50;
-    background:rgba(255,255,255,.82);
-    align-items:center;
-    justify-content:center;
-    font-weight:bold;
-    color:#1d3557;
-}
-
-.excel-area.loading .loading-overlay{
-    display:flex;
-}
-
-/* HEADER */
-.excel-header{
-    position:sticky;
-    top:0;
-    z-index:20;
-    display:grid;
-    background:#e9edf2;
-    border-bottom:2px solid #9ba6b2;
-    min-width:max-content;
-}
-
-.header-cell{
-    min-height:50px;
-    padding:6px 6px;
-    border-right:1px solid #c7cbd0;
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:4px;
-    font-weight:bold;
-    font-size:12px;
-    line-height:15px;
-    background:#e9edf2;
-}
-
-.header-title{
-    overflow-wrap:anywhere;
-}
-
-/* FILTER BUTTON */
-.filter-button{
-    flex:0 0 auto;
-    width:23px;
-    height:23px;
-    border:1px solid #9ca3aa;
-    border-radius:4px;
-    background:#fff;
-    cursor:pointer;
-    font-size:12px;
-}
-
-.filter-button:hover{
-    background:#dce6f2;
-}
-
-.filter-button.active{
-    background:#1d3557;
-    color:#fff;
-    border-color:#1d3557;
-}
-
-/* VIRTUAL TABLE */
-.virtual-content{
-    position:relative;
-    min-width:max-content;
-}
-
-.data-row{
-    position:absolute;
-    left:0;
-    display:grid;
-    min-width:max-content;
-    width:max-content;
-}
-
-.data-cell{
-    padding:6px 6px;
-    border-right:1px solid #d5d8dc;
-    border-bottom:1px solid #d5d8dc;
-    font-size:12px;
-    line-height:16px;
-    white-space:normal;
-    overflow-wrap:anywhere;
-    word-break:break-word;
-    overflow:visible;
-    background:#fff;
-}
-
-.data-row:nth-child(even) .data-cell{
-    background:#fafafa;
-}
-
-/* =========================================================
-   FROZEN THIQA + BASIC COLUMNS
-   ========================================================= */
-
-/*
-   BASIC is the last column.
-   THIQA is immediately before BASIC.
-
-   Both remain visible while scrolling horizontally.
-*/
-
-.thiqa-sticky-header{
-    position:sticky !important;
-    right:94px;
-    z-index:22 !important;
-    background:#e9edf2 !important;
-    box-shadow:-3px 0 5px rgba(0,0,0,.12);
-}
-
-.basic-sticky-header{
-    position:sticky !important;
-    right:0;
-    z-index:23 !important;
-    background:#e9edf2 !important;
-    box-shadow:-3px 0 5px rgba(0,0,0,.18);
-}
-
-.thiqa-sticky,
-.basic-sticky{
-    position:sticky !important;
-    z-index:15 !important;
-    box-shadow:-3px 0 5px rgba(0,0,0,.10);
-}
-
-/* THIQA frozen position */
-.thiqa-sticky{
-    right:94px;
-}
-
-/* BASIC frozen position */
-.basic-sticky{
-    right:0;
-}
-
-/*
-   Make normal frozen cells opaque so the columns
-   behind them cannot show through.
-*/
-.data-row .thiqa-sticky,
-.data-row .basic-sticky{
-    background:#fff;
-}
-
-.data-row:nth-child(even) .thiqa-sticky,
-.data-row:nth-child(even) .basic-sticky{
-    background:#fafafa;
-}
-
-.thiqa-yes,
-.basic-yes{
-    background:#C6EFCE!important;
-    color:#006100!important;
-    font-weight:bold!important;
-    text-align:center;
-    vertical-align:middle;
-}
-
-.thiqa-no,
-.basic-no{
-    background:#FFC7CE!important;
-    color:#9C0006!important;
-    font-weight:bold!important;
-    text-align:center;
-    vertical-align:middle;
-}
-
-/* FILTER POPUP */
-.filter-popup{
-    position:fixed;
-    z-index:1000;
-    width:330px;
-    max-width:calc(100vw - 20px);
-    background:#fff;
-    border:1px solid #aaa;
-    border-radius:6px;
-    box-shadow:0 5px 25px rgba(0,0,0,.25);
-    display:none;
-}
-
-.filter-popup.show{
-    display:block;
-}
-
-.filter-popup-header{
-    padding:10px;
-    background:#f0f2f4;
-    border-bottom:1px solid #ddd;
-    font-weight:bold;
-}
-
-.filter-search{
-    padding:9px;
-    border-bottom:1px solid #ddd;
-}
-
-.filter-search input{
-    width:100%;
-    padding:8px;
-    border:1px solid #aaa;
-    border-radius:4px;
-}
-
-.filter-actions{
-    display:flex;
-    gap:7px;
-    padding:8px;
-    border-bottom:1px solid #ddd;
-}
-
-.filter-actions button{
-    flex:1;
-    padding:7px;
-    border:1px solid #aaa;
-    background:#fff;
-    border-radius:4px;
-    cursor:pointer;
-    font-size:12px;
-    font-weight:bold;
-}
-
-.filter-actions button:hover{
-    background:#edf2f7;
-}
-
-.filter-values{
-    max-height:260px;
-    overflow-y:auto;
-    padding:5px 8px;
-}
-
-.filter-value{
-    display:flex;
-    align-items:center;
-    gap:7px;
-    padding:5px 3px;
-    font-size:13px;
-}
-
-.filter-value:hover{
-    background:#f2f2f2;
-}
-
-.filter-value span{
-    overflow-wrap:anywhere;
-    word-break:break-word;
-}
-
-.filter-footer{
-    display:flex;
-    gap:8px;
-    padding:9px;
-    border-top:1px solid #ddd;
-}
-
-.filter-footer button{
-    flex:1;
-    padding:8px;
-    border:none;
-    border-radius:4px;
-    cursor:pointer;
-    font-weight:bold;
-}
-
-.apply-filter{
-    background:#198754;
-    color:#fff;
-}
-
-.cancel-filter{
-    background:#6c757d;
-    color:#fff;
-}
-
-
 /* =========================================================
    QUANTITY CALCULATOR
-   ========================================================= */
+   SEARCH + VLOOKUP FROM THIQA COVERAGE LIST
+========================================================= */
 
-.quantity-calculator{
-    display:none;
-    max-width:1400px;
-    margin:0 auto;
-    padding:20px;
-}
+/*
+   Find a column name safely.
 
-.quantity-calculator.show{
-    display:block;
-}
+   This makes the calculator work even if the JSON uses
+   slightly different capitalization.
+*/
+function findThiqaColumn(possibleNames){
 
-.quantity-search-wrap{
-    position:relative;
-    max-width:700px;
-    margin:0 auto 20px;
-}
+    const availableColumns =
+        columns.thiqa || [];
 
-.quantity-search{
-    width:100%;
-    padding:14px 45px 14px 15px;
-    border:1px solid #bcbcbc;
-    border-radius:7px;
-    font-size:16px;
-    outline:none;
-}
+    for(const wanted of possibleNames){
 
-.quantity-search:focus{
-    border-color:#1d3557;
-    box-shadow:0 0 0 3px rgba(29,53,87,.1);
-}
+        const exact =
+            availableColumns.find(
+                column =>
+                    String(column).toLowerCase() ===
+                    String(wanted).toLowerCase()
+            );
 
-.quantity-search-icon{
-    position:absolute;
-    right:15px;
-    top:13px;
-    font-size:18px;
-    color:#777;
-    pointer-events:none;
-}
+        if(exact){
+            return exact;
+        }
 
-.quantity-dropdown{
-    position:absolute;
-    left:0;
-    right:0;
-    top:100%;
-    margin-top:4px;
-    background:#fff;
-    border:1px solid #bbb;
-    border-radius:7px;
-    box-shadow:0 6px 20px rgba(0,0,0,.16);
-    max-height:360px;
-    overflow-y:auto;
-    z-index:500;
-    display:none;
-}
-
-.quantity-dropdown.show{
-    display:block;
-}
-
-.quantity-option{
-    padding:11px 14px;
-    border-bottom:1px solid #eee;
-    cursor:pointer;
-    font-size:14px;
-    line-height:19px;
-}
-
-.quantity-option:last-child{
-    border-bottom:none;
-}
-
-.quantity-option:hover{
-    background:#eef3f8;
-}
-
-.quantity-option-id{
-    font-weight:bold;
-    color:#1d3557;
-    margin-right:8px;
-}
-
-.quantity-option-name{
-    color:#222;
-}
-
-.quantity-no-results{
-    padding:14px;
-    color:#777;
-    text-align:center;
-}
-
-.quantity-result{
-    display:none;
-    background:#fff;
-    border:1px solid #d0d5da;
-    border-radius:8px;
-    overflow:hidden;
-    box-shadow:0 2px 8px rgba(0,0,0,.06);
-}
-
-.quantity-result.show{
-    display:grid;
-}
-
-.quantity-field{
-    min-width:0;
-    border-right:1px solid #d5d8dc;
-}
-
-.quantity-field:last-child{
-    border-right:none;
-}
-
-.quantity-field-label{
-    padding:10px 12px;
-    background:#e9edf2;
-    border-bottom:1px solid #d5d8dc;
-    font-size:12px;
-    font-weight:bold;
-    color:#333;
-}
-
-.quantity-field-value{
-    padding:13px 12px;
-    font-size:14px;
-    line-height:20px;
-    overflow-wrap:anywhere;
-    word-break:break-word;
-    min-height:48px;
-}
-
-.quantity-help{
-    text-align:center;
-    color:#777;
-    font-size:13px;
-    margin-top:10px;
-}
-
-@media(max-width:800px){
-    .quantity-calculator{
-        padding:15px 10px;
     }
 
-    .quantity-result{
-        grid-template-columns:1fr 1fr !important;
+    /*
+       Fallback: search by partial column name.
+    */
+
+    for(const wanted of possibleNames){
+
+        const partial =
+            availableColumns.find(
+                column =>
+                    String(column)
+                        .toLowerCase()
+                        .includes(
+                            String(wanted).toLowerCase()
+                        )
+            );
+
+        if(partial){
+            return partial;
+        }
+
     }
 
-    .quantity-field:nth-child(2n){
-        border-right:none;
-    }
-
-    .quantity-field:nth-child(n+3){
-        border-top:1px solid #d5d8dc;
-    }
-
-    .quantity-field-value{
-        min-height:52px;
-    }
+    return null;
 }
 
-/* MOBILE */
-@media(max-width:800px){
 
-    h1{
-        font-size:21px;
-    }
+/* =========================================================
+   CLOSE QUANTITY DROPDOWN
+========================================================= */
 
-    .tabs{
-        overflow-x:auto;
-        justify-content:flex-start;
-    }
+function closeQuantityDropdown(event){
 
-    .tab{
-        white-space:nowrap;
-        padding:10px 16px;
-    }
-
-    .search-container{
-        grid-template-columns:1fr;
-    }
-
-    .excel-area{
-        height:calc(100vh - 360px);
-    }
-}
-</style>
-</head>
-
-<body>
-
-<div class="top">
-
-<h1>Insurance Coverage List</h1>
-
-<!-- TABS -->
-<div class="tabs">
-
-<button
-    id="thiqaTab"
-    class="tab active"
-    onclick="switchSheet('thiqa')">
-    Thiqa Coverage List
-</button>
-
-<button
-    id="haadTab"
-    class="tab"
-    onclick="switchSheet('haad')">
-    HAAD List
-</button>
-
-<button
-    id="quantityTab"
-    class="tab"
-    onclick="switchQuantityCalculator()">
-    Quantity Calculator
-</button>
-
-</div>
-
-<!-- SEARCH -->
-<div class="search-container">
-
-<div class="search-box">
-
-<input
-    id="brandSearch"
-    type="text"
-    placeholder="Search by Brand Name"
-    oninput="applySearch()">
-
-<span class="search-icon">🔎</span>
-
-</div>
-
-<div class="search-box">
-
-<input
-    id="genericSearch"
-    type="text"
-    placeholder="Search by Generic Name"
-    oninput="applySearch()">
-
-<span class="search-icon">🔎</span>
-
-</div>
-
-<div class="search-box">
-
-<input
-    id="strengthSearch"
-    type="text"
-    placeholder="Search by Strength"
-    oninput="applySearch()">
-
-<span class="search-icon">🔎</span>
-
-</div>
-
-<div class="search-box">
-
-<input
-    id="formSearch"
-    type="text"
-    placeholder="Search by Dosage Form"
-    oninput="applySearch()">
-
-<span class="search-icon">🔎</span>
-
-</div>
-
-</div>
-
-<!-- CLEAR BUTTON -->
-<div class="controls">
-
-<button
-    class="control-btn clear-btn"
-    onclick="clearSearchAndFilters()">
-
-    Clear Search & Filters
-
-</button>
-
-</div>
-
-</div>
-
-<div
-    id="status"
-    class="status">
-
-    Loading Thiqa Coverage List...
-
-</div>
-
-<div
-    id="errorBox"
-    class="error"
-    style="display:none">
-
-</div>
-
-<!-- EXCEL AREA -->
-<div
-    id="excelArea"
-    class="excel-area">
-
-<div class="loading-overlay" id="tableLoading">
-    Loading data...
-</div>
-
-<div
-    id="excelHeader"
-    class="excel-header">
-</div>
-
-<div
-    id="virtualContent"
-    class="virtual-content">
-</div>
-
-</div>
-
-<!-- FILTER POPUP -->
-<div
-    id="filterPopup"
-    class="filter-popup">
-
-<div
-    id="filterPopupHeader"
-    class="filter-popup-header">
-
-    Filter
-
-</div>
-
-<div class="filter-search">
-
-<input
-    id="filterValueSearch"
-    type="text"
-    placeholder="Search values..."
-    oninput="renderFilterValues()">
-
-</div>
-
-<div class="filter-actions">
-
-<button onclick="selectAllFilterValues()">
-    Select All
-</button>
-
-<button onclick="clearAllFilterValues()">
-    Clear All
-</button>
-
-</div>
-
-<div
-    id="filterValues"
-    class="filter-values">
-</div>
-
-<div class="filter-footer">
-
-<button
-    class="apply-filter"
-    onclick="applyColumnFilter()">
-
-    Apply
-
-</button>
-
-<button
-    class="cancel-filter"
-    onclick="closeFilter()">
-
-    Cancel
-
-</button>
-
-</div>
-
-</div>
-
-
-
-<!-- QUANTITY CALCULATOR -->
-<div id="quantityCalculator" class="quantity-calculator">
-
-    <div class="quantity-search-wrap">
-
-        <input
-            id="quantitySearch"
-            class="quantity-search"
-            type="text"
-            autocomplete="off"
-            placeholder="Search Proactive Name or Proactive ID..."
-            oninput="searchQuantityItems()"
-            onfocus="searchQuantityItems()">
-
-        <span class="quantity-search-icon">🔎</span>
-
-        <div
-            id="quantityDropdown"
-            class="quantity-dropdown">
-        </div>
-
-    </div>
-
-    <div class="quantity-help">
-        Type the beginning of the Proactive Name or Proactive ID, then select the item.
-    </div>
-
-    <div
-        id="quantityResult"
-        class="quantity-result"
-        style="grid-template-columns:repeat(5,minmax(0,1fr));margin-top:20px;">
-
-        <div class="quantity-field">
-            <div class="quantity-field-label">Proactive ID</div>
-            <div id="quantityProactiveId" class="quantity-field-value"></div>
-        </div>
-
-        <div class="quantity-field">
-            <div class="quantity-field-label">Proactive Name</div>
-            <div id="quantityProactiveName" class="quantity-field-value"></div>
-        </div>
-
-        <div class="quantity-field">
-            <div class="quantity-field-label">Dosage Form</div>
-            <div id="quantityDosageForm" class="quantity-field-value"></div>
-        </div>
-
-        <div class="quantity-field">
-            <div class="quantity-field-label">Strength</div>
-            <div id="quantityStrength" class="quantity-field-value"></div>
-        </div>
-
-        <div class="quantity-field">
-            <div class="quantity-field-label">Package Size</div>
-            <div id="quantityPackageSize" class="quantity-field-value"></div>
-        </div>
-
-    </div>
-
-</div>
-
-<script>
-
-document.addEventListener(
-    "DOMContentLoaded",
-    function(){
-
-        loadSheetData("thiqa").catch(showLoadError);
-
-        document.addEventListener(
-            "click",
-            function(event){
-
-                const popup =
-                    document.getElementById(
-                        "filterPopup"
-                    );
-
-                if(
-                    !popup.contains(event.target) &&
-                    !event.target.classList.contains(
-                        "filter-button"
-                    )
-                ){
-
-                    closeFilter();
-
-                }
-
-            }
+    const searchWrap =
+        document.querySelector(
+            ".quantity-search-wrap"
         );
-
-        document.addEventListener(
-            "click",
-            closeQuantityDropdown
-        );
-
-    }
-);
-
-
-/* =========================================================
-   LOAD JSON FILES
-   ========================================================= */
-
-async function loadSheetData(type){
-
-    if(sheetLoaded.has(type)){
-        return;
-    }
-
-    if(sheetLoadPromises.has(type)){
-        return sheetLoadPromises.get(type);
-    }
-
-    const status = document.getElementById("status");
-    const errorBox = document.getElementById("errorBox");
-    const file = FILES[type];
-
-    const promise = (async function(){
-
-        status.textContent =
-            type === "thiqa"
-                ? "Loading Thiqa Coverage List..."
-                : "Loading HAAD List...";
-
-        errorBox.style.display = "none";
-        document.getElementById("excelArea").classList.add("loading");
-
-        /*
-         * PERFORMANCE:
-         * The old code added Date.now() and cache:"no-store",
-         * forcing the large JSON files to download again.
-         * Normal browser caching is much faster on later visits.
-         */
-        const response = await fetch(file, {
-            cache: "default"
-        });
-
-        if(!response.ok){
-            throw new Error(
-                "Could not load " + file +
-                "\\nHTTP Status: " + response.status
-            );
-        }
-
-        const json = await response.json();
-        const data = normalizeData(json);
-
-        if(!Array.isArray(data) || data.length === 0){
-            throw new Error(
-                file + " loaded but contains no records."
-            );
-        }
-
-        if(type === "thiqa"){
-
-            thiqaData = data;
-            columns.thiqa = Object.keys(data[0]);
-            filteredData.thiqa = data.slice();
-            columnFilters.thiqa.clear();
-
-        }else{
-
-            haadData = data;
-
-            const existingHaadColumns = Object.keys(data[0]);
-            const extraColumns = existingHaadColumns.filter(
-                column => !HAAD_COLUMNS.includes(column)
-            );
-
-            columns.haad = [
-                ...HAAD_COLUMNS.filter(
-                    column => existingHaadColumns.includes(column)
-                ),
-                ...extraColumns
-            ];
-
-            filteredData.haad = data.slice();
-            columnFilters.haad.clear();
-        }
-
-        sheetLoaded.add(type);
-        document.getElementById("excelArea").classList.remove("loading");
-
-        /* Only calculate offsets for the sheet being displayed. */
-        if(currentSheet === type){
-            buildRowOffsets(type);
-            renderVirtualTable(type);
-            updateStatus();
-        }
-
-        status.textContent =
-            type === "thiqa"
-                ? "Thiqa Coverage List: " + data.length.toLocaleString() + " records"
-                : "HAAD List: " + data.length.toLocaleString() + " records";
-
-    })();
-
-    sheetLoadPromises.set(type, promise);
-
-    try{
-        return await promise;
-    }catch(error){
-        sheetLoadPromises.delete(type);
-        document.getElementById("excelArea").classList.remove("loading");
-        throw error;
-    }
-}
-
-function showLoadError(error){
-
-    console.error("Insurance Coverage List Error:", error);
-
-    const status = document.getElementById("status");
-    const errorBox = document.getElementById("errorBox");
-
-    document.getElementById("excelArea").classList.remove("loading");
-
-    status.textContent = "Unable to load data.";
-    errorBox.style.display = "block";
-    errorBox.textContent =
-        "ERROR LOADING DATA\\n\\n" +
-        error.message +
-        "\\n\\nMake sure the JSON file is in the SAME folder as index.html.";
-}
-
-
-/* =========================================================
-   NORMALIZE DATA
-   ========================================================= */
-
-function normalizeData(json){
-
-    if(Array.isArray(json)){
-
-        return json;
-
-    }
-
-
-    if(
-        json &&
-        Array.isArray(json.data)
-    ){
-
-        return json.data;
-
-    }
-
-
-    return [];
-
-}
-
-
-/* =========================================================
-   SWITCH SHEET
-   ========================================================= */
-
-/* =========================================================
-   QUANTITY CALCULATOR TAB
-   ========================================================= */
-
-function switchQuantityCalculator(){
-
-    document
-        .querySelectorAll(".tab")
-        .forEach(tab => tab.classList.remove("active"));
-
-    document
-        .getElementById("quantityTab")
-        .classList.add("active");
-
-    const searchContainer =
-        document.querySelector(".search-container");
-
-    const controls =
-        document.querySelector(".controls");
-
-    const status =
-        document.getElementById("status");
-
-    const excelArea =
-        document.getElementById("excelArea");
-
-    if(searchContainer){
-        searchContainer.style.display = "none";
-    }
-
-    if(controls){
-        controls.style.display = "none";
-    }
-
-    if(status){
-        status.style.display = "none";
-    }
-
-    if(excelArea){
-        excelArea.style.display = "none";
-    }
-
-    const calculator =
-        document.getElementById("quantityCalculator");
-
-    if(calculator){
-        calculator.classList.add("show");
-    }
 
     const dropdown =
-        document.getElementById("quantityDropdown");
+        document.getElementById(
+            "quantityDropdown"
+        );
 
-    if(dropdown){
-        dropdown.classList.remove("show");
-    }
-
-    const search =
-        document.getElementById("quantitySearch");
-
-    if(search){
-        setTimeout(function(){
-            search.focus();
-        }, 0);
-    }
-
-}
-
-
-/* =========================================================
-   SWITCH SHEET
-   ========================================================= */
-
-async function switchSheet(type){
-
-    currentSheet = type;
-
-    document.querySelectorAll(".tab").forEach(
-        tab => tab.classList.remove("active")
-    );
-
-    document.getElementById(
-        type === "thiqa" ? "thiqaTab" : "haadTab"
-    ).classList.add("active");
-
-    document.querySelector(".search-container").style.display = "";
-    document.querySelector(".controls").style.display = "";
-    document.getElementById("status").style.display = "";
-    document.getElementById("excelArea").style.display = "";
-
-    document.getElementById("quantityCalculator").classList.remove("show");
-    document.getElementById("quantityDropdown").classList.remove("show");
-
-    document.getElementById("brandSearch").value = "";
-    document.getElementById("genericSearch").value = "";
-    document.getElementById("strengthSearch").value = "";
-    document.getElementById("formSearch").value = "";
-
-    /* Instant switch when the sheet is already cached in memory. */
-    if(sheetLoaded.has(type)){
-
-        filteredData[type] = getFilteredRows(type);
-        buildRowOffsets(type);
-
-        document.getElementById("excelArea").scrollTop = 0;
-
-        renderVirtualTable(type);
-        updateStatus();
+    if(
+        !searchWrap ||
+        !dropdown
+    ){
         return;
     }
 
-    /* First visit: download only this sheet. */
-    document.getElementById("excelHeader").innerHTML = "";
-    document.getElementById("virtualContent").innerHTML = "";
-    document.getElementById("virtualContent").style.height = "0px";
+    /*
+       Do not close when clicking inside
+       the search box or dropdown.
+    */
 
-    try{
+    if(
+        !searchWrap.contains(
+            event.target
+        )
+    ){
 
-        await loadSheetData(type);
+        dropdown.classList.remove(
+            "show"
+        );
 
-        if(currentSheet !== type){
-            return;
-        }
-
-        document.getElementById("excelArea").scrollTop = 0;
-        renderVirtualTable(type);
-        updateStatus();
-
-    }catch(error){
-
-        showLoadError(error);
     }
+
 }
 
 
 /* =========================================================
-   SEARCH
-   ========================================================= */
+   SEARCH QUANTITY ITEMS
+========================================================= */
 
-function parseSearch(value){
+function searchQuantityItems(){
 
-    return value
-        .toLowerCase()
-        .split("%")
-        .map(
-            item =>
-                item.trim()
-        )
-        .filter(Boolean);
+    const input =
+        document.getElementById(
+            "quantitySearch"
+        );
 
-}
+    const dropdown =
+        document.getElementById(
+            "quantityDropdown"
+        );
+
+    if(
+        !input ||
+        !dropdown
+    ){
+        return;
+    }
 
 
-function cellMatchesSearch(
-    value,
-    searchText
-){
+    /*
+       Make sure Thiqa data has been loaded.
+    */
 
-    const terms =
-        parseSearch(
-            searchText
+    if(
+        !Array.isArray(thiqaData) ||
+        thiqaData.length === 0
+    ){
+
+        dropdown.innerHTML =
+            '<div class="quantity-no-results">' +
+            'Thiqa Coverage List is still loading...' +
+            '</div>';
+
+        dropdown.classList.add(
+            "show"
+        );
+
+        return;
+
+    }
+
+
+    const searchText =
+        input.value
+            .trim()
+            .toLowerCase();
+
+
+    /*
+       If nothing has been typed,
+       show nothing.
+    */
+
+    if(searchText === ""){
+
+        dropdown.innerHTML = "";
+
+        dropdown.classList.remove(
+            "show"
+        );
+
+        return;
+
+    }
+
+
+    /*
+       Find the actual column names
+       from Thiqa JSON.
+    */
+
+    const proactiveNameColumn =
+        findThiqaColumn([
+            "proactive name",
+            "Proactive Name"
+        ]);
+
+
+    const proactiveIdColumn =
+        findThiqaColumn([
+            "proactive id",
+            "Proactive ID",
+            "proactive code",
+            "Proactive Code",
+            "id",
+            "code"
+        ]);
+
+
+    if(
+        !proactiveNameColumn &&
+        !proactiveIdColumn
+    ){
+
+        dropdown.innerHTML =
+            '<div class="quantity-no-results">' +
+            'Proactive Name / Proactive ID columns were not found.' +
+            '</div>';
+
+        dropdown.classList.add(
+            "show"
+        );
+
+        return;
+
+    }
+
+
+    /*
+       PREFIX SEARCH
+
+       Example:
+
+       "bufe"
+
+       will match:
+
+       Bufecort
+       Bufederm
+       Bufex
+       ...
+
+       It will NOT match a word appearing
+       in the middle of the name.
+    */
+
+    const matches =
+        thiqaData.filter(
+            row => {
+
+                const name =
+                    proactiveNameColumn
+                        ? String(
+                            row[
+                                proactiveNameColumn
+                            ] ?? ""
+                        )
+                            .trim()
+                            .toLowerCase()
+                        : "";
+
+                const id =
+                    proactiveIdColumn
+                        ? String(
+                            row[
+                                proactiveIdColumn
+                            ] ?? ""
+                        )
+                            .trim()
+                            .toLowerCase()
+                        : "";
+
+
+                return (
+                    name.startsWith(
+                        searchText
+                    ) ||
+                    id.startsWith(
+                        searchText
+                    )
+                );
+
+            }
         );
 
 
-    if(terms.length === 0){
+    /*
+       Limit the dropdown to avoid rendering
+       hundreds/thousands of options.
+    */
 
-        return true;
-
-    }
-
-
-    const text =
-        String(
-            value ?? ""
-        ).toLowerCase();
-
-
-    return terms.every(
-        term =>
-            text.includes(term)
-    );
-
-}
+    const results =
+        matches.slice(
+            0,
+            50
+        );
 
 
-function applySearch(){
+    dropdown.innerHTML = "";
 
-    if(!sheetLoaded.has(currentSheet)){
+
+    if(results.length === 0){
+
+        dropdown.innerHTML =
+            '<div class="quantity-no-results">' +
+            'No matching Proactive Name or Proactive ID.' +
+            '</div>';
+
+        dropdown.classList.add(
+            "show"
+        );
+
         return;
+
     }
 
-    filteredData[currentSheet] = getFilteredRows(currentSheet);
-    buildRowOffsets(currentSheet);
-    renderVirtualTable(currentSheet);
-    updateStatus();
-}
+
+    /*
+       Create dropdown options.
+    */
+
+    const fragment =
+        document.createDocumentFragment();
 
 
-/* =========================================================
-   GET FILTERED ROWS
-   ========================================================= */
-
-function getFilteredRows(type){
-
-    const data =
-        type === "thiqa"
-            ? thiqaData
-            : haadData;
-
-
-    return data.filter(
+    results.forEach(
         row => {
 
-            if(
-                !rowPassesFilters(
-                    row,
-                    type
-                )
-            ){
-
-                return false;
-
-            }
+            const option =
+                document.createElement(
+                    "div"
+                );
 
 
-            const brandSearch =
-                document
-                    .getElementById(
-                        "brandSearch"
+            option.className =
+                "quantity-option";
+
+
+            const id =
+                proactiveIdColumn
+                    ? String(
+                        row[
+                            proactiveIdColumn
+                        ] ?? ""
                     )
-                    .value;
+                    : "";
 
 
-            const genericSearch =
-                document
-                    .getElementById(
-                        "genericSearch"
+            const name =
+                proactiveNameColumn
+                    ? String(
+                        row[
+                            proactiveNameColumn
+                        ] ?? ""
                     )
-                    .value;
+                    : "";
 
 
-            const strengthSearch =
-                document
-                    .getElementById(
-                        "strengthSearch"
-                    )
-                    .value;
+            /*
+               Show:
+
+               ID — FULL PROACTIVE NAME
+            */
+
+            option.innerHTML =
+                '<span class="quantity-option-id">' +
+                escapeQuantityHtml(id) +
+                '</span>' +
+                '<span class="quantity-option-name">' +
+                escapeQuantityHtml(name) +
+                '</span>';
 
 
-            const formSearch =
-                document
-                    .getElementById(
-                        "formSearch"
-                    )
-                    .value;
+            /*
+               Save the actual Thiqa row.
 
+               This is the VLOOKUP result.
+            */
 
-            const brandValue =
-                type === "thiqa"
-                    ? row["proactive name"]
-                    : row["Package Name"];
+            option.addEventListener(
+                "click",
+                function(event){
 
+                    event.stopPropagation();
 
-            if(
-                !cellMatchesSearch(
-                    brandValue,
-                    brandSearch
-                )
-            ){
+                    selectQuantityItem(
+                        row
+                    );
 
-                return false;
-
-            }
-
-
-            if(
-                !cellMatchesSearch(
-                    row["Generic Name"],
-                    genericSearch
-                )
-            ){
-
-                return false;
-
-            }
-
-
-            if(
-                !cellMatchesSearch(
-                    row["Strength"],
-                    strengthSearch
-                )
-            ){
-
-                return false;
-
-            }
-
-
-            if(
-                !cellMatchesSearch(
-                    row["Dosage Form"],
-                    formSearch
-                )
-            ){
-
-                return false;
-
-            }
-
-
-            return true;
-
-        }
-    );
-
-}
-
-
-/* =========================================================
-   COLUMN FILTER
-   ========================================================= */
-
-function rowPassesFilters(
-    row,
-    type
-){
-
-    const filters =
-        columnFilters[type];
-
-
-    for(
-        const [
-            column,
-            selectedValues
-        ]
-        of filters.entries()
-    ){
-
-        const value =
-            String(
-                row[column] ?? ""
+                }
             );
 
 
-        if(
-            selectedValues.size === 0
-        ){
-
-            return false;
+            fragment.appendChild(
+                option
+            );
 
         }
-
-
-        if(
-            !selectedValues.has(
-                value
-            )
-        ){
-
-            return false;
-
-        }
-
-    }
-
-
-    return true;
-
-}
-
-
-/* =========================================================
-   OPEN FILTER
-   ========================================================= */
-
-function openFilter(
-    column,
-    button
-){
-
-    const popup =
-        document.getElementById(
-            "filterPopup"
-        );
-
-
-    popup._column =
-        column;
-
-
-    popup._sheet =
-        currentSheet;
-
-
-    document
-        .getElementById(
-            "filterPopupHeader"
-        )
-        .textContent =
-            "Filter: " +
-            column;
-
-
-    document
-        .getElementById(
-            "filterValueSearch"
-        )
-        .value = "";
-
-
-    const data =
-        currentSheet === "thiqa"
-            ? thiqaData
-            : haadData;
-
-
-    const values = [
-
-        ...new Set(
-
-            data.map(
-                row =>
-                    String(
-                        row[column] ?? ""
-                    )
-            )
-
-        )
-
-    ].sort(
-        (a,b) =>
-            a.localeCompare(
-                b,
-                undefined,
-                {
-                    numeric:true,
-                    sensitivity:"base"
-                }
-            )
     );
 
 
-    popup._allValues =
-        values;
+    dropdown.appendChild(
+        fragment
+    );
 
 
-    const existing =
-        columnFilters[
-            currentSheet
-        ].get(column);
-
-
-    if(existing){
-
-        popup._selected =
-            new Set(existing);
-
-    }
-
-    else{
-
-        popup._selected =
-            new Set(values);
-
-    }
-
-
-    renderFilterValues();
-
-
-    const rect =
-        button.getBoundingClientRect();
-
-
-    const popupWidth = 330;
-
-    const popupHeight = 420;
-
-
-    let left =
-        rect.left;
-
-
-    let top =
-        rect.bottom + 5;
-
-
-    if(
-        left + popupWidth >
-        window.innerWidth
-    ){
-
-        left =
-            window.innerWidth -
-            popupWidth -
-            10;
-
-    }
-
-
-    if(
-        top + popupHeight >
-        window.innerHeight
-    ){
-
-        top =
-            rect.top -
-            popupHeight -
-            5;
-
-    }
-
-
-    if(top < 10){
-
-        top = 10;
-
-    }
-
-
-    if(left < 10){
-
-        left = 10;
-
-    }
-
-
-    popup.style.left =
-        left + "px";
-
-
-    popup.style.top =
-        top + "px";
-
-
-    popup.classList.add(
+    dropdown.classList.add(
         "show"
     );
 
@@ -1630,1410 +397,230 @@ function openFilter(
 
 
 /* =========================================================
-   FILTER VALUES
-   ========================================================= */
+   SELECT QUANTITY ITEM
+========================================================= */
 
-function renderFilterValues(){
+function selectQuantityItem(row){
 
-    const popup =
+    const dropdown =
         document.getElementById(
-            "filterPopup"
-        );
-
-
-    const container =
-        document.getElementById(
-            "filterValues"
+            "quantityDropdown"
         );
 
 
     const search =
-        document
-            .getElementById(
-                "filterValueSearch"
-            )
-            .value
-            .trim()
-            .toLowerCase();
-
-
-    const allValues =
-        popup._allValues || [];
-
-
-    const selected =
-        popup._selected ||
-        new Set();
-
-
-    const visibleValues =
-        allValues.filter(
-            value =>
-                value
-                    .toLowerCase()
-                    .includes(search)
+        document.getElementById(
+            "quantitySearch"
         );
 
 
-    container.innerHTML = "";
+    /*
+       Find the five required columns.
+    */
+
+    const proactiveIdColumn =
+        findThiqaColumn([
+            "proactive id",
+            "Proactive ID",
+            "proactive code",
+            "Proactive Code",
+            "id",
+            "code"
+        ]);
 
 
-    if(
-        visibleValues.length === 0
-    ){
+    const proactiveNameColumn =
+        findThiqaColumn([
+            "proactive name",
+            "Proactive Name"
+        ]);
 
-        container.innerHTML =
-            '<div style="padding:12px;color:#777;">No matching values</div>';
 
-        return;
+    const dosageFormColumn =
+        findThiqaColumn([
+            "dosage form",
+            "Dosage Form"
+        ]);
+
+
+    const strengthColumn =
+        findThiqaColumn([
+            "strength",
+            "Strength"
+        ]);
+
+
+    const packageSizeColumn =
+        findThiqaColumn([
+            "package size",
+            "Package Size"
+        ]);
+
+
+    /*
+       VLOOKUP RESULTS
+    */
+
+    const proactiveId =
+        proactiveIdColumn
+            ? row[
+                proactiveIdColumn
+              ] ?? ""
+            : "";
+
+
+    const proactiveName =
+        proactiveNameColumn
+            ? row[
+                proactiveNameColumn
+              ] ?? ""
+            : "";
+
+
+    const dosageForm =
+        dosageFormColumn
+            ? row[
+                dosageFormColumn
+              ] ?? ""
+            : "";
+
+
+    const strength =
+        strengthColumn
+            ? row[
+                strengthColumn
+              ] ?? ""
+            : "";
+
+
+    const packageSize =
+        packageSizeColumn
+            ? row[
+                packageSizeColumn
+              ] ?? ""
+            : "";
+
+
+    /*
+       Put the selected name into
+       the search box.
+    */
+
+    if(search){
+
+        search.value =
+            String(
+                proactiveName
+            );
 
     }
 
 
-    const fragment =
-        document.createDocumentFragment();
+    /*
+       Reflect the five VLOOKUP columns.
+    */
+
+    document.getElementById(
+        "quantityProactiveId"
+    ).textContent =
+        String(
+            proactiveId
+        );
 
 
-    visibleValues.forEach(
-        value => {
-
-            const label =
-                document.createElement(
-                    "label"
-                );
-
-
-            label.className =
-                "filter-value";
+    document.getElementById(
+        "quantityProactiveName"
+    ).textContent =
+        String(
+            proactiveName
+        );
 
 
-            const checkbox =
-                document.createElement(
-                    "input"
-                );
+    document.getElementById(
+        "quantityDosageForm"
+    ).textContent =
+        String(
+            dosageForm
+        );
 
 
-            checkbox.type =
-                "checkbox";
+    document.getElementById(
+        "quantityStrength"
+    ).textContent =
+        String(
+            strength
+        );
 
 
-            checkbox.checked =
-                selected.has(value);
+    document.getElementById(
+        "quantityPackageSize"
+    ).textContent =
+        String(
+            packageSize
+        );
 
 
-            checkbox.addEventListener(
-                "change",
-                function(){
+    /*
+       Show result.
+    */
 
-                    if(
-                        checkbox.checked
-                    ){
-
-                        selected.add(
-                            value
-                        );
-
-                    }
-
-                    else{
-
-                        selected.delete(
-                            value
-                        );
-
-                    }
-
-                }
-            );
-
-
-            const span =
-                document.createElement(
-                    "span"
-                );
-
-
-            span.textContent =
-                value === ""
-                    ? "(Blank)"
-                    : value;
-
-
-            label.appendChild(
-                checkbox
-            );
-
-
-            label.appendChild(
-                span
-            );
-
-
-            fragment.appendChild(
-                label
-            );
-
-        }
-    );
-
-
-    container.appendChild(
-        fragment
-    );
-
-}
-
-
-/* =========================================================
-   SELECT ALL
-   ========================================================= */
-
-function selectAllFilterValues(){
-
-    const popup =
+    const result =
         document.getElementById(
-            "filterPopup"
+            "quantityResult"
         );
 
+    if(result){
 
-    const search =
-        document
-            .getElementById(
-                "filterValueSearch"
-            )
-            .value
-            .trim()
-            .toLowerCase();
-
-
-    const allValues =
-        popup._allValues || [];
-
-
-    const visibleValues =
-        allValues.filter(
-            value =>
-                value
-                    .toLowerCase()
-                    .includes(search)
-        );
-
-
-    const selected =
-        popup._selected ||
-        new Set();
-
-
-    visibleValues.forEach(
-        value => {
-
-            selected.add(value);
-
-        }
-    );
-
-
-    popup._selected =
-        selected;
-
-
-    renderFilterValues();
-
-}
-
-
-/* =========================================================
-   CLEAR FILTER VALUES
-   ========================================================= */
-
-function clearAllFilterValues(){
-
-    const popup =
-        document.getElementById(
-            "filterPopup"
-        );
-
-
-    popup._selected =
-        new Set();
-
-
-    renderFilterValues();
-
-}
-
-
-/* =========================================================
-   APPLY COLUMN FILTER
-   ========================================================= */
-
-function applyColumnFilter(){
-
-    const popup =
-        document.getElementById(
-            "filterPopup"
-        );
-
-
-    const column =
-        popup._column;
-
-
-    const type =
-        popup._sheet;
-
-
-    const allValues =
-        popup._allValues || [];
-
-
-    const selected =
-        popup._selected ||
-        new Set();
-
-
-    const search =
-        document
-            .getElementById(
-                "filterValueSearch"
-            )
-            .value
-            .trim()
-            .toLowerCase();
-
-
-    if(search !== ""){
-
-        const matchingValues =
-            allValues.filter(
-                value =>
-                    value
-                        .toLowerCase()
-                        .includes(search)
-            );
-
-
-        if(
-            matchingValues.length ===
-            allValues.length
-        ){
-
-            columnFilters[type]
-                .delete(column);
-
-        }
-
-        else{
-
-            columnFilters[type]
-                .set(
-                    column,
-                    new Set(
-                        matchingValues
-                    )
-                );
-
-        }
-
-    }
-
-    else{
-
-        if(
-            selected.size ===
-            allValues.length
-        ){
-
-            columnFilters[type]
-                .delete(column);
-
-        }
-
-        else{
-
-            columnFilters[type]
-                .set(
-                    column,
-                    new Set(selected)
-                );
-
-        }
-
-    }
-
-
-    closeFilter();
-
-
-    filteredData[type] =
-        getFilteredRows(type);
-
-
-    buildRowOffsets(type);
-
-
-    renderVirtualTable(type);
-
-
-    updateStatus();
-
-}
-
-
-/* =========================================================
-   CLOSE FILTER
-   ========================================================= */
-
-function closeFilter(){
-
-    document
-        .getElementById(
-            "filterPopup"
-        )
-        .classList
-        .remove(
+        result.classList.add(
             "show"
         );
 
+    }
+
+
+    /*
+       Close dropdown.
+    */
+
+    if(dropdown){
+
+        dropdown.classList.remove(
+            "show"
+        );
+
+    }
+
 }
 
 
 /* =========================================================
-   CLEAR EVERYTHING
-   ========================================================= */
+   ESCAPE HTML
+========================================================= */
 
-function clearSearchAndFilters(){
+function escapeQuantityHtml(value){
 
-    document.getElementById("brandSearch").value = "";
-    document.getElementById("genericSearch").value = "";
-    document.getElementById("strengthSearch").value = "";
-    document.getElementById("formSearch").value = "";
-
-    columnFilters.thiqa.clear();
-    columnFilters.haad.clear();
-
-    if(sheetLoaded.has("thiqa")){
-        filteredData.thiqa = [...thiqaData];
-    }
-
-    if(sheetLoaded.has("haad")){
-        filteredData.haad = [...haadData];
-    }
-
-    closeFilter();
-
-    const area = document.getElementById("excelArea");
-    area.scrollTop = 0;
-    area.scrollLeft = 0;
-
-    if(sheetLoaded.has(currentSheet)){
-        buildRowOffsets(currentSheet);
-        renderVirtualTable(currentSheet);
-        updateStatus();
-    }
-}
-
-
-/* =========================================================
-   STATUS
-   ========================================================= */
-
-function updateStatus(){
-
-    const total =
-        currentSheet === "thiqa"
-            ? thiqaData.length
-            : haadData.length;
-
-
-    const shown =
-        filteredData[
-            currentSheet
-        ].length;
-
-
-    const title =
-        currentSheet === "thiqa"
-            ? "Thiqa Coverage List"
-            : "HAAD List";
-
-
-    document
-        .getElementById(
-            "status"
+    return String(
+        value ?? ""
+    )
+        .replace(
+            /&/g,
+            "&amp;"
         )
-        .textContent =
-            title +
-            ": " +
-            shown.toLocaleString() +
-            " of " +
-            total.toLocaleString() +
-            " records";
-
-}
-
-
-/* =========================================================
-   COLUMN WIDTHS
-   ========================================================= */
-
-function getColumnWidth(
-    column
-){
-
-    const lower =
-        column.toLowerCase();
-
-
-    if(
-        lower.includes(
-            "generic name"
-        ) ||
-        lower.includes(
-            "package name"
-        ) ||
-        lower.includes(
-            "manufacturer"
-        ) ||
-        lower.includes(
-            "agent name"
-        ) ||
-        lower.includes(
-            "insurance coverage"
-        ) ||
-        lower.includes(
-            "formulary"
-        ) ||
-        lower.includes(
-            "proactive name"
-        ) ||
-        lower.includes(
-            "daman coverage"
+        .replace(
+            /</g,
+            "&lt;"
         )
-    ){
-
-        return 238;
-
-    }
-
-
-    if(
-        lower.includes(
-            "strength"
-        ) ||
-        lower.includes(
-            "dosage form"
+        .replace(
+            />/g,
+            "&gt;"
         )
-    ){
-
-        return 136;
-
-    }
-
-
-    if(
-        lower.includes(
-            "price"
-        ) ||
-        lower.includes(
-            "markup"
-        ) ||
-        lower.includes(
-            "reimbursement"
-        ) ||
-        lower.includes(
-            "co-pay"
-        ) ||
-        lower.includes(
-            "copay"
+        .replace(
+            /"/g,
+            "&quot;"
         )
-    ){
-
-        return 132;
-
-    }
-
-
-    if(
-        lower.includes("date")
-    ){
-
-        return 119;
-
-    }
-
-
-    if(
-        lower === "thiqa" ||
-        lower === "basic"
-    ){
-
-        return 94;
-
-    }
-
-
-    return 128;
+        .replace(
+            /'/g,
+            "&#039;"
+        );
 
 }
-
-
-/* =========================================================
-   GRID TEMPLATE
-   ========================================================= */
-
-function getGridTemplate(
-    type
-){
-
-    return columns[type]
-        .map(
-            column =>
-                getColumnWidth(
-                    column
-                ) + "px"
-        )
-        .join(" ");
-
-}
-
-
-/* =========================================================
-   ROW HEIGHT
-   ========================================================= */
-
-function calculateRowHeight(
-    row,
-    type
-){
-
-    let maxLines = 1;
-
-
-    columns[type].forEach(
-        column => {
-
-            const value =
-                String(
-                    row[column] ?? ""
-                );
-
-
-            const width =
-                getColumnWidth(
-                    column
-                );
-
-
-            const charsPerLine =
-                Math.max(
-                    8,
-                    Math.floor(
-                        width / 6.5
-                    )
-                );
-
-
-            const paragraphs =
-                value.split("\n");
-
-
-            let lines = 0;
-
-
-            paragraphs.forEach(
-                paragraph => {
-
-                    if(
-                        paragraph.length === 0
-                    ){
-
-                        lines += 1;
-
-                    }
-
-                    else{
-
-                        lines += Math.max(
-                            1,
-                            Math.ceil(
-                                paragraph.length /
-                                charsPerLine
-                            )
-                        );
-
-                    }
-
-                }
-            );
-
-
-            maxLines =
-                Math.max(
-                    maxLines,
-                    lines
-                );
-
-        }
-    );
-
-
-    return Math.max(
-        MIN_ROW_HEIGHT,
-        maxLines *
-        LINE_HEIGHT +
-        ROW_VERTICAL_PADDING
-    );
-
-}
-
-
-/* =========================================================
-   BUILD ROW OFFSETS
-   ========================================================= */
-
-function buildRowOffsets(
-    type
-){
-
-    const data =
-        filteredData[type];
-
-
-    const offsets =
-        new Array(
-            data.length + 1
-        );
-
-
-    offsets[0] = 0;
-
-
-    for(
-        let i = 0;
-        i < data.length;
-        i++
-    ){
-
-        offsets[i + 1] =
-            offsets[i] +
-            calculateRowHeight(
-                data[i],
-                type
-            );
-
-    }
-
-
-    rowOffsets[type] =
-        offsets;
-
-
-    totalHeights[type] =
-        offsets[
-            offsets.length - 1
-        ] || 0;
-
-}
-
-
-/* =========================================================
-   FIND ROW
-   ========================================================= */
-
-function findRowAtPosition(
-    offsets,
-    position
-){
-
-    let low = 0;
-
-    let high =
-        offsets.length - 1;
-
-
-    while(
-        low < high
-    ){
-
-        const mid =
-            Math.floor(
-                (low + high) / 2
-            );
-
-
-        if(
-            offsets[mid] <=
-            position
-        ){
-
-            low =
-                mid + 1;
-
-        }
-
-        else{
-
-            high =
-                mid;
-
-        }
-
-    }
-
-
-    return Math.max(
-        0,
-        low - 1
-    );
-
-}
-
-
-/* =========================================================
-   RENDER TABLE
-   ========================================================= */
-
-function renderVirtualTable(
-    type
-){
-
-    const header =
-        document.getElementById(
-            "excelHeader"
-        );
-
-
-    const content =
-        document.getElementById(
-            "virtualContent"
-        );
-
-
-    const area =
-        document.getElementById(
-            "excelArea"
-        );
-
-
-    const template =
-        getGridTemplate(
-            type
-        );
-
-
-    header.style.gridTemplateColumns =
-        template;
-
-
-    header.innerHTML = "";
-
-
-    /* HEADER */
-    columns[type].forEach(
-        column => {
-
-            const cell =
-                document.createElement(
-                    "div"
-                );
-
-
-            cell.className =
-                "header-cell";
-
-
-            const lower =
-                column.toLowerCase();
-
-
-            /*
-               FREEZE THIQA HEADER
-            */
-            if(
-                lower === "thiqa"
-            ){
-
-                cell.classList.add(
-                    "thiqa-sticky-header"
-                );
-
-            }
-
-
-            /*
-               FREEZE BASIC HEADER
-            */
-            if(
-                lower === "basic"
-            ){
-
-                cell.classList.add(
-                    "basic-sticky-header"
-                );
-
-            }
-
-
-            const title =
-                document.createElement(
-                    "span"
-                );
-
-
-            title.className =
-                "header-title";
-
-
-            title.textContent =
-                column;
-
-
-            const button =
-                document.createElement(
-                    "button"
-                );
-
-
-            button.className =
-                "filter-button";
-
-
-            button.textContent =
-                "▼";
-
-
-            if(
-                columnFilters[type]
-                    .has(column)
-            ){
-
-                button.classList.add(
-                    "active"
-                );
-
-            }
-
-
-            button.addEventListener(
-                "click",
-                function(event){
-
-                    event.stopPropagation();
-
-
-                    openFilter(
-                        column,
-                        button
-                    );
-
-                }
-            );
-
-
-            cell.appendChild(
-                title
-            );
-
-
-            cell.appendChild(
-                button
-            );
-
-
-            header.appendChild(
-                cell
-            );
-
-        }
-    );
-
-
-    content.style.height =
-        totalHeights[type] +
-        "px";
-
-
-    renderVisibleRows(
-        type
-    );
-
-
-    area.onscroll =
-        function(){
-
-            if(renderTimer){
-
-                cancelAnimationFrame(
-                    renderTimer
-                );
-
-            }
-
-
-            renderTimer =
-                requestAnimationFrame(
-                    function(){
-
-                        renderVisibleRows(
-                            currentSheet
-                        );
-
-                    }
-                );
-
-        };
-
-}
-
-
-/* =========================================================
-   RENDER VISIBLE ROWS
-   ========================================================= */
-
-function renderVisibleRows(
-    type
-){
-
-    const content =
-        document.getElementById(
-            "virtualContent"
-        );
-
-
-    const area =
-        document.getElementById(
-            "excelArea"
-        );
-
-
-    const data =
-        filteredData[type];
-
-
-    const offsets =
-        rowOffsets[type];
-
-
-    if(!data.length){
-
-        content.innerHTML =
-            '<div style="padding:25px;font-weight:bold;">No matching records.</div>';
-
-        return;
-
-    }
-
-
-    const scrollTop =
-        area.scrollTop;
-
-
-    const viewportHeight =
-        area.clientHeight;
-
-
-    const firstVisible =
-        findRowAtPosition(
-            offsets,
-            scrollTop
-        );
-
-
-    const lastVisible =
-        findRowAtPosition(
-            offsets,
-            scrollTop +
-            viewportHeight
-        );
-
-
-    const start =
-        Math.max(
-            0,
-            firstVisible -
-            BUFFER_ROWS
-        );
-
-
-    const end =
-        Math.min(
-            data.length,
-            lastVisible +
-            BUFFER_ROWS +
-            1
-        );
-
-
-    content.innerHTML = "";
-
-
-    const fragment =
-        document.createDocumentFragment();
-
-
-    const template =
-        getGridTemplate(
-            type
-        );
-
-
-    for(
-        let i = start;
-        i < end;
-        i++
-    ){
-
-        const row =
-            document.createElement(
-                "div"
-            );
-
-
-        row.className =
-            "data-row";
-
-
-        row.style.gridTemplateColumns =
-            template;
-
-
-        row.style.top =
-            offsets[i] +
-            "px";
-
-
-        row.style.height =
-            (
-                offsets[i + 1] -
-                offsets[i]
-            ) +
-            "px";
-
-
-        const item =
-            data[i];
-
-
-        columns[type].forEach(
-            column => {
-
-                const cell =
-                    document.createElement(
-                        "div"
-                    );
-
-
-                cell.className =
-                    "data-cell";
-
-
-                const value =
-                    String(
-                        item[column] ?? ""
-                    );
-
-
-                cell.textContent =
-                    value;
-
-
-                if(
-                    value.length > 40
-                ){
-
-                    cell.title =
-                        value;
-
-                }
-
-
-                const lower =
-                    column.toLowerCase();
-
-
-                const normalized =
-                    value
-                        .trim()
-                        .toLowerCase();
-
-
-                /* =================================================
-                   FREEZE THIQA
-                   ================================================= */
-
-                if(
-                    lower === "thiqa"
-                ){
-
-                    cell.classList.add(
-                        "thiqa-sticky"
-                    );
-
-
-                    if(
-                        normalized === "yes"
-                    ){
-
-                        cell.classList.add(
-                            "thiqa-yes"
-                        );
-
-                    }
-
-
-                    if(
-                        normalized === "no"
-                    ){
-
-                        cell.classList.add(
-                            "thiqa-no"
-                        );
-
-                    }
-
-                }
-
-
-                /* =================================================
-                   FREEZE BASIC
-                   ================================================= */
-
-                if(
-                    lower === "basic"
-                ){
-
-                    cell.classList.add(
-                        "basic-sticky"
-                    );
-
-
-                    if(
-                        normalized === "yes"
-                    ){
-
-                        cell.classList.add(
-                            "basic-yes"
-                        );
-
-                    }
-
-
-                    if(
-                        normalized === "no"
-                    ){
-
-                        cell.classList.add(
-                            "basic-no"
-                        );
-
-                    }
-
-                }
-
-
-                row.appendChild(
-                    cell
-                );
-
-            }
-        );
-
-
-        fragment.appendChild(
-            row
-        );
-
-    }
-
-
-    content.appendChild(
-        fragment
-    );
-
-}
-
-
-/* =========================================================
-   RESIZE
-   ========================================================= */
-
-window.addEventListener(
-    "resize",
-    function(){
-
-        if(!sheetLoaded.has(currentSheet)){
-            return;
-        }
-
-        buildRowOffsets(currentSheet);
-        renderVirtualTable(currentSheet);
-
-    }
-);
-
-</script>
-
-<script>
-
-
-/* =========================================================
-   FILES
-   ========================================================= */
-
-const FILES = {
-
-    thiqa: "data.json",
-
-    haad: "HAAD_LIST.json"
-
-};
-
-
-/* =========================================================
-   DATA
-   ========================================================= */
-
-let thiqaData = [];
-let haadData = [];
-
-let currentSheet = "thiqa";
-
-/* Lazy-loading state: only the active sheet is downloaded initially. */
-const sheetLoadPromises = new Map();
-const sheetLoaded = new Set();
-
-let columns = {
-
-    thiqa: [],
-
-    haad: []
-
-};
-
-let filteredData = {
-
-    thiqa: [],
-
-    haad: []
-
-};
-
-let columnFilters = {
-
-    thiqa: new Map(),
-
-    haad: new Map()
-
-};
-
-
-/* =========================================================
-   VIRTUAL SCROLL SETTINGS
-   ========================================================= */
-
-const MIN_ROW_HEIGHT = 40;
-
-const LINE_HEIGHT = 16;
-
-const ROW_VERTICAL_PADDING = 12;
-
-const BUFFER_ROWS = 30;
-
-let rowOffsets = {
-
-    thiqa: [],
-
-    haad: []
-
-};
-
-let totalHeights = {
-
-    thiqa: 0,
-
-    haad: 0
-
-};
-
-let renderTimer = null;
-
-
-/* =========================================================
-   HAAD COLUMN ORDER
-   ========================================================= */
-
-const HAAD_COLUMNS = [
-
-    "Drug Code",
-
-    "Insurance Plan",
-
-    "Package Name",
-
-    "Generic Code",
-
-    "Generic Name",
-
-    "Strength",
-
-    "Dosage Form",
-
-    "Package Size",
-
-    "Dispense Mode",
-
-    "Package Price to Public",
-
-    "Package Price to Pharmacy",
-
-    "Unit Price to Public",
-
-    "Unit Price to Pharmacy",
-
-    "Status",
-
-    "Delete Effective Date",
-
-    "Last Change Date",
-
-    "Agent Name",
-
-    "Manufacturer Name",
-
-    "Insurance Coverage For Government Funded Program",
-
-    "UPP Scope",
-
-    "Included in Thiqa/ABM - other than 1&7 - Drug Formulary",
-
-    "Included In Basic Drug Formulary",
-
-    "Included In ABM 1 Drug Formulary",
-
-    "Included In ABM 7 Drug Formulary",
-
-    "Unit Markup",
-
-    "Package Markup",
-
-    "Thiqa Max. Reimbursement Price (Package)",
-
-    "Thiqa co-pay amount (package)",
-
-    "Basic co-pay amount (package)",
-
-    "UPP Effective Date",
-
-    "UPP Updated Date",
-
-    "UPP Expiry Date"
-
-];
-
-
-
-</script>
-
-</body>
-</html>
