@@ -1656,12 +1656,13 @@ function quantityBoxesDescription(totalQuantity, packageSize){
     if(remainder < 1e-9){
         result = division + quantityRed(String(wholeBoxes)) + (wholeBoxes === 1 ? " box" : " boxes");
     }else if(pack.blisterSize){
-        const blisters = Math.floor(remainder / pack.blisterSize + 1e-10);
-        const leftover = Math.max(0, remainder - blisters * pack.blisterSize);
+        // Always round partial-pack requirements UP to a whole blister.
+        // Examples: 12 tablets in 8-tablet blisters = 2 blisters;
+        // 15 tablets in 10-tablet blisters = 2 blisters.
+        const blisters = Math.ceil(remainder / pack.blisterSize - 1e-10);
         const parts = [];
         if(wholeBoxes > 0) parts.push(quantityRed(String(wholeBoxes)) + (wholeBoxes === 1 ? " box" : " boxes"));
         if(blisters > 0) parts.push(quantityRed(String(blisters)) + (blisters === 1 ? " blister" : " blisters"));
-        if(leftover > 1e-9) parts.push(quantityRed(quantityFormatNumber(leftover)) + " additional units");
         result = division + (parts.length ? parts.join(" and ") : quantityRed(String(boxesNeeded)) + (boxesNeeded === 1 ? " box" : " boxes"));
     }else{
         result = division + quantityRed(String(boxesNeeded)) + (boxesNeeded === 1 ? " box" : " boxes");
