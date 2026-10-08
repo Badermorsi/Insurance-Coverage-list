@@ -416,6 +416,172 @@ h1{
     color:#fff;
 }
 
+
+/* =========================================================
+   QUANTITY CALCULATOR
+   ========================================================= */
+
+.quantity-calculator{
+    display:none;
+    max-width:1400px;
+    margin:0 auto;
+    padding:20px;
+}
+
+.quantity-calculator.show{
+    display:block;
+}
+
+.quantity-search-wrap{
+    position:relative;
+    max-width:700px;
+    margin:0 auto 20px;
+}
+
+.quantity-search{
+    width:100%;
+    padding:14px 45px 14px 15px;
+    border:1px solid #bcbcbc;
+    border-radius:7px;
+    font-size:16px;
+    outline:none;
+}
+
+.quantity-search:focus{
+    border-color:#1d3557;
+    box-shadow:0 0 0 3px rgba(29,53,87,.1);
+}
+
+.quantity-search-icon{
+    position:absolute;
+    right:15px;
+    top:13px;
+    font-size:18px;
+    color:#777;
+    pointer-events:none;
+}
+
+.quantity-dropdown{
+    position:absolute;
+    left:0;
+    right:0;
+    top:100%;
+    margin-top:4px;
+    background:#fff;
+    border:1px solid #bbb;
+    border-radius:7px;
+    box-shadow:0 6px 20px rgba(0,0,0,.16);
+    max-height:360px;
+    overflow-y:auto;
+    z-index:500;
+    display:none;
+}
+
+.quantity-dropdown.show{
+    display:block;
+}
+
+.quantity-option{
+    padding:11px 14px;
+    border-bottom:1px solid #eee;
+    cursor:pointer;
+    font-size:14px;
+    line-height:19px;
+}
+
+.quantity-option:last-child{
+    border-bottom:none;
+}
+
+.quantity-option:hover{
+    background:#eef3f8;
+}
+
+.quantity-option-id{
+    font-weight:bold;
+    color:#1d3557;
+    margin-right:8px;
+}
+
+.quantity-option-name{
+    color:#222;
+}
+
+.quantity-no-results{
+    padding:14px;
+    color:#777;
+    text-align:center;
+}
+
+.quantity-result{
+    display:none;
+    background:#fff;
+    border:1px solid #d0d5da;
+    border-radius:8px;
+    overflow:hidden;
+    box-shadow:0 2px 8px rgba(0,0,0,.06);
+}
+
+.quantity-result.show{
+    display:grid;
+}
+
+.quantity-field{
+    min-width:0;
+    border-right:1px solid #d5d8dc;
+}
+
+.quantity-field:last-child{
+    border-right:none;
+}
+
+.quantity-field-label{
+    padding:10px 12px;
+    background:#e9edf2;
+    border-bottom:1px solid #d5d8dc;
+    font-size:12px;
+    font-weight:bold;
+    color:#333;
+}
+
+.quantity-field-value{
+    padding:13px 12px;
+    font-size:14px;
+    line-height:20px;
+    overflow-wrap:anywhere;
+    word-break:break-word;
+    min-height:48px;
+}
+
+.quantity-help{
+    text-align:center;
+    color:#777;
+    font-size:13px;
+    margin-top:10px;
+}
+
+@media(max-width:800px){
+    .quantity-calculator{
+        padding:15px 10px;
+    }
+
+    .quantity-result{
+        grid-template-columns:1fr 1fr !important;
+    }
+
+    .quantity-field:nth-child(2n){
+        border-right:none;
+    }
+
+    .quantity-field:nth-child(n+3){
+        border-top:1px solid #d5d8dc;
+    }
+
+    .quantity-field-value{
+        min-height:52px;
+    }
+}
+
 /* MOBILE */
 @media(max-width:800px){
 
@@ -465,6 +631,13 @@ h1{
     class="tab"
     onclick="switchSheet('haad')">
     HAAD List
+</button>
+
+<button
+    id="quantityTab"
+    class="tab"
+    onclick="switchQuantityCalculator()">
+    Quantity Calculator
 </button>
 
 </div>
@@ -785,9 +958,71 @@ const HAAD_COLUMNS = [
 ];
 
 
-/* =========================================================
-   START
-   ========================================================= */
+</div>
+
+<!-- QUANTITY CALCULATOR -->
+<div id="quantityCalculator" class="quantity-calculator">
+
+    <div class="quantity-search-wrap">
+
+        <input
+            id="quantitySearch"
+            class="quantity-search"
+            type="text"
+            autocomplete="off"
+            placeholder="Search Proactive Name or Proactive ID..."
+            oninput="searchQuantityItems()"
+            onfocus="searchQuantityItems()">
+
+        <span class="quantity-search-icon">🔎</span>
+
+        <div
+            id="quantityDropdown"
+            class="quantity-dropdown">
+        </div>
+
+    </div>
+
+    <div class="quantity-help">
+        Type the beginning of the Proactive Name or Proactive ID, then select the item.
+    </div>
+
+    <div
+        id="quantityResult"
+        class="quantity-result"
+        style="grid-template-columns:repeat(5,minmax(0,1fr));margin-top:20px;">
+
+        <div class="quantity-field">
+            <div class="quantity-field-label">Proactive ID</div>
+            <div id="quantityProactiveId" class="quantity-field-value"></div>
+        </div>
+
+        <div class="quantity-field">
+            <div class="quantity-field-label">Proactive Name</div>
+            <div id="quantityProactiveName" class="quantity-field-value"></div>
+        </div>
+
+        <div class="quantity-field">
+            <div class="quantity-field-label">Dosage Form</div>
+            <div id="quantityDosageForm" class="quantity-field-value"></div>
+        </div>
+
+        <div class="quantity-field">
+            <div class="quantity-field-label">Strength</div>
+            <div id="quantityStrength" class="quantity-field-value"></div>
+        </div>
+
+        <div class="quantity-field">
+            <div class="quantity-field-label">Package Size</div>
+            <div id="quantityPackageSize" class="quantity-field-value"></div>
+        </div>
+
+    </div>
+
+</div>
+
+<div
+    id="status"
 
 document.addEventListener(
     "DOMContentLoaded",
@@ -816,6 +1051,11 @@ document.addEventListener(
                 }
 
             }
+        );
+
+        document.addEventListener(
+            "click",
+            closeQuantityDropdown
         );
 
     }
@@ -1072,50 +1312,62 @@ function switchSheet(type){
     currentSheet =
         type;
 
+    document
+        .querySelectorAll(".tab")
+        .forEach(tab => tab.classList.remove("active"));
 
     document
-        .getElementById("thiqaTab")
-        .classList
-        .toggle(
-            "active",
+        .getElementById(
             type === "thiqa"
-        );
-
+                ? "thiqaTab"
+                : "haadTab"
+        )
+        .classList.add("active");
 
     document
-        .getElementById("haadTab")
-        .classList
-        .toggle(
-            "active",
-            type === "haad"
-        );
+        .querySelector(".search-container")
+        .style.display = "";
 
+    document
+        .querySelector(".controls")
+        .style.display = "";
+
+    document
+        .getElementById("status")
+        .style.display = "";
+
+    document
+        .getElementById("excelArea")
+        .style.display = "";
+
+    document
+        .getElementById("quantityCalculator")
+        .classList.remove("show");
+
+    document
+        .getElementById("quantityDropdown")
+        .classList.remove("show");
 
     document
         .getElementById("brandSearch")
         .value = "";
 
-
     document
         .getElementById("genericSearch")
         .value = "";
-
 
     document
         .getElementById("strengthSearch")
         .value = "";
 
-
     document
         .getElementById("formSearch")
         .value = "";
-
 
     filteredData[type] =
         getFilteredRows(
             type
         );
-
 
     buildRowOffsets(type);
 
