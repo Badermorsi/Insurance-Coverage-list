@@ -1637,13 +1637,18 @@ function updateQuantityFormula(){
     const frequencyPhrase = quantityFrequencyPhrase(frequencyValue, frequencyUnit);
     const durationNumberWords = quantityNumberWords(Number(durationValue));
     const durationName = quantityUnitName(durationUnit, durationValue, true);
-    const doseText = quantityRed(doseValue) + " " + quantityEscapeHtml(doseUnit);
+    // When the selected dose unit is "unit", use the selected item's Dosage Form
+    // as the display unit in both the instruction and the total.
+    const isItemUnit = doseUnit === "unit";
+    const dosageForm = (document.getElementById("quantityDosageForm").textContent || "").trim();
+    const displayUnit = isItemUnit ? (dosageForm || "unit") : doseUnit;
+    const doseText = quantityRed(doseValue) + " " + quantityEscapeHtml(displayUnit);
     const durationPhrase = "for " + quantityRed(durationNumberWords) + " " + durationName;
     const total = quantityCalculateTotal(doseValue, frequencyValue, frequencyUnit, durationValue, durationUnit);
 
     let totalHtml = "";
     if(total !== null){
-        totalHtml = '<div class="quantity-total">Total quantity = ' + quantityRed(quantityFormatNumber(total)) + " " + quantityEscapeHtml(doseUnit) + "</div>";
+        totalHtml = '<div class="quantity-total">Total quantity = ' + quantityRed(quantityFormatNumber(total)) + " " + quantityEscapeHtml(displayUnit) + "</div>";
     }else{
         totalHtml = '<div class="quantity-total">Unable to calculate total quantity for these values.</div>';
     }
