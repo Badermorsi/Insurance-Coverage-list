@@ -1643,6 +1643,42 @@ function quantityParsePackageSize(packageSize){
     };
 }
 
+function quantityIuPensDescription(totalIU, strengthText, packageSize){
+    if(totalIU === null || !Number.isFinite(totalIU) || totalIU < 0) return "";
+
+    const strength = String(strengthText || "").match(/(\d+(?:\.\d+)?)\s*iu\s*\/\s*ml\b/i);
+    const packageText = String(packageSize || "");
+    const penVolumeMatch = packageText.match(/(\d+(?:\.\d+)?)\s*ml\b[^,;]*(?:pre[ -]?filled\s*)?pen/i) ||
+                           packageText.match(/(\d+(?:\.\d+)?)\s*ml\b/i);
+    const pensPerBoxMatch = packageText.match(/\bpen\b[^x×\n]*[x×]\s*(\d+)\b/i) ||
+                            packageText.match(/[x×]\s*(\d+)\b/i);
+
+    if(!strength || !penVolumeMatch) return '<div class="quantity-boxes-required">No. of pens required = unable to read strength or pen volume.</div>';
+
+    const iuPerMl = Number(strength[1]);
+    const penVolume = Number(penVolumeMatch[1]);
+    if(!Number.isFinite(iuPerMl) || iuPerMl <= 0 || !Number.isFinite(penVolume) || penVolume <= 0) return "";
+
+    // Round up to a whole pen because a partial pen cannot be dispensed.
+    const pensNeeded = Math.ceil(totalIU / (iuPerMl * penVolume) - 1e-10);
+    const pensPerBox = pensPerBoxMatch ? Number(pensPerBoxMatch[1]) : null;
+    const division = quantityFormatNumber(totalIU) + " / (" + quantityFormatNumber(iuPerMl) + " × " + quantityFormatNumber(penVolume) + ") = ";
+    let result;
+
+    if(Number.isFinite(pensPerBox) && pensPerBox > 0){
+        const wholeBoxes = Math.floor(pensNeeded / pensPerBox);
+        const leftoverPens = pensNeeded % pensPerBox;
+        const parts = [];
+        if(wholeBoxes > 0) parts.push(quantityRed(String(wholeBoxes)) + (wholeBoxes === 1 ? " box" : " boxes"));
+        if(leftoverPens > 0) parts.push(quantityRed(String(leftoverPens)) + (leftoverPens === 1 ? " pen" : " pens"));
+        result = parts.length ? parts.join(" and ") : quantityRed("0") + " pens";
+    }else{
+        result = quantityRed(String(pensNeeded)) + (pensNeeded === 1 ? " pen" : " pens");
+    }
+
+    return '<div class="quantity-boxes-required">No. of pens required = ' + division + result + '</div>';
+}
+
 function quantityBoxesDescription(totalQuantity, packageSize){
     const pack = quantityParsePackageSize(packageSize);
     if(totalQuantity === null || !pack || !Number.isFinite(totalQuantity) || totalQuantity < 0) return "";
@@ -1708,7 +1744,12 @@ function updateQuantityFormula(){
     if(total !== null){
         totalHtml = '<div class="quantity-total">Total quantity = ' + quantityRed(quantityFormatNumber(total)) + " " + quantityEscapeHtml(displayUnit) + "</div>";
         const packageSize = (document.getElementById("quantityPackageSize").textContent || "").trim();
-        boxesHtml = quantityBoxesDescription(total, packageSize);
+        if(doseUnit === "IU"){
+            const strength = (document.getElementById("quantityStrength").textContent || "").trim();
+            boxesHtml = quantityIuPensDescription(total, strength, packageSize);
+        }else{
+            boxesHtml = quantityBoxesDescription(total, packageSize);
+        }
     }else{
         totalHtml = '<div class="quantity-total">Unable to calculate total quantity for these values.</div>';
     }
