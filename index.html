@@ -631,15 +631,40 @@ h1{
 .quantity-formula{
     max-width:1100px;
     margin:16px auto 0;
-    padding:14px 16px;
+    padding:16px;
     border:1px solid #d0d5da;
     border-radius:8px;
     background:#eef3f8;
     color:#1d3557;
     text-align:center;
     font-size:18px;
-    font-weight:bold;
+    font-weight:600;
+    line-height:1.7;
     overflow-wrap:anywhere;
+}
+
+.quantity-formula-description{
+    font-size:18px;
+    font-weight:600;
+}
+
+.quantity-total{
+    margin-top:6px;
+    padding-top:8px;
+    border-top:1px solid #d0dbe5;
+    font-size:19px;
+    font-weight:800;
+}
+
+.quantity-number-highlight{
+    color:#d00000;
+    font-weight:800;
+}
+
+.quantity-formula-hint{
+    color:#64748b;
+    font-size:14px;
+    font-weight:normal;
 }
 
 @media(max-width:800px){
@@ -655,6 +680,15 @@ h1{
 
     .quantity-formula{
         font-size:16px;
+        padding:12px;
+    }
+
+    .quantity-formula-description{
+        font-size:16px;
+    }
+
+    .quantity-total{
+        font-size:17px;
     }
 }
 
@@ -978,6 +1012,7 @@ h1{
                     <option value="ml">ml</option>
                     <option value="IU">IU</option>
                     <option value="drop">drop</option>
+                    <option value="unit">unit</option>
                 </select>
             </div>
         </section>
@@ -1025,6 +1060,7 @@ h1{
                 <input id="durationValue" type="number" min="0" step="any" placeholder="Value" aria-label="Duration value" oninput="updateQuantityFormula()">
                 <select id="durationUnit" aria-label="Duration unit" onchange="updateQuantityFormula()">
                     <option value="D">D</option>
+                    <option value="W">W</option>
                     <option value="M">M</option>
                     <option value="Y">Y</option>
                 </select>
@@ -1033,7 +1069,9 @@ h1{
 
     </div>
 
-    <div id="quantityFormula" class="quantity-formula" aria-live="polite">Dose × Frequency × Duration</div>
+    <div id="quantityFormula" class="quantity-formula" aria-live="polite">
+        Enter dose, frequency and duration to calculate total quantity.
+    </div>
 
 </div>
 
@@ -1445,6 +1483,137 @@ function closeQuantityDropdown(event){
     }
 }
 
+function quantityEscapeHtml(value){
+    return String(value ?? "").replace(/[&<>"']/g, function(character){
+        return ({"&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;"})[character];
+    });
+}
+
+function quantityNumberWords(value){
+    const number = Number(value);
+    if(!Number.isFinite(number)) return String(value ?? "");
+    if(number < 0) return "Minus " + quantityNumberWords(Math.abs(number));
+    if(!Number.isInteger(number)) return String(value);
+    if(number === 0) return "Zero";
+
+    const ones = ["", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen"];
+    const tens = ["", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"];
+
+    function underThousand(n){
+        let output = "";
+        if(n >= 100){
+            output += ones[Math.floor(n / 100)] + " Hundred";
+            n %= 100;
+            if(n) output += " ";
+        }
+        if(n >= 20){
+            output += tens[Math.floor(n / 10)];
+            n %= 10;
+            if(n) output += "-" + ones[n];
+        }else if(n > 0){
+            output += ones[n];
+        }
+        return output;
+    }
+
+    if(number < 1000) return underThousand(number);
+    if(number < 1000000){
+        const thousands = Math.floor(number / 1000);
+        const remainder = number % 1000;
+        return underThousand(thousands) + " Thousand" + (remainder ? " " + underThousand(remainder) : "");
+    }
+    return String(number);
+}
+
+function quantityRed(value){
+    return '<span class="quantity-number-highlight">' + quantityEscapeHtml(value) + '</span>';
+}
+
+function quantityDurationDays(value, unit){
+    const amount = Number(value);
+    if(!Number.isFinite(amount) || amount <= 0) return 0;
+    if(unit === "D") return amount;
+    if(unit === "W") return amount * 7;
+    if(unit === "M") return amount * 30;
+    if(unit === "Y") return amount * 365;
+    return 0;
+}
+
+function quantityUnitName(base, amount, capitalizeMonth){
+    const singular = Math.abs(Number(amount) - 1) < 0.000001;
+    const names = {
+        D: singular ? "day" : "days",
+        W: singular ? "week" : "weeks",
+        M: singular ? (capitalizeMonth ? "Month" : "month") : (capitalizeMonth ? "Months" : "months"),
+        Y: singular ? "year" : "years",
+        H: singular ? "hour" : "hours"
+    };
+    return names[base] || base;
+}
+
+function quantityFrequencyPhrase(value, unit){
+    const count = Number(value);
+    const countWord = Math.abs(count - 1) < 0.000001 ? "Once" : quantityNumberWords(count);
+    const match = String(unit || "").match(/^(\d+)?([DWMYH])$/i);
+    if(!match) return quantityRed(countWord) + " times " + quantityEscapeHtml(String(unit || ""));
+
+    const multiplier = match[1] ? Number(match[1]) : 1;
+    const base = match[2].toUpperCase();
+    const countIsOne = Math.abs(count - 1) < 0.000001;
+
+    // D, W, M and Y without a multiplier mean a per-day/week/month/year frequency.
+    if(multiplier === 1 && base === "D"){
+        return countIsOne ? quantityRed("Once") + " daily" : quantityRed(quantityNumberWords(count)) + " times daily";
+    }
+    if(multiplier === 1 && base === "W"){
+        return countIsOne ? quantityRed("Once") + " weekly" : quantityRed(quantityNumberWords(count)) + " times weekly";
+    }
+    if(multiplier === 1 && base === "M"){
+        return countIsOne ? quantityRed("Once") + " monthly" : quantityRed(quantityNumberWords(count)) + " times monthly";
+    }
+    if(multiplier === 1 && base === "Y"){
+        return countIsOne ? quantityRed("Once") + " yearly" : quantityRed(quantityNumberWords(count)) + " times yearly";
+    }
+
+    const intervalWord = quantityNumberWords(multiplier);
+    const intervalUnit = quantityUnitName(base, multiplier, false);
+    const intervalText = quantityRed(intervalWord) + " " + intervalUnit;
+    return (countIsOne ? quantityRed("Once") : quantityRed(quantityNumberWords(count)) + " times") + " every " + intervalText;
+}
+
+function quantityCalculateTotal(doseValue, frequencyValue, frequencyUnit, durationValue, durationUnit){
+    const dose = Number(doseValue);
+    const frequencyCount = Number(frequencyValue);
+    const durationDays = quantityDurationDays(durationValue, durationUnit);
+    const match = String(frequencyUnit || "").match(/^(\d+)?([DWMYH])$/i);
+
+    if(!Number.isFinite(dose) || dose < 0 || !Number.isFinite(frequencyCount) || frequencyCount <= 0 || durationDays <= 0 || !match){
+        return null;
+    }
+
+    const multiplier = match[1] ? Number(match[1]) : 1;
+    const base = match[2].toUpperCase();
+    let intervalHours;
+    if(base === "H") intervalHours = multiplier;
+    else if(base === "D") intervalHours = multiplier * 24;
+    else if(base === "W") intervalHours = multiplier * 7 * 24;
+    else if(base === "M") intervalHours = multiplier * 30 * 24;
+    else if(base === "Y") intervalHours = multiplier * 365 * 24;
+    else return null;
+
+    const durationHours = durationDays * 24;
+    // Round up partial final intervals so a course that includes a scheduled dose
+    // at the end of its duration is not under-counted.
+    const administrations = Math.ceil((durationHours / intervalHours) * frequencyCount - 1e-9);
+    return dose * administrations;
+}
+
+function quantityFormatNumber(value){
+    if(!Number.isFinite(value)) return "0";
+    const rounded = Math.round(value * 1000) / 1000;
+    return String(rounded);
+}
+
 function updateQuantityFormula(){
     const doseValue = document.getElementById("doseValue").value.trim();
     const doseUnit = document.getElementById("doseUnit").value;
@@ -1452,11 +1621,34 @@ function updateQuantityFormula(){
     const frequencyUnit = document.getElementById("frequencyUnit").value;
     const durationValue = document.getElementById("durationValue").value.trim();
     const durationUnit = document.getElementById("durationUnit").value;
+    const formula = document.getElementById("quantityFormula");
 
-    const dose = doseValue ? doseValue + " " + doseUnit : "Dose";
-    const frequency = frequencyValue ? frequencyValue + " " + frequencyUnit : "Frequency";
-    const duration = durationValue ? durationValue + " " + durationUnit : "Duration";
-    document.getElementById("quantityFormula").textContent = dose + " × " + frequency + " × " + duration;
+    if(!doseValue || !frequencyValue || !durationValue || Number(doseValue) < 0 || Number(frequencyValue) <= 0 || Number(durationValue) <= 0){
+        formula.innerHTML = '<div class="quantity-formula-hint">Enter dose, frequency and duration to calculate total quantity.</div>';
+        return;
+    }
+
+    const doseNumber = Number(doseValue);
+    if(!Number.isFinite(doseNumber)){
+        formula.innerHTML = '<div class="quantity-formula-hint">Please enter valid numerical values.</div>';
+        return;
+    }
+
+    const frequencyPhrase = quantityFrequencyPhrase(frequencyValue, frequencyUnit);
+    const durationNumberWords = quantityNumberWords(Number(durationValue));
+    const durationName = quantityUnitName(durationUnit, durationValue, true);
+    const doseText = quantityRed(doseValue) + " " + quantityEscapeHtml(doseUnit);
+    const durationPhrase = "for " + quantityRed(durationNumberWords) + " " + durationName;
+    const total = quantityCalculateTotal(doseValue, frequencyValue, frequencyUnit, durationValue, durationUnit);
+
+    let totalHtml = "";
+    if(total !== null){
+        totalHtml = '<div class="quantity-total">Total quantity = ' + quantityRed(quantityFormatNumber(total)) + " " + quantityEscapeHtml(doseUnit) + "</div>";
+    }else{
+        totalHtml = '<div class="quantity-total">Unable to calculate total quantity for these values.</div>';
+    }
+
+    formula.innerHTML = '<div class="quantity-formula-description">' + doseText + " " + frequencyPhrase + " " + durationPhrase + "</div>" + totalHtml;
 }
 
 
